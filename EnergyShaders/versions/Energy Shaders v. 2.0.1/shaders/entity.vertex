@@ -1,0 +1,205 @@
+// __multiversion__
+// This signals the loading code to prepend either #version 100 or #version 300 es as apropriate.
+
+// To use centroid sampling we need to have version 300 es shaders, which requires changing:
+// attribute to in
+// varying to out when in vertex shaders or in when in fragment shaders
+// defining an out vec4 FragColor and replacing uses of gl_FragColor with FragColor
+// texture2D to texture
+#if __VERSION__ >= 300
+
+#define attribute in
+#define varying out
+#ifdef MSAA_FRAMEBUFFER_ENABLED
+#define _centroid centroid
+#else
+#define _centroid
+#endif
+_centroid out vec2 uv;
+
+#else
+varying vec2 uv;
+#endif
+
+uniform MAT4 WORLDVIEWPROJ;
+uniform MAT4 WORLD;
+uniform vec4 TILE_LIGHT_COLOR;
+uniform vec4 OVERLAY_COLOR;
+uniform vec4 CHANGE_COLOR;
+uniform vec4 GLINT_COLOR;
+uniform vec4 FOG_COLOR;
+uniform vec2 FOG_CONTROL;
+uniform float RENDER_DISTANCE;
+uniform vec4 UV_ANIM;
+uniform vec2 UV_OFFSET;
+uniform vec2 UV_ROTATION;
+uniform vec2 GLINT_UV_SCALE;
+
+attribute mediump vec4 POSITION;
+attribute vec2 TEXCOORD_0;
+//attribute vec2 TEXCOORD_1;
+attribute vec4 NORMAL;
+
+#ifdef COLOR_BASED
+	attribute vec4 COLOR;
+#endif
+
+varying vec4 light;
+varying vec4 fogColor;
+//varying vec2 uv1;
+
+#ifdef USE_OVERLAY
+varying vec4 overlayColor;
+#endif
+
+#if defined(USE_COLOR_MASK) || defined(ITEM_IN_HAND) || defined(COLOR_SECOND_TEXTURE)
+varying vec4 changeColor;
+#endif
+
+#ifdef GLINT
+	varying vec2 layer1UV;
+	varying vec2 layer2UV;
+    varying vec4 tileLightColor;
+	varying vec4 glintColor;
+#endif
+
+const float AMBIENT = 0.45;
+
+const float XFAC = -0.1;
+const float ZFAC = 0.1;
+
+float lightIntensity() {
+#ifdef FANCY
+    vec3 N = normalize( WORLD * NORMAL ).xyz;
+
+    N.y *= TILE_LIGHT_COLOR.w; //TILE_LIGHT_COLOR.w contains the direction of the light
+
+    //take care of double sided polygons on materials without culling
+#ifdef FLIP_BACKFACES
+    vec3 viewDir = normalize((WORLD * POSITION).xyz);
+    if( dot(N, viewDir) > 0.0 )
+        N *= -1.0;
+#endif
+
+    float yLight = (1.0+N.y) * 0.5;
+    return yLight * (1.0-AMBIENT) + N.x*N.x * XFAC + N.z*N.z * ZFAC + AMBIENT;
+#else
+    return 1.0;
+#endif
+}
+
+#ifdef GLINT
+vec2 calculateLayerUV(float offset, float rotation) {
+	vec2 uv = TEXCOORD_0;
+	uv -= 0.5;
+	float rsin = sin(rotation);
+	float rcos = cos(rotation);
+	uv = mat2(rcos, -rsin, rsin, rcos) * uv;
+	uv.x += offset;
+	uv += 0.5;
+
+	return uv * GLINT_UV_SCALE;
+}
+#endif
+
+void main()
+{
+    POS4 pos = WORLDVIEWPROJ * POSITION;
+    gl_Position = pos;
+    
+    POS3 worldPos = POSITION.xyz;
+
+    float L = lightIntensity();
+    
+
+#ifdef USE_OVERLAY
+	L += OVERLAY_COLOR.a * 0.35;
+    overlayColor = OVERLAY_COLOR;
+#endif
+
+#if defined(USE_COLOR_MASK) || defined(ITEM_IN_HAND) || defined(COLOR_SECOND_TEXTURE)
+    changeColor = CHANGE_COLOR;
+#endif
+
+    light = vec4(vec3(L) * TILE_LIGHT_COLOR.xyz, 1.0);
+
+#ifdef COLOR_BASED
+	light *= COLOR;
+#endif
+    
+#ifndef NO_TEXTURE
+    uv = TEXCOORD_0;
+#endif
+
+#ifdef USE_UV_ANIM
+	uv.xy = UV_ANIM.xy + (uv.xy * UV_ANIM.zw);
+#endif
+
+#ifdef GLINT
+	glintColor = GLINT_COLOR;
+	layer1UV = calculateLayerUV(UV_OFFSET.x, UV_ROTATION.x);
+	layer2UV = calculateLayerUV(UV_OFFSET.y, UV_ROTATION.y);
+    tileLightColor = TILE_LIGHT_COLOR;
+#endif
+
+
+//fog
+    fogColor.rgb = FOG_COLOR.rgb;
+    fogColor.a = clamp(((pos.z / RENDER_DISTANCE) - FOG_CONTROL.x) / (FOG_CONTROL.y - FOG_CONTROL.x), 0.0, 1.0);
+    
+    
+    
+   /*
+   float uw = 0.0; //underwater
+    float fogCon = FOG_CONTROL.x;
+    float fogtoorainy =(1.0 - fogCon)*0.6;
+    vec2 itsnight = vec2(0.0);
+    float holefog = FOG_COLOR.r+FOG_COLOR.g+FOG_COLOR.b;
+    
+    
+    //is it night?
+    if(holefog <= 0.4){
+        itsnight.x = 1.0;
+        itsnight.y = 1.0-holefog*2.5;
+    }
+
+    //check if we are underwater
+    if(FOG_CONTROL.x <= 0.01){uw = 1.0;}
+    
+    
+    float fogdis = length(-worldPos.xyz)/(RENDER_DISTANCE*fogCon);
+    
+    
+    fogColor.a = min(1.5,max(0.0,fogdis-(0.65+fogtoorainy)))*0.567;
+    
+    fogColor.r = FOG_COLOR.r-fogCon;
+    fogColor.g = FOG_COLOR.g-fogCon;
+    fogColor.b = FOG_COLOR.b * 1.18 - fogCon;
+    
+    if(itsnight.x == 1.0){
+    fogColor.rgb = mix(fogColor.rgb, vec3(0.1,0.3,0.6), itsnight.y);
+    }
+    
+    
+    if(uw == 1.0){
+    fogdis = length(-worldPos.xyz)/(RENDER_DISTANCE);
+    
+    fogColor.a = min(0.43,max(0.35,fogdis*10.0));
+    
+    fogColor.rgb = vec3(0.15,0.4,0.8);
+    //fogColor.a -= 0.7;
+
+    POS3 fJOB2 = fJOB.xyz;
+
+    waves.y = sin(fJOB2.x + TIME * 1.35) * cos(fJOB2.z+TIME*1.2)*sin(fJOB2.y+TIME*1.5)*0.065;
+    
+    waves.x = waves.y;
+    waves.z = waves.x;
+    
+    }  
+    */
+    
+    
+    
+    
+}

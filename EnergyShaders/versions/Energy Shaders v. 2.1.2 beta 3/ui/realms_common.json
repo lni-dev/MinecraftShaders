@@ -1,0 +1,172 @@
+/********************************************************
++*   (c) Mojang. All rights reserved                       *
++*   (c) Microsoft. All rights reserved.                   *
++*********************************************************/
+
+// Used to control the layout of the Realm Settings screen. Player gets to this screen
+// by selecting the "configure" button in the Realms List screen.
+
+{
+  "namespace": "realms_common",
+
+  // Common
+  // This should no longer be used! Legacy buttons
+  "dark_thin_button@common-classic.button_state_default": {
+  },
+
+  "dark_thin_button_hover@common-classic.button_state_hover": {
+  },
+
+  "dark_thin_button_pressed@common-classic.button_state_pressed": {
+  },
+
+  // This should no longer be used! Legacy header
+  "header_panel": {
+    "type": "panel",
+    "size": [ "100%", "27px" ],
+    "anchor_from": "top_left",
+    "anchor_to": "top_left",
+    "controls": [
+      {
+        "header_background": {
+          "type": "image",
+          "nineslice_size": [ 3, 3, 3, 6 ],
+          "texture": "textures/gui/newgui/TopBar",
+          "uv": [ 0, 0 ],
+          "uv_size": [ 5, 8 ]
+        }
+      },
+      {
+        "title_label": {
+          "type": "label",
+          "size": [ "100%", 30 ],
+          "text": "$text_name",
+          "anchor_from": "center",
+          "anchor_to": "center",
+          "layer": 1,
+          "shadow": false
+        }
+      },
+      {
+        "inside_header_panel@$child_control": { }
+      }
+    ]
+  },
+
+  // This should no longer be used! Legacy button
+  "back_button@common-classic.button": {
+    "anchor_from": "bottom_left",
+    "anchor_to": "bottom_left",
+    "size": [ 66, 18 ],
+    "offset": [ 4, -6 ],
+    "button_mappings": [
+      {
+        "from_button_id": "button.menu_select",
+        "to_button_id": "button.menu_exit",
+        "mapping_type": "pressed"
+      },
+      {
+        "from_button_id": "button.menu_ok",
+        "to_button_id": "button.menu_exit",
+        "mapping_type": "focused"
+      }
+    ],
+    "controls": [
+      {
+        "default@common-classic.button_state_default": {
+          "controls": [
+            {
+              "@common.button_text": {
+                "text": "gui.back"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "hover@common-classic.button_state_hover": {
+          "controls": [
+            {
+              "@common.button_text": {
+                "text": "gui.back",
+                "color": [ 1.0, 1.0, 1.0 ]
+              }
+            }
+          ]
+        }
+      },
+      {
+        "pressed@common-classic.button_state_pressed": {
+          "controls": [
+            {
+              "@common.button_text": {
+                "text": "gui.back",
+                "color": [ 1.0, 1.0, 1.0 ],
+                "alpha": 0.65
+              }
+            }
+          ]
+        }
+      }
+    ]
+  },
+
+  // The "envelope" icon that shows in the header panel if you have a pending invite
+  "pending_invites_icon": {
+    "type": "image",
+    "texture": "textures/gui/newgui/invite_base",
+    "layer": 5,
+    "anchor_from": "bottom_right",
+    "anchor_to": "bottom_right",
+
+    "bindings": [
+      {
+        "binding_name": "#pending_invites_visible",
+        "binding_name_override": "#visible",
+        "binding_type": "global"
+      }
+    ],
+    "uv": [ 0, 0 ],
+    "uv_size": [ 16, 16 ],
+    "size": [ 16, 16 ]
+  },
+
+  "dark_banner": {
+    "type": "image",
+    "texture": "textures/gui/newgui/MainBanners",
+    "layer": 1,
+    "anchor_from": "top_left",
+    "anchor_to": "top_left",
+    "uv": [ 0, 0 ],
+    "uv_size": [ 3, 3 ],
+    "nineslice_size": 1.0
+  },
+
+  "dark_banner_hover@dark_banner": {
+    "texture": "textures/gui/newgui/MainBannersHover"
+  },
+
+  // Legacy - do not use
+  "legacy_banner": {
+    "type": "image",
+    "texture": "textures/gui/newgui/legacybanner",
+    "layer": 1,
+    "anchor_from": "top_left",
+    "anchor_to": "top_left",
+    "uv": [ 0, 0 ],
+    "uv_size": [ 3, 3 ],
+    "nineslice_size": 1.0
+  },
+
+  "main_banner": {
+    "type": "image",
+    "texture": "textures/gui/newgui/MainBanners",
+    "layer": 1,
+    "anchor_from": "top_left",
+    "anchor_to": "top_left",
+    "uv": [ 0, 0 ],
+    "uv_size": [ 3, 3 ],
+    "nineslice_size": 1.0,
+    "size": [ "100% - 6px", "default" ]
+  }
+}

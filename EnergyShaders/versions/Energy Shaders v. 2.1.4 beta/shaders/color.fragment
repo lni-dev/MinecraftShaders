@@ -1,0 +1,139 @@
+// __multiversion__
+// This signals the loading code to prepend either #version 100 or #version 300 es as apropriate.
+
+// To use centroid sampling we need to have version 300 es shaders, which requires changing:
+// attribute to in
+// varying to out when in vertex shaders or in when in fragment shaders
+// defining an out vec4 FragColor and replacing uses of gl_FragColor with FragColor
+// texture2D to texture
+#if __VERSION__ >= 300
+
+// version 300 code
+
+#define varying in
+#define texture2D texture
+out vec4 FragColor;
+#define gl_FragColor FragColor
+
+#else
+
+// version 100 code
+
+#endif
+
+varying vec4 color;
+varying POS3 sp;
+varying float nearf;
+varying float ncb;
+
+uniform vec4 FOG_COLOR;
+uniform highp float TIME;
+uniform vec2 FOG_CONTROL;
+uniform POS3 VIEW_POS;
+
+
+
+//SETTINGS
+
+//Some numbers YOU don't know
+  const float pi = 3.14159265358979;
+
+//Clouds
+  const bool clouds_on_off = true;
+
+//STOP HERE!  
+  
+//Methods
+
+bool getRain(){
+  if(FOG_CONTROL.x < 0.55 && FOG_CONTROL.x > 0.1){
+    return true;
+  }
+  
+  return false;
+}
+
+highp float  unrealPos(highp float x, highp float z, float fact){
+  highp float factor = length(vec2(x, z));
+  
+  return fact - factor*15.0;
+}
+
+float clacCodeBasedNoiseTexture(vec2 a){
+  float ca = sin(a.x + a.y - a.x + sin(a.x) + cos(a.y + a.y - a.x));
+  //float cb = sin(a.x + a.x - a.y *sin(a.y) - a.y)+sin((cos(a.x)+cos(a.y))*sin(a.x+a.y));
+  float cc = sin(a.x+(cos(a.y)*0.1));
+  float cd = 0.0;
+  
+  return ca*1.5/*-cb*/*cc;
+}
+
+float clacCodeBasedSmallNoiseTexture(vec2 a){
+  float ca = sin(a.x + a.y - a.x + sin(a.x) + cos(a.y + a.y - a.x)) - sin(a.x + a.x - a.y *sin(a.y) - a.y)+sin((cos(a.x)+cos(a.y))*sin(a.x+a.y));
+
+
+  return ca;
+}
+
+
+
+vec4 CloudColor(float a, vec3 fog){
+  vec3 cloudColor = vec3(1.5);
+  
+  cloudColor *= fog*2.0;
+  
+  cloudColor = mix(cloudColor, vec3(1.3, 0.7, 0.95), fog.r);
+  
+  if(getRain()){
+    cloudColor *= vec3(0.25, 0.3, 0.3);
+    a += 0.3;
+  }
+  
+  cloudColor = min(vec3(1.0), cloudColor);
+  
+  return vec4(cloudColor, min(0.95, a));
+}
+
+
+void main(){
+
+vec4 cloud = vec4(0.0);
+vec4 diffuse = color;
+
+highp float x = sp.x;
+highp float z = sp.z;
+
+
+cloud.a = unrealPos(x ,z, 6.0);
+
+x *= 2.0 * (cloud.a*4.0);
+z *= 2.0 * (cloud.a*4.0);
+
+z += TIME * 0.05;
+x += TIME * 0.001;
+
+cloud.a = max(0.0, sin(x - cos(z*2.0)));
+
+
+
+
+cloud.a = clacCodeBasedNoiseTexture(vec2(x, z));
+cloud.a = (mix(clacCodeBasedNoiseTexture((vec2(x, z*0.7))*5.0), cloud.a, cloud.a)*max(0.0, cloud.a))*2.0;
+
+cloud.a *= 0.2;
+cloud.a -= cloud.a * 0.2 * cloud.a;
+
+cloud.a *= max(0.0, min(1.0, unrealPos(sp.x, sp.z, 4.0)));
+
+
+
+cloud = CloudColor(cloud.a, FOG_COLOR.rgb);
+
+diffuse.rgb = mix(diffuse.rgb, cloud.rgb, max(0.0, min(1.0, cloud.a)));
+
+diffuse.rgb = mix(diffuse.rgb, FOG_COLOR.rgb, min(1.0, max(0.0, length(sp.xz)*3.0)));
+
+
+
+	gl_FragColor = diffuse;
+}

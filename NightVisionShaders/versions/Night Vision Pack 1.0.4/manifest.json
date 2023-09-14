@@ -1,0 +1,28 @@
+{
+ "format_version": 2,
+ "header": {
+  "description": "Night Vision pack updated by LinusDev for 1.16. §4Not compatible with other shaderpacks.§r Follow me on Twitter §3@Energy_Shaders§r and join my Discord §3discord.gg/95bBgPs§r!\n\nChangelog:\n - 1.0.3:\n   - support for minecraft 1.12 - 1.15  \n   - Entities are now bright too\n\n - §a1.0.4 (current)§r:\n   - support for minecraft §a1.13 - 1.16§r\n   - minor bug fixes",
+  "name": "Night Vision Pack",
+  "uuid": "31a9f608-ba16-11ea-b3de-0242ac130004",
+  "version": [
+   1,
+   0,
+   4
+ ],
+ "min_engine_version": [1, 13, 0],
+ "info_link" : "https://raw.githubusercontent.com/Lni-Energy-dev/ShaderApp/master/infos/NightVision.info.json",
+ "version_code" : 4
+ },
+ "modules": [
+  {
+   "description": "Night Vision pack updated by LinusDev for 1.16. It might not work in combination with other shaderpacks.",
+   "type": "resources",
+   "uuid": "31a9f82e-ba16-11ea-b3de-0242ac130004",
+   "version": [
+    1,
+    0,
+    4
+   ]
+  }
+ ]
+}

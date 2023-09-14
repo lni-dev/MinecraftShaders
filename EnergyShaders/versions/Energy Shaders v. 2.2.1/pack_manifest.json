@@ -1,0 +1,16 @@
+{
+  "header": {
+    "pack_id": "1686d61f-a5da-4b7f-9961-ffda2908861f",
+    "name": "Energy Shaders!",
+    "packs_version": "2.2.1",
+    "description": "Full of Energy! Made by ProCoder!",
+    "modules": [
+      {
+        "description": "Full of Energy! Made by ProCoder!",
+        "version": "2.2.1",
+        "uuid": "1686d61f-a5da-4b7f-9961-ffda2908861f",
+        "type": "resources"
+      }
+    ]
+  }
+}

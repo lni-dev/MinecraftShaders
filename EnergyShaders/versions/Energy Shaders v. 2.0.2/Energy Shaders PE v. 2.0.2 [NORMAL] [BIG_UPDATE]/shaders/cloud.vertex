@@ -1,0 +1,115 @@
+// __multiversion__
+// This signals the loading code to prepend either #version 100 or #version 300 es as apropriate.
+
+// To use centroid sampling we need to have version 300 es shaders, which requires changing:
+// attribute to in
+// varying to out when in vertex shaders or in when in fragment shaders
+// defining an out vec4 FragColor and replacing uses of gl_FragColor with FragColor
+// texture2D to texture
+#if __VERSION__ >= 300
+#define attribute in
+#define varying out
+
+#else
+
+
+#endif
+
+uniform MAT4 WORLDVIEWPROJ;
+uniform MAT4 WORLD;
+uniform float RENDER_DISTANCE;
+uniform vec4 FOG_COLOR;
+uniform vec4 CURRENT_COLOR;
+uniform POS4 CHUNK_ORIGIN_AND_SCALE; 
+uniform highp float TIME;
+uniform vec2 FOG_CONTROL;
+
+uniform POS3 VIEW_POS;
+ 
+
+attribute mediump vec4 POSITION;
+attribute vec4 COLOR;
+
+varying vec4 color;
+
+const float fogNear = 0.9;
+
+const vec3 inverseLightDirection = vec3(0.62, 0.78, 0.0);
+const float ambient = 0.7;
+const float pi = 3.14159265358979;
+
+float random(float x, float z){
+  float ra = sin(x+(z*0.5+(x-10.0)))*0.1;
+  float rb = sin(z+(x*0.5+(z-10.0)))*0.1;
+  
+  float rc = sin(x+cos(z+sin(x+z)));
+  float rd = cos(z+sin(x+sin(z+x)));
+  
+  float re = sin(ra-cos(rc+sin(ra+rb)));
+  float rf = cos(rb-cos(rd+sin(rb+rc)));
+  return sin(ra+rb-rc+rd-re+rf);
+}
+
+
+void main()
+{
+    POS4 pos;
+	POS4 worldPos = WORLD * POSITION;
+
+
+   vec4 currc = CURRENT_COLOR;
+   vec4 fogc = FOG_COLOR;
+   vec4 cloudco = mix(vec4(0.3,0.5,0.9,1.0),vec4(1.0),FOG_COLOR.b);
+   color.rgb = (mix(cloudco,fogc,fogc.r)).rgb;
+
+   color.a = 1.0;
+   
+    float rain = 0.0;
+    float depth = min(1.0, length(worldPos.xyz) / RENDER_DISTANCE);
+    float fog = max(depth - fogNear, 0.0);
+
+    POS3 cp = POSITION.xyz*0.8;
+    float cloud = 1.0;
+ 
+ //POS3 vP = vec3(34.0, 60.0, 34.0);
+ 
+
+
+//clouds
+
+cp = POSITION.xyz * 0.12 + TIME*0.11;
+ 
+float ca;
+
+vec3 pp = POSITION.xyz;
+
+float x = cp.x;
+float z = cp.z;
+float y = cp.y;
+
+
+ca = sin(x*0.5-z*0.5)+cos(x*0.6+z*0.6)+sin(-z+x);
+
+cloud = random(x*2.0,z*2.0)-random(ca,pi);
+
+
+cloud *= 0.5;
+pp.y*=1.1;
+
+//cloud = 0.0;
+
+//position
+pos = WORLDVIEWPROJ * vec4( pp.x,pp.y + (15.0-cloud), pp.z, POSITION.w);
+gl_Position = pos; 
+
+if (FOG_CONTROL.x < 0.55 && FOG_CONTROL.x > 0.1){
+    rain = 1.0;
+    cloud += 0.75;
+    color.rgb *= 0.68;
+    color.rgb -= color.a * 0.187;
+}
+
+color.a = cloud;
+
+
+}

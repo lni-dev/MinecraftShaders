@@ -1,0 +1,28 @@
+{
+ "format_version": 2,
+ "header": {
+  "description": "by LinusDev. §4Not compatible with other shaderpacks.§r Follow me on Twitter §3@Energy_Shaders§r and join my Discord §3discord.gg/95bBgPs§r!\n\nChangelog:\n - 3.7.1:\n   - support for minecraft 1.16 beta\n   - new Nether ambient and fog\n   - new End ambient and fog\n\n - §a3.7.2 (current)§r:\n   - support for minecraft §a1.16§r\n   - minor bug fixes",
+  "name": "Energy Shaders",
+  "uuid": "39a0762c-bed8-11ea-b3de-0242ac130004",
+  "version": [
+   3,
+   7,
+   2
+  ],
+  "min_engine_version": [1, 13, 0],
+  "info_link" : "https://raw.githubusercontent.com/Lni-Energy-dev/ShaderApp/master/infos/EnergyShaders.info.json",
+  "version_code" : 5
+ },
+ "modules": [
+  {
+   "description": "Not compatible with other shaderpacks.",
+   "type": "resources",
+   "uuid": "39a078fc-bed8-11ea-b3de-0242ac130004",
+   "version": [
+    3,
+    7,
+    2
+   ]
+  }
+ ]
+}

@@ -1,0 +1,127 @@
+// __multiversion__
+// This signals the loading code to prepend either #version 100 or #version 300 es as apropriate.
+
+// To use centroid sampling we need to have version 300 es shaders, which requires changing:
+// attribute to in
+// varying to out when in vertex shaders or in when in fragment shaders
+// defining an out vec4 FragColor and replacing uses of gl_FragColor with FragColor
+// texture2D to texture
+#if __VERSION__ >= 300
+#define attribute in
+#define varying out
+
+#else
+
+
+#endif
+
+uniform MAT4 WORLDVIEWPROJ;
+uniform MAT4 WORLD;
+uniform float RENDER_DISTANCE;
+uniform vec4 FOG_COLOR;
+uniform vec4 CURRENT_COLOR;
+uniform POS4 CHUNK_ORIGIN_AND_SCALE; 
+uniform highp float TIME;
+uniform vec2 FOG_CONTROL;
+ 
+
+attribute mediump vec4 POSITION;
+attribute vec4 COLOR;
+
+varying vec4 color;
+
+const float fogNear = 0.9;
+
+const vec3 inverseLightDirection = vec3(0.62, 0.78, 0.0);
+const float ambient = 0.7;
+
+
+/*
+================================
+Energy Shaders made by Lini _!
+
+with downloading, using , sharing or opening this ".zip" file you accept the terms of use.Take sure you read the terms of use before going about editing!
+
+I hope you enjoy Energy Shaders!
+================================
+*/
+
+//=//SETTINGS\\=\\
+
+
+//=//SETTINGS\\=\\
+
+/*
+================================
+with going under this line you may break the terms of use!
+================================
+*/
+
+void main()
+{
+    POS4 pos = WORLDVIEWPROJ * POSITION;
+	POS4 worldPos = WORLD * POSITION;
+ 	gl_Position = pos;
+
+
+   vec4 currc = CURRENT_COLOR;
+   vec4 fogc = FOG_COLOR;
+   color.rgb = (mix(vec4(1.0,1.0,1.0,1.0),fogc,fogc.r)).rgb;
+
+  color.a = 1.0;
+   
+    float rain = 0.0;
+    float depth = min(1.0, length(worldPos.xyz) / RENDER_DISTANCE);
+    float fog = max(depth - fogNear, 0.0);
+
+    vec3 worldPoss = POSITION.xyz *0.8;
+ 
+
+
+//clouds
+//float ca = sin(worldPoss.x) - abs(sin(worldPoss.z)) + cos(worldPoss.x - worldPoss.z + TIME/3.0);
+
+worldPoss = POSITION.xyz * 0.12;
+ 
+
+float ca = sin(worldPoss.x) - abs(sin(worldPoss.z)) + cos(worldPoss.x - worldPoss.z + TIME/4.0);
+
+
+float cb = cos(worldPoss.x) - abs(cos(worldPoss.z)) + sin(worldPoss.x - worldPoss.z + TIME/4.0);
+
+float cc = sin(worldPoss.x * 0.257 + TIME/4.76 + (sin(TIME*0.27 + worldPoss.z * 6.89)-cos(worldPoss.x * 0.37 + TIME/4.5)))+ sin(worldPoss.z * 0.757 + TIME/8.76 + (sin(TIME*0.17 + worldPoss.x * 6.89)-cos(worldPoss.x * 2.47 + TIME/8.89)))- cos(worldPoss.x * 3.257 + TIME/4.76 + (sin(TIME*0.27 + worldPoss.z * 6.89)-cos(worldPoss.z * 0.37 + TIME/4.89))) ;
+
+
+
+float cd = (sin((worldPoss.x+5.7+ TIME*0.11)+cos(worldPoss.z +6.7+TIME*0.21)*2.3)*fog)+ cos(worldPoss.z-worldPoss.x+7.8+TIME *0.12);
+
+float ce = sin(cos(worldPoss.x* 14.3 -worldPoss.z*15.3 + TIME *0.098 )*3.0 + sin(worldPoss.z*27.3 + TIME*0.123));
+
+float cf = cos(fog + sin(worldPoss.x*10.6 - worldPoss.z *6.7) + TIME* 0.082 - sin(worldPoss.x+worldPoss.z+TIME*0.12-fog*3.0 + cos(worldPoss.z* 57.0 + TIME *0.12 +sin(worldPoss.x* 23.0 * fog + TIME*0.099 - worldPoss.z * 23.0 * fog))));
+
+float cg = (sin(worldPoss.x * 98.0 + TIME*0.12) - cos(worldPoss.z * 98.0 + TIME*0.12))*fog + (cos(sin(worldPoss.x * 98.0 - worldPoss.z * 98.0 + cos(TIME*0.12 + worldPoss.z*98.0))+ worldPoss.x*99.0 + TIME*0.089 - worldPoss.z * 98.0)*fog);
+
+
+
+ca = (cc + cf + cg - cb + ca +ce)/2.0 + cd;
+
+
+//position
+pos = WORLDVIEWPROJ * vec4( POSITION.x,POSITION.y - ca *1.5, POSITION.z, POSITION.w);
+gl_Position = pos; 
+
+
+if (ca > 0.0){
+ca -= ca/6.0;
+}
+
+color.a = ca - fog/2.0;
+
+if (FOG_CONTROL.x < 0.6 && FOG_CONTROL.x > 0.2){
+    color.a += 4.0;
+    rain = 1.0;
+    color.rgb = vec3(0.3,0.3,0.3);
+}
+
+color.rgb -= ca/25.0;
+}

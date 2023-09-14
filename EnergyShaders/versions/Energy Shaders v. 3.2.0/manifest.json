@@ -1,0 +1,17 @@
+{
+    "format_version": 1,
+    "header": {
+        "description": "... v. 3.2.0",
+        "name": "Energy Shaders",
+        "uuid": "3f700f30-8f57-11e7-bb31-be2e44b06b34",
+        "version": [3, 2, 0]
+    },
+    "modules": [
+        {
+            "description": "...",
+            "type": "resources",
+            "uuid": "3f7011f6-8f57-11e7-bb31-be2e44b06b34",
+            "version": [3, 2, 0]
+        }
+    ]
+}

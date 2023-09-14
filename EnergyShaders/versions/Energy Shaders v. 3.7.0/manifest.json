@@ -1,0 +1,28 @@
+{
+ "format_version": 1,
+ "header": {
+  "description": "§3Version 3.7.0:§r finally support for Minecraft 1.14 beta. §4Not compatible with other shaderpacks.§r Follow me on Twitter §3@Energy_Shaders§r and join my Discord §3discord.gg/95bBgPs",
+  "name": "Energy Shaders",
+  "uuid": "efafcfce-f8a1-11e9-8f0b-362b9e155667",
+  "version": [
+   3,
+   7,
+   0
+  ],
+  "min_engine_version": [1, 10, 0],
+  "info_link" : "https://raw.githubusercontent.com/Lni-Energy-dev/ShaderApp/master/infos/EnergyShaders.info.json",
+  "version_code" : 3
+ },
+ "modules": [
+  {
+   "description": "Version 3.7.0: finally support for Minecraft 1.14 beta. Not compatible with other shaderpacks.",
+   "type": "resources",
+   "uuid": "efafcd76-f8a1-11e9-8f0b-362b9e155667",
+   "version": [
+    3,
+    7,
+    0
+   ]
+  }
+ ]
+}

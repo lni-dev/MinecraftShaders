@@ -1,0 +1,95 @@
+// __multiversion__
+// This signals the loading code to prepend either #version 100 or #version 300 es as apropriate.
+
+// To use centroid sampling we need to have version 300 es shaders, which requires changing:
+// attribute to in
+// varying to out when in vertex shaders or in when in fragment shaders
+// defining an out vec4 FragColor and replacing uses of gl_FragColor with FragColor
+// texture2D to texture
+#if __VERSION__ >= 300
+#define attribute in
+#define varying out
+
+#else
+
+
+#endif
+
+uniform MAT4 WORLDVIEWPROJ;
+uniform MAT4 WORLD;
+uniform float RENDER_DISTANCE;
+uniform vec4 FOG_COLOR;
+uniform vec4 CURRENT_COLOR;
+uniform POS4 CHUNK_ORIGIN_AND_SCALE; 
+uniform highp float TIME;
+uniform vec2 FOG_CONTROL;
+ 
+
+attribute mediump vec4 POSITION;
+attribute vec4 COLOR;
+
+varying vec4 color;
+
+const float fogNear = 0.9;
+
+const vec3 inverseLightDirection = vec3(0.62, 0.78, 0.0);
+const float ambient = 0.7;
+const float pi = 3.14159265358979;
+
+void main()
+{
+    POS4 pos;
+	POS4 worldPos = WORLD * POSITION;
+
+
+   vec4 currc = CURRENT_COLOR;
+   vec4 fogc = FOG_COLOR;
+   vec4 cloudco = mix(vec4(0.3,0.5,0.9,1.0),vec4(1.0),FOG_COLOR.b);
+   color.rgb = (mix(cloudco,fogc,fogc.r)).rgb;
+
+   color.a = 1.0;
+   
+    float rain = 0.0;
+    float depth = min(1.0, length(worldPos.xyz) / RENDER_DISTANCE);
+    float fog = max(depth - fogNear, 0.0);
+
+    vec3 cp = POSITION.xyz *0.8;
+    float cloud = 1.0;
+ 
+
+
+//clouds
+
+cp = POSITION.xyz * 0.12 + TIME*0.11;
+ 
+float ca = sin(length(cp.xz)*pi);
+ca += cos(sin(cp.x-cp.z)*pi + length(cp.xyz)*pi);
+
+float cb = sin(length(cp.xyz*pi)*pi);
+cb += cos(sin(cp.x+cp.z)*pi - length(cp.xyz/pi)*pi);
+
+float cc = cos(length(vec3(ca,cp.x+cp.z,cb))*pi);
+
+float cd = sin(cp.x-cp.z+pi*cp.z/pi + cos(length(vec2(cos(cp.x*pi-cp.z),sin(cp.z*pi+cp.x)))));
+
+cloud = length(vec2(ca,cb))*0.25 - cc*0.3 + cd;
+
+cloud -= 0.2;
+cloud *= 0.5;
+
+
+//cloud = 0.0;
+
+//position
+pos = WORLDVIEWPROJ * vec4( POSITION.x,POSITION.y + (15.0-cloud), POSITION.z, POSITION.w);
+gl_Position = pos; 
+
+if (FOG_CONTROL.x < 0.6 && FOG_CONTROL.x > 0.25){
+    rain = 1.0;
+    cloud += 0.75;
+    color.rgb *= 0.4;
+    color.rgb -= color.a * 0.087;
+}
+
+color.a = cloud;
+}

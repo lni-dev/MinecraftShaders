@@ -1,0 +1,294 @@
+// __multiversion__
+
+#if __VERSION__ >= 300
+
+	// version 300 code
+
+	#ifdef MSAA_FRAMEBUFFER_ENABLED
+		#define _centroid centroid
+	#else
+		#define _centroid
+	#endif
+
+	#ifndef BYPASS_PIXEL_SHADER
+		#if defined(TEXEL_AA) && defined(TEXEL_AA_FEATURE)
+			_centroid in highp vec2 uv0;
+			_centroid in highp vec2 uv1;
+		#else
+			_centroid in vec2 uv0;
+			_centroid in vec2 uv1;
+		#endif
+	#endif
+
+	#define varying in
+	#define texture2D texture
+	out vec4 FragColor;
+	#define gl_FragColor FragColor
+#else
+
+	// version 100 code
+
+	#ifndef BYPASS_PIXEL_SHADER
+		varying vec2 uv0;
+		varying vec2 uv1;
+	#endif
+#endif
+
+
+
+varying vec4 color;
+varying POS3 posE;
+varying POS3 screen_pos;
+
+#ifdef FOG
+varying vec4 fogColor;
+#endif
+
+#ifdef NEAR_WATER
+varying float cameraDist;
+#endif
+
+#include "shaders/util.h"
+
+uniform sampler2D TEXTURE_0;
+uniform sampler2D TEXTURE_1;
+uniform sampler2D TEXTURE_2;
+
+uniform vec4 FOG_COLOR;
+uniform vec2 FOG_CONTROL;
+uniform float RENDER_DISTANCE;
+
+/*========================SETTINGS========================*/
+/* You can Edit this to change the look of Energy Shaders */
+/*        Energy Shaders is created by Pro Coder          */
+/*========================SETTINGS========================*/
+
+#define TORCH_LIGHT
+#define TORCH_LIGHT_COLOR vec3(0.5,0.45,0.05)
+
+#define SHADOW
+#define SHADOW_WIDTH_E 0.87
+#define SHADOW_FADE_IN
+#define FADE_IN_SHADOW_WIDTH_E vec2(0.025, 1.0 / 0.025)
+
+#define SUN_LIGHT
+#define COLOR_MAP
+
+#define CAVE_FOG
+#define CAVE_FOG_COLOR vec3(0.32, 0.35, 0.55)
+
+#define RAIN_EFFECT
+#define RAIN_COLOR vec4(0.441,0.46,0.484, 0.0)
+
+
+/*=====================STOP=====================*/
+/* Stop here your Editing without permission of */
+/*                   Pro Coder                  */
+/*    Energy Shaders is created by Pro Coder    */
+/*=====================STOP=====================*/
+
+vec4 EnergyColorMap(vec4 c){
+	float R,G,B;
+	
+	R = c.r;
+	G = c.g;
+	B = c.b;
+	
+	R = mix(R,R * 1.5, max(0.0, R - (G + B)));
+	G = mix(G,G * 1.5, max(0.0, G - (R + B)));
+	B = mix(B,B * 1.5, max(0.0, B - (G + R)));
+
+	return vec4(R, G, B, c.a);
+}
+
+/*=====================STOP=====================*/
+/* Stop here your Editing without permission of */
+/*                   Pro Coder                  */
+/*    Energy Shaders is created by Pro Coder    */
+/*=====================STOP=====================*/
+
+void main()
+{
+#ifdef BYPASS_PIXEL_SHADER
+	gl_FragColor = vec4(0, 0, 0, 0);
+	return;
+#else 
+	
+	
+	//ESPE Variables:
+	
+	float nether = 0.0; 		//change it to 1.0, when in nether
+	float uw = 0.0;				//change it to 1.0, when underwater
+	
+	float Red = 0.0;			//calculate later
+	vec3 torchl = TORCH_LIGHT_COLOR;	//Set it to the defined TORCH_LIGHT_COLOR	TODO: Maybe add #ifdef TORCH_LIGHT here later, I don`t do this right now, so there won`t be any bugs for sure
+	
+	#ifdef SHADOW
+		float shE = 0.0;		//Shadow amount, clalculate later
+	#endif
+	#ifdef SHADOW_FADE_IN
+		float fadeInE = 0.0;	//Shadow fade in, clalculate later
+	#endif
+	
+	#ifdef RAIN_EFFECT
+		vec4 raincolor = RAIN_COLOR;
+		float rain = min(1.0, max(0.0, 1.0-pow(FOG_CONTROL.y,5.0))*2.0);	//For the rain, use FOG_CONTROL.y, because it is much smoother
+		if(rain > 0.0){
+			raincolor.a = min(1.0,length(posE.xz)/RENDER_DISTANCE); 
+			raincolor.a = min(1.0, raincolor.a + 0.3);
+			raincolor.a = max(0.0, raincolor.a - max(0.0, uv1.x-0.5))*rain;
+			raincolor.rgb = mix(raincolor.rgb, FOG_COLOR.rgb, raincolor.a);
+			raincolor.a = max(0.0, raincolor.a - max(0.0, 0.8 - uv1.y));
+		}
+	#endif
+
+	
+	
+	//ESPE clalculation
+	
+	if(FOG_COLOR.r < 0.25 && FOG_COLOR.b<0.25 && ((FOG_CONTROL.x < 0.55 && FOG_CONTROL.x > 0.1)) && FOG_COLOR.r > 0.1 && FOG_COLOR.r > FOG_COLOR.b && uv1.y == 0.0){
+		nether = 1.0;
+	}
+	if(FOG_CONTROL.x < 0.05){
+		uw = 1.0;
+	}
+	
+	
+	//Mojang stuff
+#if !defined(TEXEL_AA) || !defined(TEXEL_AA_FEATURE)
+	vec4 diffuse = texture2D( TEXTURE_0, uv0 );
+#else
+	vec4 diffuse = texture2D_AA(TEXTURE_0, uv0 );
+#endif
+
+	vec4 inColor = color;
+	
+#ifdef SEASONS_FAR
+	diffuse.a = 1.0;
+	inColor.b = 1.0;
+#endif
+
+#ifdef ALPHA_TEST
+	#ifdef ALPHA_TO_COVERAGE
+		float alphaThreshold = .05;
+	#else
+		float alphaThreshold = .5;
+	#endif
+	if(diffuse.a < alphaThreshold)
+		discard;
+#endif
+	
+	diffuse = diffuse * texture2D( TEXTURE_1, uv1 );
+
+#ifndef SEASONS
+
+#if !defined(ALPHA_TEST) && !defined(BLEND)
+	diffuse.a = inColor.a;
+#elif defined(BLEND)
+	diffuse.a *= inColor.a;
+	#ifdef NEAR_WATER
+		float alphaFadeOut = clamp(cameraDist, 0.0, 1.0);
+		diffuse.a = mix(diffuse.a, 1.0, alphaFadeOut);
+	#endif
+#endif	
+	
+	diffuse.rgb *= inColor.rgb;
+#else
+	vec2 uv = inColor.xy;
+	diffuse.rgb *= mix(vec3(1.0,1.0,1.0), texture2D( TEXTURE_2, uv).rgb*2.0, inColor.b);
+	diffuse.rgb *= inColor.aaa;
+	diffuse.a = 1.0;
+#endif
+
+
+//Mostly ESPE Stuff
+
+//Active Fog!
+#ifdef FOG
+	//there will be another Fog in the nether
+	if(nether == 0.0){
+		diffuse.rgb = mix( diffuse.rgb, fogColor.rgb, fogColor.a);
+	}	
+#endif
+
+//clalculate somthing for the torchl
+Red = max(0.0,1.0-diffuse.r);
+torchl.r += Red;
+
+//Calculate the Shadows
+#ifdef SHADOW
+	if(uv1.y <= SHADOW_WIDTH_E){	//if were are rendering in shadow
+		shE = 1.0;
+		if(uv1.y >= SHADOW_WIDTH_E-FADE_IN_SHADOW_WIDTH_E.x){
+			#ifdef SHADOW_FADE_IN
+				fadeInE = (uv1.y - (SHADOW_WIDTH_E-FADE_IN_SHADOW_WIDTH_E.x))*FADE_IN_SHADOW_WIDTH_E.y;	//calculate fade in
+				shE = mix(1.0,0.0,fadeInE);
+			#else
+				shE = 1.0;
+			#endif
+		}
+		shE = max(0.0, shE - max(0.0, uv1.x-0.5)*5.0);
+	}
+#endif
+
+//Reduce Shadow in Fog very fast, becuase it looks rlly awful in Fog!
+#if defined(FOG) && defined(SHADOW)
+	shE = max(0.0, shE-fogColor.a * 5.0);
+#endif
+
+//sunlight
+#ifdef SUN_LIGHT
+	float isl_f= 1.0-(diffuse.r+diffuse.g+diffuse.b)/3.0;
+	vec4 isl_v =vec4(1.0+isl_f,0.9+isl_f,0.8+isl_f,1.0);
+	
+	#ifdef SHADOW
+		isl_v.rgb *= 1.0-shE*1.1;
+	#endif
+	
+	#ifdef FOG	//reduce it in Fog, otherwise the Fog will be light white
+		isl_v *= max(0.0, 1.0 - min(1.0, max(0.0, fogColor.a - 0.7) * 0.5));
+	#endif
+	isl_v.rgb = max(vec3(1.0),isl_v.rgb);
+
+	diffuse.rgb *= isl_v.rgb;
+#else
+	#ifdef SHADOW
+		diffuse.rgb = mix(diffuse.rgb, diffuse.rgb*0.5, shE);
+	#endif
+#endif
+
+//Cave Fog
+#ifdef CAVE_FOG
+	vec4 ug = vec4(1.0);
+	ug.a = min(1.0, max(0.0, (uv1.y * 1.3) + max(0.0, uv1.x - 0.5) + 0.7));
+	ug.rgb = CAVE_FOG_COLOR;
+#endif
+
+if(uw == 0.0){
+	#ifdef CAVE_FOG
+		diffuse.rgb = mix(ug.rgb,diffuse.rgb,ug.a);
+	#endif
+}
+
+//Torch light
+#ifdef TORCH_LIGHT
+	diffuse.rgb += torchl*max(0.0,uv1.x-0.5);
+#endif
+
+//TODO: Add the Night Color here later
+//TODO: ADD here Blur later, if I am going to add it for the Settings!
+
+//Rain effect
+#ifdef RAIN_EFFECT
+	diffuse.rgb = mix(diffuse.rgb, raincolor.rgb, raincolor.a);
+#endif
+
+//Sunlight Part 2
+#ifdef COLOR_MAP
+	diffuse = EnergyColorMap(diffuse);
+#endif
+
+gl_FragColor = diffuse;
+
+#endif // BYPASS_PIXEL_SHADER
+}

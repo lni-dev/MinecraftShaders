@@ -1,0 +1,238 @@
+/********************************************************
++*   (c) Mojang. All rights reserved                       *
++*   (c) Microsoft. All rights reserved.                   *
++*********************************************************/
+
+{
+  "namespace": "common_art",
+
+  "title_image_win10": {
+    "type": "image",
+    "layer": 1,
+    "texture": "textures/gui/titleOriginal",
+    "uv": [ 0, 0 ],
+    "uv_size": [ 1936, 375 ]
+  },
+
+  "title_image_osx": {
+    "type": "image",
+    "layer": 1,
+    "texture": "textures/gui/titleOriginal",
+    "uv": [ 0, 0 ],
+    "uv_size": [ 1936, 375 ]
+  },
+
+  "title_image_pocket": {
+    "type": "image",
+    "layer": 1,
+    "anchor_from": "top_middle",
+    "anchor_to": "top_middle",
+    "texture": "textures/gui/title",
+    "uv": [ 0, 0 ],
+    "uv_size": [ 512, 64 ]
+  },
+
+  "title_image_edu": {
+    "type": "image",
+    "layer": 1,
+    "texture": "textures/gui/titleEdu",
+    "uv": [ 0, 0 ],
+    "uv_size": [ 1938, 472 ]
+  },
+
+  "title_image_vr": {
+    "type": "image",
+    "layer": 1,
+    "anchor_from": "top_middle",
+    "anchor_to": "top_middle",
+    "texture": "textures/gui/titleVR",
+    "uv": [ 0, 0 ],
+    "uv_size": [ 1936, 375 ]
+  },
+  
+  "splash_text": {
+    "type": "custom",
+    "renderer": "splash_text_renderer",
+    "size": [ 0.1, 0.1 ],
+    "layer": 2,
+    "anchor_from": "right_middle",
+    "anchor_to": "right_middle"
+  },
+
+  "title_panel_pocket": {
+    "type": "panel",
+    "offset": [ 0, "10%" ],
+    "anchor_from": "top_middle",
+    "anchor_to": "top_middle",
+    "size": [ "100%", "12.5%x" ],
+    "controls": [
+      { "@common_art.title_image_pocket": { } },
+      {
+        "@splash_text": {
+          "offset": [ -106, 8 ]
+        }
+      }
+    ]
+  },
+
+  "title_panel_win10": {
+    "type": "panel",
+    "size": [ "55%", "19.37%x" ],
+    "offset": [ 0, "10%" ],
+    "anchor_from": "top_middle",
+    "anchor_to": "top_middle",
+    "controls": [
+      { "@common_art.title_image_win10": { } },
+      {
+        "@splash_text": {
+          "offset": [ -8, 10 ]
+        }
+      }
+    ]
+  },
+
+  "title_panel_osx": {
+    "type": "panel",
+    "size": [ "55%", "19.37%x" ],
+    "offset": [ 0, "10%" ],
+    "anchor_from": "top_middle",
+    "anchor_to": "top_middle",
+    "controls": [
+      { "@common_art.title_image_osx": { } },
+      {
+        "@splash_text": {
+          "offset": [ -8, 10 ]
+        }
+      }
+    ]
+  },
+
+  "title_panel_edu": {
+    "type": "panel",
+    "size": [ "55%", "24.355%x" ],
+    "offset": [ 0, "10%" ],
+    "anchor_from": "top_middle",
+    "anchor_to": "top_middle",
+    "controls": [
+      { "@common_art.title_image_edu": { } },
+      {
+        "@splash_text": {
+          "offset": [ -8, 6 ]
+        }
+      }
+    ]
+  },
+
+  "title_panel_vr": {
+    "type": "panel",
+    "size": [ "55%", "19.37%x" ],
+    "offset": [ 0, "10%" ],
+    "anchor_from": "top_middle",
+    "anchor_to": "top_middle",
+    "controls": [
+      { "@common_art.title_image_vr": { } },
+      {
+        "@splash_text": {
+          "offset": [ -8, 12 ]
+        }
+      }
+    ]
+  },
+
+  "title_panel_content": {
+    "type": "panel",
+    "variables": [
+      {
+        "requires": "$win10_edition",
+        "$title_panel": "title_panel_win10"
+      },
+      {
+        "requires": "$osx_edition",
+        "$title_panel": "title_panel_osx"
+      },
+      {
+        "requires": "$education_edition",
+        "$title_panel": "title_panel_edu"
+      },
+      {
+        "requires": "$pocket_edition",
+        "$title_panel": "title_panel_pocket"
+      },
+      {
+        "requires": "$gear_vr",
+        "$title_panel": "title_panel_vr"
+      }
+    ],
+    "controls": [
+      {
+        "@$title_panel": { }
+      }
+    ]
+  },
+
+  "pause_logo_panel": {
+    "type": "input_panel",
+    "size": "$title_panel_size",
+    "variables": [
+      {
+        "requires": "$win10_edition",
+        "$title_panel": "common_art.title_image_win10",
+        "$title_panel_size": [ "100%", "19.37%x" ],
+        "$logo_max_size": [ 275, "19.37%x" ],
+        "$logo_size": [ "90%", "19.37%x" ],
+        "$title_uv": [ 0, 0 ],
+        "$title_uv_size": [ 1936, 375 ]
+      },
+      {
+        "requires": "$osx_edition", 
+        "$title_panel": "common_art.title_image_osx",
+        "$title_panel_size": [ "100%", "19.37%x" ],
+        "$logo_max_size": [ 275, "19.37%x" ],
+        "$logo_size": [ "90%", "19.37%x" ],
+        "$title_uv": [ 0, 0 ],
+        "$title_uv_size": [ 1936, 375 ]
+      },
+      {
+        "requires": "$education_edition",
+        "$title_panel": "common_art.title_image_edu",
+        "$title_panel_size": [ "100%", "24.355%x" ],
+        "$logo_max_size": [ 275, "24.355%x" ],
+        "$logo_size": [ "90%", "24.355%x" ],
+        "$title_uv": [ 0, 0 ],
+        "$title_uv_size": [ 1938, 472 ],
+        "$achievements_ignored": true
+      },
+      {        
+        "requires": "$pocket_edition",
+        "$title_panel": "common_art.title_image_pocket",
+        "$title_panel_size": [ "100%", "21.769%x" ],
+        "$logo_max_size": [ 260, "21.769%x" ],
+        "$logo_size": [ "90%", "21.769%x" ],
+        "$title_uv": [ 119, 1 ],
+        "$title_uv_size": [ 274, 63 ]
+      },
+      {
+        "requires": "$gear_vr",
+        "$title_panel": "common_art.title_image_vr",
+        "$title_panel_size": [ "100%", "19.37%x" ],
+        "$logo_max_size": [ 275, "19.37%x" ],
+        "$logo_size": [ "90%", "19.37%x" ],
+        "$title_uv": [ 0, 0 ],
+        "$title_uv_size": [ 1936, 375 ]
+      }
+    ],
+    "controls": [
+      {
+        "logo@$title_panel": {
+          "size": "$logo_size",
+          "max_size": "$logo_max_size",
+          "uv": "$title_uv",
+          "uv_size": "$title_uv_size",
+          "anchor_from": "center",
+          "anchor_to": "center"
+        }
+      }
+    ]
+  }
+
+}

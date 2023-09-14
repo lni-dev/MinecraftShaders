@@ -1,0 +1,28 @@
+{
+ "format_version": 1,
+ "header": {
+  "description": "v. 3.6.0 b4: A new version of Energy Shaders completely reworked by LinusDev! Added Win10 Support",
+  "name": "Energy Shaders",
+  "uuid": "080fc448-7ad8-4bde-bee9-163db6790c34",
+  "version": [
+   3,
+   6,
+   0
+  ],
+  "min_engine_version": [1, 7, 0],
+  "info_link" : "https://raw.githubusercontent.com/Lni-Energy-dev/ShaderApp/master/infos/EnergyShaders.info.json",
+  "version_code" : 1
+ },
+ "modules": [
+  {
+   "description": "DOWNLOAD!!! don't wait!",
+   "type": "resources",
+   "uuid": "1b0a472c-41fa-4e51-915b-9c2ea2734a6e",
+   "version": [
+    3,
+    6,
+    0
+   ]
+  }
+ ]
+}

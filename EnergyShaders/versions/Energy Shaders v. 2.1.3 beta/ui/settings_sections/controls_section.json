@@ -1,0 +1,470 @@
+/********************************************************
++*   (c) Mojang. All rights reserved                       *
++*   (c) Microsoft. All rights reserved.                   *
++*********************************************************/
+
+{
+  "namespace": "controls_section",
+
+  //Button with text-binding capabilities
+
+  "binding_button_state_default@common.new_button_state": {
+    "texture": "textures/gui/newgui/ButtonWithBorder",
+    "$label_offset|default": [ 0, 0 ],
+    "controls": [
+      {
+        "default_label@common.new_button_label": {
+          "text": "#binding_button_text",
+          "anchor_from": "center",
+          "anchor_to": "center",
+          "offset": "$label_offset",
+          "bindings": [
+            {
+              "binding_name": "#binding_button_text",
+              "binding_condition": "none",
+              "binding_type": "collection",
+              "binding_collection_name": "$keymapping_collection"
+            }
+          ]
+        }
+      }
+    ]
+  },
+
+  "binding_button_state_hover@controls_section.binding_button_state_default": {
+    "$text_color": "white",
+    "texture": "textures/gui/newgui/ButtonWithBorderHover"
+  },
+
+  "binding_button_state_pressed@controls_section.binding_button_state_default": {
+    "$text_color": "white",
+    "texture": "textures/gui/newgui/ButtonWithBorderPressed",
+    "$label_offset": [ 0, 1 ]
+  },
+
+  "binding_button@common.button": {
+    "controls": [
+      { "default@controls_section.binding_button_state_default": { } },
+      { "hover@controls_section.binding_button_state_hover": { } },
+      { "pressed@controls_section.binding_button_state_pressed": { } }
+    ],
+    "bindings": [
+      {
+        "binding_type": "collection_details",
+        "binding_condition": "visible",
+        "binding_collection_name": "$keymapping_collection"
+      }
+    ]
+  },
+
+
+
+  // Shared controls
+  "keymapping_item": {
+    "type": "panel",
+    "layer": 1,
+    "size": [ "100%", 45 ],
+    "controls": [
+      {
+        "keymapping_text": {
+          "type": "label",
+          "size": [ "100%", 10 ],
+          "text": "#keymapping_name",
+          "anchor_from": "top_left",
+          "anchor_to": "top_left",
+          "bindings": [
+            {
+              "binding_name": "#keymapping_name",
+              "binding_condition": "visible",
+              "binding_type": "collection",
+              "binding_collection_name": "$keymapping_collection"
+            }
+          ]
+        }
+      },
+      {
+        "keymapping_button@binding_button": {
+          "size": [ "70% - 1px", 30 ],
+          "offset": [ 0, 11 ],
+          "anchor_from": "top_left",
+          "anchor_to": "top_left",
+          "$pressed_button_name": "button.binding_button"
+        }
+      },
+      {
+        "keymapping_button@common.new_button": {
+          "size": [ "30% - 1px", 30 ],
+          "offset": [ 0, 11 ],
+          "anchor_from": "top_right",
+          "anchor_to": "top_right",
+          "$pressed_button_name": "button.reset_binding",
+          "$button_label_text": "Reset",
+          "bindings": [
+            {
+              "binding_type": "collection_details",
+              "binding_condition": "visible",
+              "binding_collection_name": "$keymapping_collection"
+            }
+          ]
+        }
+      }
+    ]
+  },
+
+  "keymapping_grid": {
+    "type": "grid",
+    "size": [ "100%", "default" ],
+    "layer": 1,
+    "grid_item_template": "controls_section.keymapping_item",
+    "grid_dimension_binding": "$keymapping_grid_dimension",
+    "collection_name": "$keymapping_collection",
+    "anchor_to": "top_right",
+    "anchor_from": "top_right",
+    "bindings": [
+      {
+        "binding_name": "$keymapping_grid_dimension"
+      }
+    ]
+  },
+
+  // Keyboard and Mouse button & section
+
+  "keyboard_and_mouse_button@settings_common.section_toggle_base": {
+    "$glyph_uv": [ 50, 17 ],
+    "$glyph_uvsize": [ 19, 9 ],
+    "$button_label_text": "options.keyboardAndMouse",
+    "property_bag": {
+      "#panel_title": "options.keyboardAndMouseSettings"
+    }
+  },
+
+  "keyboard_and_mouse_section": {
+    "type": "stack_panel",
+    "size": [ "100%", "100%c" ],
+    "$keymapping_grid_dimension": "#keyboard_grid_dimension",
+    "$keymapping_collection": "keyboard_collection",
+    "anchor_from": "top_left",
+    "anchor_to": "top_left",
+    "bindings": [
+      {
+        "binding_type": "view",
+        "source_control_name": "keyboard_and_mouse_button",
+        "source_property_name": "#toggle_state",
+        "target_property_name": "#visible"
+      }
+    ],
+    "controls": [
+      {
+        "@settings_common.option_slider": {
+          "$option_label": "#keyboard_mouse_sensitivity_slider_label",
+          "$slider_name": "keyboard_mouse_sensitivity",
+          "$slider_value_binding_name": "#keyboard_mouse_sensitivity",
+          "$option_enabled_binding_name": "#keyboard_mouse_sensitivity_enabled",
+          "$label_bindings": [
+            {
+              "binding_name": "#keyboard_mouse_sensitivity_slider_label"
+            }
+          ]
+        }
+      },
+      {
+        "@settings_common.option_slider": {
+          "ignored": "(not $is_holographic)",
+          "$option_label": "#vr_ui_mouse_sensitivity_slider_label",
+          "$slider_name": "vr_ui_mouse_sensitivity",
+          "$slider_value_binding_name": "#vr_ui_mouse_sensitivity",
+          "$option_enabled_binding_name": "#vr_ui_mouse_sensitivity_enabled",
+          "$label_bindings": [
+            {
+              "binding_name": "#vr_ui_mouse_sensitivity_slider_label"
+            }
+          ]
+        }
+      },
+      {
+        "@settings_common.option_toggle": {
+          "$option_label": "options.invertYAxis",
+          "$option_binding_name": "#keyboard_mouse_invert_y_axis",
+          "$option_enabled_binding_name": "#keyboard_mouse_invert_y_axis_enabled",
+          "$toggle_name": "keyboard_mouse_invert_y_axis"
+        }
+      },
+      {
+        "@settings_common.option_toggle": {
+          "$option_label": "options.autojump",
+          "$option_binding_name": "#keyboard_mouse_autojump",
+          "$option_enabled_binding_name": "#keyboard_mouse_autojump_enabled",
+          "$toggle_name": "keyboard_mouse_autojump"
+        }
+      },
+      {
+        "@settings_common.option_toggle": {
+          "ignored": true,// Remove this line when Options::TOGGLE_CROUCH actually affects crouch behavior (User Story 30117)
+          "$option_label": "options.toggleCrouch",
+          "$option_binding_name": "#keyboard_mouse_toggle_crouch",
+          "$option_enabled_binding_name": "#keyboard_mouse_toggle_crouch_enabled",
+          "$toggle_name": "keyboard_mouse_toggle_crouch"
+        }
+      },
+      {
+        "@settings_common.option_group_label": {
+          "$text": "options.keyboardLayout"
+        }
+      },
+      {
+        "keyboard_keymapping_grid@controls_section.keymapping_grid": { }
+      },
+      {
+        "reset_button@settings_common.action_button": {
+          "$pressed_button_name": "button.reset_keyboard_bindings",
+          "$button_label_text": "controllerLayoutScreen.resetAllBindings"
+        }
+      }
+    ]
+  },
+
+  // Controller button & section
+
+  "controller_button@settings_common.section_toggle_base": {
+    "$glyph_uv": [ 50, 0 ],
+    "$glyph_uvsize": [ 21, 14 ],
+    "$button_label_text": "options.controller",
+    "property_bag": {
+      "#panel_title": "options.controllerSettings"
+    }
+  },
+
+  "controller_section": {
+    "type": "stack_panel",
+    "size": [ "100%", "100%c" ],
+    "anchor_from": "top_left",
+    "anchor_to": "top_left",
+    "$keymapping_grid_dimension": "#gamepad_grid_dimension",
+    "$keymapping_collection": "gamepad_collection",
+    "bindings": [
+      {
+        "binding_type": "view",
+        "source_control_name": "controller_button",
+        "source_property_name": "#toggle_state",
+        "target_property_name": "#visible"
+      }
+    ],
+    "controls": [
+      {
+        "@settings_common.option_slider": {
+          "ignored": "($is_holographic and not $is_living_room_mode)",
+          "$option_label": "#controller_sensitivity_slider_label",
+          "$slider_name": "controller_sensitivity",
+          "$slider_value_binding_name": "#controller_sensitivity",
+          "$option_enabled_binding_name": "#controller_sensitivity_enabled",
+          "$label_bindings": [
+            {
+              "binding_name": "#controller_sensitivity_slider_label"
+            }
+          ]
+        }
+      },
+      {
+        "@settings_common.option_slider": {
+          "ignored": "($is_living_room_mode or not $is_holographic)",
+          "$option_label": "#vr_sensitivity_slider_label",
+          "$slider_name": "vr_sensitivity",
+          "$slider_value_binding_name": "#vr_sensitivity",
+          "$option_enabled_binding_name": "#vr_sensitivity_enabled",
+          "$label_bindings": [
+            {
+              "binding_name": "#vr_sensitivity_slider_label"
+            }
+          ]
+        }
+      },
+      {
+        "@settings_common.option_slider": {
+          "$option_label": "#vr_roll_turn_sensitivity_slider_label",
+          "$slider_name": "vr_roll_turn_sensitivity",
+          "$slider_value_binding_name": "#vr_roll_turn_sensitivity",
+          "$option_enabled_binding_name": "#vr_roll_turn_sensitivity_enabled",
+          "$label_bindings": [
+            {
+              "binding_name": "#vr_roll_turn_sensitivity_slider_label"
+            }
+          ],
+          "bindings": [
+            {
+              "binding_name": "#vr_roll_turn_sensitivity_visible",
+              "binding_name_override": "#visible"
+            }
+          ]
+        }
+      },
+      {
+        "@settings_common.option_toggle": {
+          "$option_label": "options.invertYAxis",
+          "$option_binding_name": "#controller_invert_y_axis",
+          "$option_enabled_binding_name": "#controller_invert_y_axis_enabled",
+          "$toggle_name": "controller_invert_y_axis"
+        }
+      },
+      {
+        "@settings_common.option_toggle": {
+          "ignored": "($is_holographic and not $is_living_room_mode)",
+          "$option_label": "options.autojump",
+          "$option_binding_name": "#controller_autojump",
+          "$option_enabled_binding_name": "#controller_autojump_enabled",
+          "$toggle_name": "controller_autojump"
+        }
+      },
+      {
+        "@settings_common.option_toggle": {
+          "ignored": "($is_living_room_mode or not $is_holographic)",
+          "$option_label": "options.vrAutojump",
+          "$option_binding_name": "#vr_autojump",
+          "$option_enabled_binding_name": "#vr_autojump_enabled",
+          "$toggle_name": "vr_autojump"
+        }
+      },
+      {
+        "@settings_common.option_toggle": {
+          "ignored": true,// Remove this line when Options::TOGGLE_CROUCH actually affects crouch behavior (User Story 30117)
+          "$option_label": "options.toggleCrouch",
+          "$option_binding_name": "#controller_toggle_crouch",
+          "$option_enabled_binding_name": "#controller_toggle_crouch_enabled",
+          "$toggle_name": "controller_toggle_crouch"
+        }
+      },
+      {
+        "@settings_common.option_toggle": {
+          "$option_label": "options.destroyvibration",
+          "$option_binding_name": "#controller_vibration",
+          "$option_enabled_binding_name": "#controller_vibration_enabled",
+          "$toggle_name": "controller_vibration"
+        }
+      },
+      {
+        "@settings_common.option_group_label": {
+          "$text": "options.controllerLayout"
+        }
+      },
+      {
+        "gamepad_keymapping_grid@controls_section.keymapping_grid": { }
+      },
+      {
+        "reset_button@settings_common.action_button": {
+          "$pressed_button_name": "button.reset_gamepad_bindings",
+          "$button_label_text": "controllerLayoutScreen.resetAllBindings"
+        }
+      }
+    ]
+  },
+
+  // Touch button & section
+
+  "touch_button@settings_common.section_toggle_base": {
+    "$glyph_uv": [ 25, 0 ],
+    "$glyph_uvsize": [ 20, 14 ],
+    "$button_label_text": "options.touch",
+    "property_bag": {
+      "#panel_title": "options.touchSettings"
+    }
+  },
+
+  "touch_section": {
+    "type": "stack_panel",
+    "size": [ "100%", "100%c" ],
+    "anchor_from": "top_left",
+    "anchor_to": "top_left",
+    "bindings": [
+      {
+        "binding_type": "view",
+        "source_control_name": "touch_button",
+        "source_property_name": "#toggle_state",
+        "target_property_name": "#visible"
+      }
+    ],
+    "controls": [
+      {
+        "@settings_common.option_slider": {
+          "$option_label": "#touch_sensitivity_slider_label",
+          "$slider_name": "touch_sensitivity",
+          "$slider_value_binding_name": "#touch_sensitivity",
+          "$option_enabled_binding_name": "#touch_sensitivity_enabled",
+          "$label_bindings": [
+            {
+              "binding_name": "#touch_sensitivity_slider_label"
+            }
+          ]
+        }
+      },
+      {
+        "@settings_common.option_toggle": {
+          "$option_label": "options.invertYAxis",
+          "$option_binding_name": "#touch_invert_y_axis",
+          "$option_enabled_binding_name": "#touch_invert_y_axis_enabled",
+          "$toggle_name": "touch_invert_y_axis"
+        }
+      },
+      {
+        "@settings_common.option_toggle": {
+          "$option_label": "options.autojump",
+          "$option_binding_name": "#touch_autojump",
+          "$option_enabled_binding_name": "#touch_autojump_enabled",
+          "$toggle_name": "touch_autojump"
+        }
+      },
+      {
+        "@settings_common.option_toggle": {
+          "$option_label": "options.destroyvibration",
+          "$option_binding_name": "#touch_vibration",
+          "$option_enabled_binding_name": "#touch_vibration_enabled",
+          "$toggle_name": "touch_vibration"
+        }
+      },
+      {
+        "@settings_common.option_toggle": {
+          "ignored": true,// Remove this line when Options::TOGGLE_CROUCH actually affects crouch behavior (User Story 30117)
+          "$option_label": "options.toggleCrouch",
+          "$option_binding_name": "#touch_toggle_crouch",
+          "$option_enabled_binding_name": "#touch_toggle_crouch_enabled",
+          "$toggle_name": "touch_toggle_crouch"
+        }
+      },
+      {
+        "@settings_common.option_toggle": {
+          "$option_label": "options.usetouchpad",
+          "$option_binding_name": "#split_controls",
+          "$option_enabled_binding_name": "#split_controls_enabled",
+          "$toggle_name": "split_controls"
+        }
+      },
+      {
+        "@settings_common.option_toggle": {
+          "$option_label": "options.lefthanded",
+          "$option_binding_name": "#left_handed",
+          "$option_enabled_binding_name": "#left_handed_enabled",
+          "$toggle_name": "left_handed"
+        }
+      },
+      {
+        "@settings_common.option_toggle": {
+          "$option_label": "options.swapJumpAndSneak",
+          "$option_binding_name": "#swap_jump_and_sneak",
+          "$option_enabled_binding_name": "#swap_jump_and_sneak_enabled",
+          "$toggle_name": "swap_jump_and_sneak"
+        }
+      },
+      {
+        "@settings_common.option_slider": {
+          "$option_label": "#button_size_slider_label",
+          "$slider_name": "button_size",
+          "$slider_value_binding_name": "#button_size",
+          "$option_enabled_binding_name": "#button_size_enabled",
+          "$label_bindings": [
+            {
+              "binding_name": "#button_size_slider_label"
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

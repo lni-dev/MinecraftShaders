@@ -1,0 +1,49 @@
+{
+  "namespace": "bed",
+
+  // Screen //
+
+  "in_bed_screen@common.base_screen": {
+    "controls": [
+      {
+        "background": {
+          "type": "image",
+          "size": [ "100%", "100%" ],
+          "texture": "textures/gui/newgui/White",
+          "color": [ 0.0, 0.0, 0.0 ],
+          "alpha": 0.5,
+          "uv_size": [ 1, 1 ],
+          "nineslice_size": 1
+        }
+      },
+      {
+        "wake_up_button@death.base_button": {
+          "size": [ 66, "15%" ],
+          "anchor_from": "bottom_middle",
+          "anchor_to": "bottom_middle",
+          "offset": [ 0, "-15.0%" ],
+          "layer": 1,
+          "$button_text": "multiplayer.stopSleeping",
+          "button_mappings": [
+            {
+              "from_button_id": "button.menu_select",
+              "to_button_id": "button.wake_up_button",
+              "mapping_type": "pressed"
+            },
+            {
+              "from_button_id": "button.menu_ok",
+              "to_button_id": "button.wake_up_button",
+              "mapping_type": "pressed"
+            }
+          ]
+        }
+      },
+      {
+        "select_button@death.a_button": {
+          "layer": 1,
+          "offset": [ 0, "-5%" ]
+        }
+      }
+    ]
+  }
+}

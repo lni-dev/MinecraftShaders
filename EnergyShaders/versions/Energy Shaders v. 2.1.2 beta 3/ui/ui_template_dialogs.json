@@ -1,0 +1,175 @@
+/********************************************************
++*   (c) Mojang. All rights reserved                       *
++*   (c) Microsoft. All rights reserved.                   *
++*********************************************************/
+
+{
+  "namespace": "common_dialogs", 
+   
+  "title_label": {
+    "type": "label",
+    "size": [ "default", 10 ],
+    "offset": [ 0, 9 ],
+    "color": [ 0.275, 0.275, 0.275 ],
+    "text": "$text_name",
+    "anchor_from": "top_middle",
+    "anchor_to": "top_middle",
+    "layer": 4,
+    "shadow": false
+  },
+
+  /////////////////////////////////
+  //
+  //  DIALOG WINDOWS
+  //
+  /////////////////////////////////
+
+  "main_panel_two_buttons": {
+    "type": "panel",
+    "anchor_from": "center",
+    "anchor_to": "center",
+    "$text_name|default": "",
+    "$top_button_panel|default": "common.empty_panel",
+    "$bottom_button_panel|default": "common.empty_panel",
+    "controls": [
+      {
+        "@common.common_panel": { "$dialog_background": "dialog_background_hollow_1" }
+      },
+      {
+        "@common_dialogs.title_label": { }
+      },
+      {
+        "panel_indent": {
+          "type": "panel",
+          "size": [ "100% - 16px", "100% - 78px" ],
+          "offset": [ 0, 23 ],
+          "anchor_from": "top_middle",
+          "anchor_to": "top_middle",
+          "controls": [
+            { "inside_header_panel@$child_control": { } }
+          ]
+        }
+      },
+      {
+        "top_button_panel@$top_button_panel": {
+          "size": [ "100% - 14px", 30 ],
+          "offset": [ 0, -39 ],
+          "anchor_from": "bottom_middle",
+          "anchor_to": "bottom_middle"
+        }
+      },
+      {
+        "bottom_button_panel@$bottom_button_panel": {
+          "size": [ "100% - 14px", 30 ],
+          "offset": [ 0, -7 ],
+          "anchor_from": "bottom_middle",
+          "anchor_to": "bottom_middle"
+        }
+      }
+    ]
+  },
+
+  "main_panel_one_button": {
+    "type": "panel",
+    "anchor_from": "center",
+    "anchor_to": "center",
+    "$text_name|default": "",
+    "$button_panel|default": "common.empty_panel",
+    "controls": [
+      {
+        "@common.common_panel": { "$dialog_background": "dialog_background_hollow_2" }
+      },
+      {
+        "@common_dialogs.title_label": { }
+      },
+      {
+        "panel_indent": {
+          "type": "panel",
+          "size": [ "100% - 16px", "100% - 65px" ],
+          "offset": [ 0, 23 ],
+          "anchor_from": "top_middle",
+          "anchor_to": "top_middle",
+          "controls": [
+            { "inside_header_panel@$child_control": { } }
+          ]
+        }
+      },
+      {
+        "bottom_button_panel@$button_panel": {
+          "size": [ "100% - 14px", 30 ],
+          "offset": [ 0, -7 ],
+          "anchor_from": "bottom_middle",
+          "anchor_to": "bottom_middle"
+        }
+      }
+    ]
+  },
+
+  "main_panel_no_buttons": {
+    "type": "panel",
+    "anchor_from": "center",
+    "anchor_to": "center",
+    "$text_name|default": "",
+    "controls": [
+      {
+        "@common.common_panel": { "$dialog_background": "dialog_background_hollow_3" }
+      },
+      {
+        "@common_dialogs.title_label": { }
+      },
+      {
+        "panel_indent": {
+          "type": "panel",
+          "size": [ "100% - 16px", "100% - 31px" ],
+          "offset": [ 0, 23 ],
+          "anchor_from": "top_middle",
+          "anchor_to": "top_middle",
+          "controls": [
+            { "inside_header_panel@$child_control": { } }
+          ]
+        }
+      }
+    ]
+  },
+
+  "main_panel_no_title_no_buttons": {
+    "type": "panel",
+    "anchor_from": "center",
+    "anchor_to": "center",
+    "controls": [
+      {
+        "@common.common_panel": { "$dialog_background": "dialog_background_hollow_4" }
+      },
+      {
+        "panel_indent": {
+          "type": "panel",
+          "size": [ "100% - 16px", "100% - 16px" ],
+          "offset": [ 0, 8 ],
+          "anchor_from": "top_middle",
+          "anchor_to": "top_middle",
+          "controls": [
+            { "inside_header_panel@$child_control": { } }
+          ]
+        }
+      }
+    ]
+  },
+
+  "main_panel": {
+    "type": "panel",
+    "anchor_from": "center",
+    "anchor_to": "center",
+    "controls": [
+      { "@modal.modal_background_image": { "layer": 1 } },
+      {
+        "panel_indent": {
+          "type": "panel",
+          "size": [ "100% - 14px", "100% - 14px" ],
+          "controls": [
+            { "inside_header_panel@$child_control": { } }
+          ]
+        }
+      }
+    ]
+  }  
+}

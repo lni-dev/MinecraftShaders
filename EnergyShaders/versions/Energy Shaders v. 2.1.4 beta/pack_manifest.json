@@ -1,0 +1,16 @@
+{
+  "header": {
+    "pack_id": "E-S-P-E",
+    "name": "resourcePack.vanilla.name",
+    "packs_version": "2.1.4",
+    "description": "Energy Shaders - full of energy. Made by §2Pro Coder",
+    "modules": [
+      {
+        "description": "Energy Shaders - full of energy. Made by §2Pro Coder",
+        "version": "2.1.4",
+        "uuid": "E-S-P-E",
+        "type": "resources"
+      }
+    ]
+  }
+}

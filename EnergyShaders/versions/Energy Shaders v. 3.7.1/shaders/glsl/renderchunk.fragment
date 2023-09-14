@@ -1,0 +1,144 @@
+// __multiversion__
+// This signals the loading code to prepend either #version 100 or #version 300 es as apropriate.
+
+#include "fragmentVersionCentroid.h"
+
+#if __VERSION__ >= 300
+	#ifndef BYPASS_PIXEL_SHADER
+		#if defined(TEXEL_AA) && defined(TEXEL_AA_FEATURE)
+			_centroid in highp vec2 uv0;
+			_centroid in highp vec2 uv1;
+		#else
+			_centroid in vec2 uv0;
+			_centroid in vec2 uv1;
+		#endif
+	#endif
+#else
+	#ifndef BYPASS_PIXEL_SHADER
+		varying vec2 uv0;
+		varying vec2 uv1;
+	#endif
+#endif
+
+varying vec4 color;
+#ifdef WHOOP_WHOOP
+	varying vec3 inChunkPos;
+	varying vec3 inWorldPos;
+	varying vec3 inScreenPos;
+#endif
+
+
+#include "uniformShaderConstants.h"
+#include "uniformPerFrameConstants.h"
+#include "util.h"
+
+float getRain(){
+	return min(1.0, max(0.0, 1.0-pow(FOG_CONTROL.y, 5.0)) * 2.0);
+}
+
+#include "compatibility.h"
+#include "settings.h"
+#include "tonemaps.h"
+#include "normal.h"
+#include "dimension.h"
+
+#include "ambient.h"
+#include "fog.h"
+#include "water.h"
+
+
+
+LAYOUT_BINDING(0) uniform sampler2D TEXTURE_0;
+LAYOUT_BINDING(1) uniform sampler2D TEXTURE_1;
+LAYOUT_BINDING(2) uniform sampler2D TEXTURE_2;
+
+void main()
+{
+#ifdef BYPASS_PIXEL_SHADER
+	gl_FragColor = vec4(0, 0, 0, 0);
+	return;
+#else
+
+//Day-Night-Dedection
+vec4 sky_color = texture2D(TEXTURE_1, vec2(0.0, 1.0));
+vec4 mTime = vec4(sky_color.r, abs(sky_color.r - 0.5), getRain(), min(1.0, (1.0 - sky_color.r)*1.5));	//DAY-NIGHT, SUNSET, RAIN, NIGHT-DAY
+float mLight = (max(0.0, mTime.x + uv1.x));
+float mCave = min(1.0, max(0.0, SHADOW_WIDTH - uv1.y) * (1.0 / SHADOW_WIDTH) * 1.5);
+mCave = max(0.0, mCave - 0.2) * 1.25;
+mCave *= 2.0;
+mCave = min(1.0, mCave);
+vec3 N = calculateSurfaceNormal(inChunkPos.xyz);
+float shadow = 0.0;
+mTime.w = dimension(TEXTURE_1, mTime.w); //mTime.w now also stores the dimension: 0-1 Overworld, 2: Nether, 3: End
+bool nether = mTime.w == 2.0;
+bool end = mTime.w == 3.0;
+
+
+#if USE_TEXEL_AA
+	vec4 diffuse = texture2D_AA(TEXTURE_0, uv0);
+#else
+	vec4 diffuse = texture2D(TEXTURE_0, uv0);
+#endif
+
+#ifdef SEASONS_FAR
+	diffuse.a = 1.0;
+#endif
+
+#if USE_ALPHA_TEST
+	#ifdef ALPHA_TO_COVERAGE
+	#define ALPHA_THRESHOLD 0.05
+	#else
+	#define ALPHA_THRESHOLD 0.5
+	#endif
+	if(diffuse.a < ALPHA_THRESHOLD)
+		discard;
+#endif
+
+vec4 inColor = color;
+
+#ifndef SEASONS
+	#if !USE_ALPHA_TEST && !defined(BLEND)
+		diffuse.a = inColor.a;
+	#endif
+	diffuse.rgb *= inColor.rgb;
+#endif
+
+#ifdef SHADOW
+	if(uv1.y <= SHADOW_WIDTH){	//if rendering in shadow
+
+		shadow = 1.0;
+		if(uv1.y >= SHADOW_WIDTH - FADE_IN_SHADOW_WIDTH){
+			#ifdef SHADOW_FADE_IN
+				float fadeInE = (uv1.y - (SHADOW_WIDTH - FADE_IN_SHADOW_WIDTH)) * (1.0 / FADE_IN_SHADOW_WIDTH);	//calculate fade in
+				shadow = mix(1.0, 0.0, fadeInE);
+			#endif
+		}
+		//shadow = max(0.0, shadow - max(0.0, light.x + E_TORCH_LIGHT_OFFSET));
+	}
+#endif
+
+diffuse = Ambient(diffuse, inScreenPos, shadow, uv1.x, mTime.w, nether, end, mTime.z, mCave, N);
+
+#ifdef BLEND
+	vec4 b = texture2D(TEXTURE_0, uv0);
+	if(b.r <= 0.01 && b.g <= 0.01 && b.b <= 0.01 && b.a > 0.5 && color.a < 0.95){
+		//Water stuff
+		vec3 waterColor = color.rgb;
+		diffuse = water(waterColor, inWorldPos, CAMERA_OFFSET, shadow, uv1.x, mTime.w, mTime.z, mCave, N);
+	}
+
+#else
+	vec4 b = texture2D(TEXTURE_0, uv0);
+	if(b.r <= 0.01 && b.g <= 0.01 && b.b <= 0.01 && length(inWorldPos) > FAR_CHUNKS_DISTANCE * 0.9){
+		//Water stuff
+		vec3 waterColor = color.rgb;
+		diffuse = water(waterColor, inWorldPos, CAMERA_OFFSET, shadow, uv1.x, mTime.w, mTime.z, mCave, N );
+	}
+#endif
+
+diffuse = Fog(diffuse, inWorldPos, mTime.w, nether, end, mTime.z, mCave);
+
+	gl_FragColor = diffuse;
+
+#endif // BYPASS_PIXEL_SHADER
+}

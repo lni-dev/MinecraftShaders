@@ -1,0 +1,17 @@
+{
+   "format_version" : 1,
+   "header" : {
+      "description" : "Do not share! Made by ProCoder!",
+      "name" : "Energy Shaders v.2.4.0 ALPHA 2!",
+      "uuid" : "9f259ec2-2512-11e7-93ae-92361f002671",
+      "version" : [ 2, 4, 0 ]
+   },
+   "modules" : [
+      {
+         "description" : "Do not share! Made by ProCoder!",
+         "type" : "resources",
+         "uuid" : "9f25a7be-2512-11e7-93ae-92361f002671",
+         "version" : [ 2, 4, 0 ]
+      }
+   ]
+}

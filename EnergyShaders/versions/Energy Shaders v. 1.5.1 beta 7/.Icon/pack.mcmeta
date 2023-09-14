@@ -1,0 +1,51 @@
+{
+  "pack": {
+    "pack_format": 1,
+    "description": 
+"Hi,
+Thank you for downloading Energy Shaders!
+
+
+=================================
+Energy Shaders is made by Lini _!
+=================================
+
+
+=================================
+What makes Energy Shaders better?!:
+
+-new water color
+-new fog
+-new clouds, 3d clouds!
+-new enity shadows
+-added real sunlight
+-added real torch light
+-added water reflection near lights
+-added wavy grass
+-added wavy leaves
+-added wavy water
+-added shadows under blocks
+-and much more!!
+=================================
+
+
+=================================
+Settings you will find in:
+
+-renderchunk.vertex
+-renderchunk.fragment
+=================================
+
+
+=================================
+I hope you enjoy Energy Shaders!
+=================================
+
+
+=================================
+With downloading, sharing, etc. you
+accept the terms of use!
+=================================
+"
+  }
+}

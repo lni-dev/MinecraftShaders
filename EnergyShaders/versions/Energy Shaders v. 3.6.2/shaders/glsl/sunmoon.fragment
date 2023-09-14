@@ -1,0 +1,45 @@
+// __multiversion__
+// This signals the loading code to prepend either #version 100 or #version 300 es as apropriate.
+
+#include "fragmentVersionCentroid.h"
+
+#if __VERSION__ >= 300
+
+#if defined(TEXEL_AA) && defined(TEXEL_AA_FEATURE)
+_centroid in highp vec2 uv;
+#else
+_centroid in vec2 uv;
+#endif
+
+#else
+
+varying vec2 uv;
+
+#endif
+
+varying vec4 pos;
+
+
+#include "uniformShaderConstants.h"
+#include "util.h"
+
+LAYOUT_BINDING(0) uniform sampler2D TEXTURE_0;
+
+void main()
+{
+#if !defined(TEXEL_AA) || !defined(TEXEL_AA_FEATURE)
+	vec4 diffuse = texture2D( TEXTURE_0, uv );
+#else
+	vec4 diffuse = texture2D_AA(TEXTURE_0, uv );
+#endif
+
+
+ float sun = clamp((1.0 - length(pos.xz * 6.0))*0.8, 0.0, 1.0);
+ sun *= 1.0 - (CURRENT_COLOR.b - 1.0);
+ sun += clamp((1.0 - length(pos.xz))*0.2, 0.0, 0.2);
+
+
+ diffuse.rgb = vec3(sun);
+
+	gl_FragColor = diffuse * CURRENT_COLOR;
+}

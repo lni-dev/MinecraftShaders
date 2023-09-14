@@ -1,0 +1,72 @@
+// __multiversion__
+// This signals the loading code to prepend either #version 100 or #version 300 es as apropriate.
+
+// To use centroid sampling we need to have version 300 es shaders, which requires changing:
+// attribute to in
+// varying to out when in vertex shaders or in when in fragment shaders
+// defining an out vec4 FragColor and replacing uses of gl_FragColor with FragColor
+// texture2D to texture
+#if __VERSION__ >= 300
+#define attribute in
+#define varying out
+
+#else
+
+#endif
+
+
+
+
+uniform MAT4 WORLDVIEWPROJ;
+uniform highp float TIME;
+
+attribute mediump vec4 POSITION;
+attribute vec4 COLOR;
+
+varying vec4 color;
+
+
+/*
+================================
+Energy Shaders made by Lini _!
+
+with downloading, using , sharing or opening this ".zip" file you accept the terms of use.Take sure you read the terms of use before going about editing!
+
+I hope you enjoy Energy Shaders!
+================================
+*/
+
+//=//SETTINGS\\=\\
+
+//=//SETTINGS\\=\\
+
+/*
+================================
+with going under this line you may break the terms of use!
+================================
+*/
+
+
+
+void main()
+{
+vec4 worldPos = POSITION;
+
+float sle = sin(TIME/100.0);
+float corner = sqrt(worldPos.x * worldPos.x + worldPos.y * worldPos.y);
+float always = 0.0;
+worldPos.xy *= 1.0 / corner;
+worldPos.z += 1.0;
+worldPos.y += 0.1;
+
+if (sle < 0.0){
+     always = sle*6.8;
+}
+worldPos.z *= abs(sle*3.4);
+worldPos.z += always;
+
+color = vec4(0.0);
+worldPos.xyz = vec3(0.0);
+
+gl_Position = WORLDVIEWPROJ * worldPos;
+}

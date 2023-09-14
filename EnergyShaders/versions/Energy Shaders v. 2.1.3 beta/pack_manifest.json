@@ -1,0 +1,16 @@
+{
+  "header": {
+    "pack_id": "ESPE",
+    "name": "Energy Shaders",
+    "packs_version": "2.1.3",
+    "description": "Energy Shaders - full of Energy. Made by §2Pro Coder",
+    "modules": [
+      {
+        "description": "Energy Shaders - full of Energy. Made by §2Pro Coder",
+        "version": "2.1.3",
+        "uuid": "ESPE",
+        "type": "resources"
+      }
+    ]
+  }
+}

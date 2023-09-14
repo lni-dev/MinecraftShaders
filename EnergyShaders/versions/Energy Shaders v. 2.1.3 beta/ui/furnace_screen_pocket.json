@@ -1,0 +1,403 @@
+{
+  "namespace": "furnace_pocket",
+
+  "generic_label": {
+    "type": "label",
+    "anchor_from": "center",
+    "anchor_to": "center",
+    "shadow": true
+  },
+
+  // Gamepad //
+
+  "gamepad_helpers": {
+    "type": "panel",
+    "anchor_from": "bottom_middle",
+    "anchor_to": "bottom_middle",
+    "size": [ "98%", 16 ],
+    "$icon_text_color": [ 0.0, 0.0, 0.0 ],
+    "controls": [
+      {
+        "@common.grey_gamepad_helper_a": {
+          "anchor_from": "left_middle",
+          "anchor_to": "left_middle"
+        }
+      },
+      {
+        "@common.grey_gamepad_helper_b": {
+          "anchor_from": "center",
+          "anchor_to": "center"
+        }
+      },
+      {
+        "@common.grey_gamepad_helper_x": {
+          "anchor_from": "right_middle",
+          "anchor_to": "right_middle"
+        }
+      }
+    ]
+  },
+
+  // Backgrounds //
+
+  "background_image@common.sprite_sheet_base": {
+    "size": [ "100%", "100%" ],
+    "nineslice_size": 4.0,
+    "uv": [ 0, 0 ],
+    "uv_size": [ 16, 16 ]
+  },
+
+  // Arrow //
+
+  "empty_arrow@furnace.furnace_arrow_empty_image": {
+    "anchor_from": "center",
+    "anchor_to": "center"
+  },
+  "full_arrow@furnace.furnace_arrow_full_image": {
+    "anchor_from": "center",
+    "anchor_to": "center"
+  },
+
+  // Flame //
+
+  "flame_empty@furnace.flame_empty_image": {
+  },
+  "flame_full@furnace.flame_full_image": {
+  },
+
+  // Labels //
+
+  "input_label@furnace_pocket.generic_label": {
+    "text": "furnaceScreen.input"
+  },
+  "fuel_label@furnace_pocket.generic_label": {
+    "text": "furnaceScreen.fuel"
+  },
+  "result_label@furnace_pocket.generic_label": {
+    "text": "furnaceScreen.result"
+  },
+  "result_name_label@furnace_pocket.generic_label": {
+    "text": ""
+  },
+
+  // Slots //
+
+  "slots_panel": {
+    "type": "panel",
+    "anchor_from": "center",
+    "anchor_to": "center",
+    "size": [ 104, 110 ],
+    "controls": [
+      {
+        "input_panel": {
+          "type": "panel",
+          "size": [ 32, 45 ],
+          "anchor_from": "top_left",
+          "anchor_to": "top_left",
+          "controls": [
+            {
+              "@furnace_pocket.input_label": {
+                "anchor_from": "top_middle",
+                "anchor_to": "top_middle"
+              }
+            },
+            {
+              "ingredient_item@common.pocket_ui_container_selectable_slot_item": {
+                "anchor_from": "bottom_middle",
+                "anchor_to": "bottom_middle",
+                "$item_collection_name": "furnace_ingredient_items",
+                "property_bag": {
+                  "#start_selected": true
+                }
+              }
+            }
+          ]
+        }
+      },
+      {
+        "flame_empty@furnace.flame_empty_image": {
+          "anchor_from": "left_middle",
+          "anchor_to": "center",
+          "offset": [ 16, 0 ],
+          "size": [ 13, 13 ]
+        }
+      },
+      {
+        "flame_full@furnace.flame_full_image": {
+          "anchor_from": "left_middle",
+          "anchor_to": "center",
+          "offset": [ 16, 0 ],
+          "layer": 3,
+          "size": [ 13, 13 ]
+        }
+      },
+      {
+        "fuel_panel": {
+          "type": "panel",
+          "size": [ 32, 45 ],
+          "anchor_from": "bottom_left",
+          "anchor_to": "bottom_left",
+          "controls": [
+            {
+              "@furnace_pocket.fuel_label": {
+                "anchor_from": "bottom_middle",
+                "anchor_to": "bottom_middle"
+              }
+            },
+            {
+              "fuel_item@common.pocket_ui_container_selectable_slot_item": {
+                "anchor_from": "top_middle",
+                "anchor_to": "top_middle",
+                "$item_collection_name": "furnace_fuel_items"
+              }
+            }
+          ]
+        }
+      },
+      { "empty_arrow@furnace_pocket.empty_arrow": { } },
+      { "full_arrow@furnace_pocket.full_arrow": { "layer": 2 } },
+      {
+        "output_panel": {
+          "type": "panel",
+          "size": [ 32, 54 ],
+          "anchor_from": "right_middle",
+          "anchor_to": "right_middle",
+
+          "controls": [
+            {
+              "@furnace_pocket.result_label": {
+                "anchor_from": "top_middle",
+                "anchor_to": "top_middle"
+              }
+            },
+            {
+              "@furnace_pocket.result_name_label": {
+                "anchor_from": "bottom_middle",
+                "anchor_to": "bottom_middle",
+                "text": "#text",
+                "bindings": [
+                  {
+                    "binding_name": "#output_name",
+                    "binding_name_override": "#text",
+                    "binding_condition": "visible"
+                  }
+                ]
+              }
+            },
+            {
+              "output_item@common.pocket_ui_container_selectable_slot_item": {
+                "anchor_from": "center",
+                "anchor_to": "center",
+                "$item_collection_name": "furnace_output_items",
+                "$controller_button_action": "button.container_auto_place",
+                "layer": 1
+              }
+            },
+            {
+              "item_renderer": {
+                "type": "custom",
+                "renderer": "inventory_item_renderer",
+                "anchor_from": "center",
+                "anchor_to": "center",
+                "layer": 3,
+                "offset": [ 1, 0 ],
+                "size": [ 18, 18 ],
+                "property_bag": {
+                  "#disabled_filter_visible": true,
+                  "#filtered_light_multiplier": 0.5
+                },
+                "bindings": [
+                  {
+                    "binding_name": "#output_id",
+                    "binding_name_override": "#item_id_aux",
+                    "binding_condition": "visible"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    ]
+  },
+
+  // Inventory Grids //
+
+  "inventory_grid": {
+    "type": "grid",
+    "grid_rescaling_type": "horizontal",
+    "anchor_to": "top_left",
+    "anchor_from": "top_left",
+    "size": [ "100%", "default" ],
+    "maximum_grid_items": "$container_size",
+    "collection_name": "$pane_collection",
+    "$item_renderer": "common.filtered_item_renderer",
+    "grid_item_template": "common.pocket_ui_container_item",
+    "$item_collection_name": "$pane_collection",
+    "bindings": [
+      {
+        "binding_name": "#collection_total_items",
+        "binding_name_override": "#maximum_grid_items",
+        "binding_type": "collection",
+        "binding_condition": "visible",
+        "binding_collection_name": "$pane_collection"
+      }
+    ]
+  },
+  "inventory_panel": {
+    "type": "panel",
+    "size": [ "100%", "100%" ],
+    "anchor_to": "center",
+    "anchor_from": "center",
+    "controls": [
+      {
+        "@common.scrolling_panel": {
+          "size": [ "100%-2px", "100%-2px" ],
+          "anchor_to": "top_left",
+          "anchor_from": "top_left",
+          "$scrolling_pane_size": [ "100%", "100%-2px" ],
+          "$scrolling_content": "furnace_pocket.inventory_grid",
+          "$scroll_box_mouse_image_control": "common-classic.button_state_default",
+          "$scroll_size": [ "8px", "100%" ]
+        }
+      }
+    ]
+  },
+
+  // Furnace Panel //
+
+  "furnace_contents_panel": {
+    "type": "panel",
+    "offset": [ 0, "default-4px" ],
+    "controls": [
+      { "@slots_panel": { } }
+    ]
+
+  },
+
+  // Half Screens //
+
+  "half_screen": {
+    "type": "input_panel",
+    "size": [ "50%-4px", "100%-35px" ],
+    "anchor_from": "top_left",
+    "anchor_to": "top_left"
+  },
+  "inventory_half_screen@furnace_pocket.half_screen": {
+    "offset": [ 8, 31 ],
+    "controls": [
+      {
+        "screen": {
+          "type": "input_panel",
+          "button_mappings": [
+            {
+              "from_button_id": "button.menu_cancel",
+              "to_button_id": "button.container_unselect_slot",
+              "mapping_type": "global"
+            }
+          ],
+          "bindings": [
+            {
+              "binding_name": "#inventory_focused",
+              "binding_name_override": "#modal"
+            }
+          ],
+          "controls": [
+            { "@furnace_pocket.inventory_panel": { } }
+          ]
+        }
+      }
+    ]
+  },
+  "furnace_half_screen@furnace_pocket.half_screen": {
+    "offset": [ 8, 31 ],
+    "anchor_from": "top_right",
+    "anchor_to": "top_right",
+    "controls": [
+      {
+        "screen": {
+          "type": "input_panel",
+          "bindings": [
+            {
+              "binding_name": "#slots_focused",
+              "binding_name_override": "#modal"
+            }
+          ],
+          "controls": [
+            { "@furnace_pocket.furnace_contents_panel": { } }
+          ],
+          "button_mappings": [
+            {
+              "from_button_id": "button.menu_cancel",
+              "to_button_id": "button.menu_exit",
+              "mapping_type": "global"
+            }
+          ]
+        }
+      }
+    ]
+
+  },
+
+  // Header //
+
+  "header": {
+    "type": "panel",
+    "size": [ "100%", 28 ],
+    "anchor_from": "top_middle",
+    "anchor_to": "top_middle",
+    "controls": [
+      {
+        "header_background": {
+          "type": "image",
+          "nineslice_size": [ 3, 3, 3, 6 ],
+          "texture": "textures/gui/newgui/TopBar",
+          "uv": [ 0, 0 ],
+          "uv_size": [ 5, 8 ]
+        }
+      },
+      { "close_button@common.legacy_pocket_close_button": { } },
+      {
+        "panel": {
+          "type": "panel",
+          "anchor_from": "center",
+          "anchor_to": "center",
+          "controls": [
+            {
+              "title_label@furnace_pocket.generic_label": {
+                "text": "tile.furnace.name",
+                "layer": 1
+              }
+            }
+          ]
+        }
+      }
+    ]
+  },
+
+  // Furnace Screen //
+
+  "furnace_panel": {
+    "type": "panel",
+    "controls": [
+      { "@furnace_pocket.gamepad_helpers": { "layer": 2 } },
+      { "@furnace_pocket.header": { "layer": 2 } },
+      { "bg@furnace_pocket.background_image": { } },
+      {
+        "inventory@furnace_pocket.inventory_half_screen": {
+          "$container_size": 36,
+          "$pane_collection": "combined_hotbar_and_inventory_items"
+        }
+      },
+      { "@furnace_pocket.furnace_half_screen": { "layer": 1 } },
+      { "hold_icon@common.inventory_take_progress_icon_button": { } },
+      { "flying_item_renderer@common.flying_item_renderer": { } },
+      {
+        "selected_item_details_factory": {
+          "type": "factory",
+          "control_name": "@pocket_containers.selected_item_details"
+        }
+      }
+    ]
+  }
+}

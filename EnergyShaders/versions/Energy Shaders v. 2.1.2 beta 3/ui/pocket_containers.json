@@ -1,0 +1,251 @@
+{
+  "namespace": "pocket_containers",
+  
+  "gamepad_helpers": {
+    "type": "panel",
+    "anchor_from": "bottom_middle",
+    "anchor_to": "bottom_middle",
+    "size": [ "98%", 16 ],
+    "$icon_text_color": [ 0.0, 0.0, 0.0 ],
+    "controls": [
+      {
+        "@common.grey_gamepad_helper_a": {
+          "anchor_from": "left_middle",
+          "anchor_to": "left_middle"
+        }
+      },
+      {
+        "@common.grey_gamepad_helper_b": {
+          "anchor_from": "center",
+          "anchor_to": "center"
+        }
+      },
+      {
+        "@common.grey_gamepad_helper_y": {
+          "anchor_from": "right_middle",
+          "anchor_to": "right_middle"
+        }
+      }
+    ]
+  },
+
+  
+  "generic_label": {
+    "type": "label",
+    "layer": 2,
+    "anchor_from": "center",
+    "anchor_to": "center",
+    "color": [ 1.0, 1.0, 1.0, 1.0 ],
+    "shadow": true
+  },
+  
+//----------------------
+// Header Panel
+//----------------------
+
+  "header_panel": {
+    "type": "panel",
+    "layer": 1,
+    "size": [ "50%", "27px" ],
+    "anchor_from": "top_left",
+    "anchor_to": "top_left",
+    "controls": [
+      {
+        "header_background": {
+          "type": "image",
+          "nineslice_size": [ 3, 3, 3, 6 ],
+          "texture": "textures/gui/newgui/TopBar",
+          "uv": [ 0, 0 ],
+          "uv_size": [ 5, 8 ]
+        }
+      },
+      {
+        "title_label@generic_label": { "text": "$header_label" }
+      }
+    ]
+  },
+  
+  "header_area": {
+    "type": "panel",
+    "controls": [
+      { "x@common.legacy_pocket_close_button": { "layer": 3 } },
+      {
+        "inventory_header@pocket_containers.header_panel": {
+          "$header_label": "chestScreen.header.player"
+        }
+      },
+      {
+        "container_header@pocket_containers.header_panel": {
+          "layer": 2,
+          "anchor_from": "top_middle",
+          "$header_label": "$container_label"
+        }
+      }
+    ]
+  },
+  
+//-----------------
+// Inventory Panels
+//-----------------
+
+  "dark_bg": {
+    "type": "image",
+    "texture": "textures/gui/newgui/play_screen/DarkButtonThinStroke1",
+    "uv": [ 2, 2 ],
+    "uv_size": [ 3, 3 ],
+    "nineslice_size": 1.0,
+    "layer": 3
+  },
+
+  "panel_outline": {
+    "type": "image",
+    "nineslice_size": 1.0,
+    "texture": "textures/gui/spritesheet",
+    "uv": [ 28, 42 ],
+    "uv_size": [ 4, 4 ]
+  },
+
+  "background_panel": {
+    "type": "image",
+    "size": [ "100%", "100%" ],
+    "nineslice_size": 4.0,
+    "texture": "textures/gui/spritesheet",
+    "uv": [ 0, 0 ],
+    "uv_size": [ 16, 16 ],
+    "layer": 2
+  },
+
+  "inventory_grid": {
+    "type": "grid",
+    "grid_rescaling_type": "horizontal",
+    "anchor_to": "top_left",
+    "anchor_from": "top_left",
+    "size": [ "100%", "default" ],
+    "maximum_grid_items": "$container_size",
+    "collection_name": "$pane_collection",
+    "grid_item_template": "common.pocket_ui_container_item",
+    "$item_collection_name": "$pane_collection"
+  },
+  
+  "inventory_panel": {
+    "type": "panel",
+    "size": [ "80%", "95%" ],
+    "anchor_to": "center",
+    "anchor_from": "center",
+    "controls": [
+      {
+        "@common.scrolling_panel": {
+          "layer": 1,
+          "$scrolling_pane_size": [ "100%", "100%-2px" ],
+          "$scrolling_content": "pocket_containers.inventory_grid",
+          "$scroll_box_mouse_image_control": "common-classic.button_state_default",
+          "$scroll_size": [ "8px", "100%" ]
+        }
+      }
+    ]
+  },
+  
+  "half_screen": {
+    "type": "panel",
+    "size": [ "50%", "100%-27px" ],
+    "offset": [ 0, 27 ],
+    "anchor_from": "top_left",
+    "anchor_to": "top_left",
+    "controls": [
+      { "@inventory_panel": { } }
+    ]
+  },
+
+  "anim_item_name_text_alpha": {
+    "anim_type": "alpha",
+    "easing": "in_expo",
+    "destroy_at_end": "item_text_label",
+    "duration": 2,
+    "from": 1.0,
+    "to": 0
+  },
+
+  "selected_item_details": {
+    "type": "panel",
+    "anchor_from": "bottom_middle",
+    "offset": [ 0, "-30%+10px" ],
+    "layer": 30,
+    "controls": [
+      {
+        "item_text_label@generic_label": {
+          "text": "#selected_item_name",
+          "alpha": "@pocket_containers.anim_item_name_text_alpha",
+          "controls": [
+            {
+              "item_effect_label@generic_label": {
+                "text": "#selected_item_effect_name",
+                "anchor_from": "bottom_middle",
+                "anchor_to": "top_middle",
+                "alpha": "@pocket_containers.anim_item_name_text_alpha"
+              }
+            }
+          ]
+        }
+      }
+    ]
+  },
+
+
+//--------------------
+// Screen Definitions
+//--------------------
+  
+  "panel": {
+    "type": "panel",
+    "controls": [
+      { "@pocket_containers.gamepad_helpers": { "layer": 3 } },
+      { "header@header_area": { "layer": 2 } },
+      { "bg@background_panel": { "layer": 0 } },
+      { 
+        "inventory@half_screen": {
+          "$container_size": 36,
+          "$pane_collection": "combined_hotbar_and_inventory_items"
+        }
+      },
+      {
+        "container@half_screen": {
+          "anchor_from": "top_middle",
+          "$pane_collection": "container_items"
+        }
+      },
+      {
+        "selected_item_details_factory": {
+          "type": "factory",
+          "control_name": "@pocket_containers.selected_item_details"
+        }
+      },
+      { "hold_icon@common.inventory_take_progress_icon_button": { } },
+      { "flying_item_renderer@common.flying_item_renderer": { } }
+    ]
+  },
+
+  "small_chest_panel@panel": {
+    "$container_label": "container.chest",
+    "$container_size": 27
+  },
+
+  "large_chest_panel@panel": {
+    "$container_label": "container.chestDouble",
+    "$container_size": 54
+  },
+
+  "hopper_panel@panel": {
+    "$container_label": "container.hopper",
+    "$container_size": 5
+  },
+
+  "dispenser_panel@panel": {
+    "$container_label": "container.dispenser",
+    "$container_size": 9
+  },
+
+  "dropper_panel@panel": {
+    "$container_label": "container.dropper",
+    "$container_size": 9
+  }
+}

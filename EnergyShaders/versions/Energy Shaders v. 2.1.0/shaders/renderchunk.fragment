@@ -1,0 +1,330 @@
+// __multiversion__
+// This signals the loading code to prepend either #version 100 or #version 300 es as apropriate.
+
+// To use centroid sampling we need to have version 300 es shaders, which requires changing:
+// attribute to in
+// varying to out when in vertex shaders or in when in fragment shaders
+// defining an out vec4 FragColor and replacing uses of gl_FragColor with FragColor
+// texture2D to texture
+#if __VERSION__ >= 300
+
+// version 300 code
+
+#ifdef MSAA_FRAMEBUFFER_ENABLED
+#define _centroid centroid
+#else
+#define _centroid
+#endif
+
+#if defined(TEXEL_AA) && defined(TEXEL_AA_FEATURE)
+_centroid in highp vec2;
+_centroid in highp vec2 uv1;
+#else
+_centroid in vec2 uv0;
+_centroid in vec2 uv1;
+#endif
+
+#define varying in
+#define texture2D texture
+out vec4 FragColor;
+#define gl_FragColor FragColor
+
+#else
+
+// version 100 code
+varying vec2 uv0;
+varying vec2 uv1;
+
+#endif
+
+
+varying vec4 color;
+varying vec3 posE;
+varying vec3 waves;
+varying vec3 screen_pos;
+
+#ifdef FOG
+varying vec4 fogColor;
+#endif
+
+#ifdef NEAR_WATER
+varying float cameraDist;
+#endif
+
+#include "shaders/util.h"
+
+uniform sampler2D TEXTURE_0;
+uniform sampler2D TEXTURE_1;
+uniform sampler2D TEXTURE_2;
+
+uniform highp float TIME;
+uniform vec2 FOG_CONTROL;
+uniform float RENDER_DISTANCE;
+uniform vec4 FOG_COLOR;
+uniform POS3 VIEW_POS;
+
+
+const float pi = 3.14159265358979;
+
+/*
+highp float cloudmap(vec3 cp){
+
+float pi = 3.14159265358979;
+float ca = sin(length(cp.xz)*pi);
+ca += cos(sin(cp.x-cp.z)*pi + length(cp.xyz)*pi);
+float cb = sin(length(cp.xyz*pi)*pi);
+cb += cos(sin(cp.x+cp.z)*pi - length(cp.xyz/pi)*pi);
+float cc = cos(length(vec3(ca,cp.x+cp.z,cb))*pi);
+float cd = sin(cp.x-cp.z+pi*cp.z/pi + cos(length(vec2(cos(cp.x*pi-cp.z),sin(cp.z*pi+cp.x)))));
+float cloud = length(vec2(ca,cb))*0.25 - cc*0.3 + cd;
+
+cloud -= 0.2;
+return cloud *= 0.5;
+}
+
+*/
+
+
+float random(float x, float z){
+  float ra = sin(x+(z*0.5+(x-10.0)))*0.1;
+  float rb = sin(z+(x*0.5+(z-10.0)))*0.1;
+  
+  float rc = sin(x+cos(z+sin(x+z)));
+  float rd = cos(z+sin(x+sin(z+x)));
+  
+  float re = sin(ra-cos(rc+sin(ra+rb)));
+  float rf = cos(rb-cos(rd+sin(rb+rc)));
+  return sin(ra+rb-rc+rd-re+rf);
+}
+
+float ran(float x, float z, float y){
+  float ra = random(x + TIME, z + TIME) * y;
+  float rb = random(sin(random(cos(y) + x, ra)), cos(random(ra, sin(y)+z)));
+  return rb + ra;
+}
+
+void main()
+{
+
+
+float shE = 0.0;
+float fadeInE = 0.0;
+float shwE = 0.88;
+vec2 fSwE = vec2(0.015,0.0);
+fSwE.y = 1.0/fSwE.x;
+
+float Red = 0.0;
+
+vec4 watercolor = vec4(0.1, 0.3, 0.8+(waves.y*2.0), 0.3+waves.y*2.0);
+vec4 farwatercolor = vec4(0.2, 0.5+waves.y, 0.4, 0.9);
+vec3 torchl = vec3(0.5,0.45,0.05);
+
+float tlfE = uv1.x;
+float tlmix = 0.0;
+
+float rainE = 0.0;
+vec4 raincolor = vec4(0.441,0.46,0.484, 0.0);
+float holefog = FOG_COLOR.r+FOG_COLOR.g+FOG_COLOR.b;
+vec2 itsnight = vec2(0.0);
+float nether = 0.0;
+float texaa = 0.0;
+
+//is it night?
+    if(holefog <= 0.4){
+        itsnight.x = 1.0;
+        itsnight.y = 1.0-holefog*2.5;
+    }
+
+if (FOG_CONTROL.x < 0.55 && FOG_CONTROL.x > 0.1){
+  rainE = 1.0;
+  
+  raincolor.a = min(0.5,length(posE.xz)/RENDER_DISTANCE)*2.0;
+  
+  raincolor.a = min(1.0, raincolor.a + 0.3);
+  raincolor.a = max(0.0, raincolor.a - uv1.x);
+}
+
+if(FOG_COLOR.r < 0.25 && FOG_COLOR.b<0.25 && ((FOG_CONTROL.x < 1.1 && FOG_CONTROL.x > 0.01) || (FOG_CONTROL.x < 1.0 && FOG_CONTROL.x > 0.01)) && FOG_COLOR.r > 0.1){
+  nether = 1.0;
+}
+
+#if !defined(TEXEL_AA) || !defined(TEXEL_AA_FEATURE)
+  texaa = 1.0;
+#endif
+
+
+float sideOfS = max(0.0,length(screen_pos.xy));
+
+sideOfS = 1.0 - max(0.0,sideOfS-0.5);
+
+#if !defined(TEXEL_AA) || !defined(TEXEL_AA_FEATURE)
+	vec4 diffuse = texture2D( TEXTURE_0, uv0 );
+#else
+	vec4 diffuse = texture2D_AA(TEXTURE_0, uv0 );
+#endif
+
+	vec4 inColor = color;
+	
+#ifdef SEASONS_FAR
+	diffuse.a = 1.0;
+	inColor.b = 1.0;
+#endif
+
+#ifdef ALPHA_TEST
+	#ifdef ALPHA_TO_COVERAGE
+		float alphaThreshold = .05;
+	#else
+		float alphaThreshold = .5;
+	#endif
+	if(diffuse.a < alphaThreshold)
+		discard;
+#endif
+	
+	diffuse = diffuse * texture2D( TEXTURE_1, uv1 );
+
+#ifndef SEASONS
+
+#if !defined(ALPHA_TEST) && !defined(BLEND)
+	diffuse.a = inColor.a;
+#elif defined(BLEND)
+	diffuse.a *= inColor.a;
+	#ifdef NEAR_WATER
+		float alphaFadeOut = clamp(cameraDist, 0.0, 1.0);
+		diffuse.a = mix(diffuse.a, 1.0, alphaFadeOut);
+	#endif
+#endif	
+	
+	diffuse.rgb *= inColor.rgb;
+#else
+	vec2 uv = inColor.xy;
+	diffuse.rgb *= mix(vec3(1.0,1.0,1.0), texture2D( TEXTURE_2, uv).rgb*2.0, inColor.b);
+	diffuse.rgb *= inColor.aaa;
+	diffuse.a = 1.0;
+#endif
+
+
+
+
+#ifdef FOG
+ if(nether == 0.0){
+	  diffuse.rgb = mix( diffuse.rgb, fogColor.rgb, fogColor.a);
+	}
+	
+#endif
+
+
+Red = max(0.0,1.0-diffuse.r);
+torchl.r += Red;
+
+//shadows
+if(uv1.y <= shwE){
+shE = 1.0;
+if(uv1.y >= shwE-fSwE.x){
+    fadeInE = (uv1.y - (shwE-fSwE.x))*fSwE.y;
+    shE = mix(1.0,0.0,fadeInE);
+}
+}
+
+
+shE = max(0.0,shE-(tlfE*1.3));
+
+#ifdef FOG
+shE = max(0.0,shE-fogColor.a*5.0);
+#endif
+
+
+
+
+#ifdef NEAR_WATER
+watercolor.a += itsnight.y*0.09;
+farwatercolor.a += itsnight.y*0.09;
+watercolor.b += itsnight.y*0.5;
+watercolor.rg -= itsnight.y*0.3;
+
+watercolor.rgb -= itsnight.y*0.4;
+farwatercolor.rgb -= itsnight.y*0.4;
+diffuse = mix(watercolor, farwatercolor, color.a-itsnight.y*0.5);
+
+
+
+#ifdef FOG
+if(color.a == 0.0){
+  diffuse = fogColor;
+  diffuse.gb += waves.y*1.5;
+}
+#endif
+
+#ifndef FOG
+POS3 cpe = (posE+VIEW_POS)*2.0;
+ 
+float x = cpe.x*0.9;
+float z = cpe.z*0.9;
+
+
+ 
+ 
+#endif
+#endif
+
+
+
+//sunlight
+float isl_f= 1.0-(diffuse.r+diffuse.g+diffuse.b)/3.0;
+vec4 isl_v =vec4(1.0+isl_f,0.9+isl_f,0.8+isl_f,1.0);
+
+isl_v.rgb *= 1.0-shE*1.1;
+isl_v.rgb = max(vec3(1.0),isl_v.rgb);
+
+diffuse.rgb *= isl_v.rgb;
+
+
+vec4 ug = vec4(1.0);
+ug.a = min(1.0,max(0.0,(uv1.y+uv1.x)+0.7));
+ug.rgb = vec3(0.39);
+
+if(nether == 1.0){
+ug.r = 0.78;
+raincolor.r = 0.79;
+raincolor.gb -= 0.343;
+raincolor.a = max(0.0, raincolor.a-0.35);
+ug.a = max(ug.a, ug.a);
+ug.gb = vec2(0.0,0.0);
+}
+
+diffuse.rgb = mix(ug.rgb,diffuse.rgb,ug.a);
+
+diffuse.rgb += torchl*max(0.0,uv1.x-0.5);
+
+diffuse.rgb = mix(diffuse.rgb,raincolor.rgb,raincolor.a);
+
+if(itsnight.x == 1.0){
+  vec3 oldd = diffuse.rgb;
+  float mixn = max(0.0,itsnight.y - uv1.x);
+  
+  mixn = mix(0.0, mixn, max(0.0,uv1.y - 0.2)*2.1);
+  #ifndef NEAR_WATER
+  oldd.r *= -0.1;
+  oldd.g *= 0.0;
+  oldd.b *= 1.1;
+  
+  
+  diffuse.rgb = mix(diffuse.rgb,oldd,mixn);
+  #endif
+}
+
+#ifndef NEAR_WATER
+diffuse.rgb = mix(diffuse.rgb*0.65,diffuse.rgb,sideOfS);
+diffuse.rgb *= sideOfS;
+#endif
+
+//diffuse += vec4(tlE);//torchlightE;
+
+
+
+/*if(texaa == 1.0){
+  vec4 test = texture2D( TEXTURE_0, uv0);
+  diffuse.rgb = test.rgb*color.rgb;
+}*/
+
+	gl_FragColor = diffuse;
+}

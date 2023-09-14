@@ -1,0 +1,71 @@
+// __multiversion__
+// This signals the loading code to prepend either #version 100 or #version 300 es as apropriate.
+
+// To use centroid sampling we need to have version 300 es shaders, which requires changing:
+// attribute to in
+// varying to out when in vertex shaders or in when in fragment shaders
+// defining an out vec4 FragColor and replacing uses of gl_FragColor with FragColor
+// texture2D to texture
+#if __VERSION__ >= 300
+#define attribute in
+#define varying out
+
+#else
+
+
+#endif
+
+uniform MAT4 WORLDVIEWPROJ;
+uniform vec4 FOG_COLOR;
+uniform vec4 CURRENT_COLOR;
+
+attribute mediump vec4 POSITION;
+attribute vec4 COLOR;
+
+varying vec4 color;
+
+const float fogNear = 0.3;
+
+/*
+================================
+Energy Shaders made by Lini _!
+
+with downloading, using , sharing or opening this ".zip" file you accept the terms of use.Take sure you read the terms of use before going about editing!
+
+I hope you enjoy Energy Shaders!
+================================
+*/
+
+//=//SETTINGS\\=\\
+
+
+//=//SETTINGS\\=\\
+
+/*
+================================
+with going under this line you may break the terms of use!
+================================
+*/
+
+
+void main()
+{
+gl_Position = WORLDVIEWPROJ * POSITION;
+
+vec4 fogc = FOG_COLOR;
+vec4 fognearc = COLOR;
+vec4 night = CURRENT_COLOR;
+
+
+night.g -= night.b*0.08;
+night.r -= night.b *0.7;
+night.b += night.b*0.65 + 0.25;
+
+fognearc.b *= 1000.0;
+if (fognearc.b > 1.0){
+fognearc.b = 1.0;
+}
+
+color = mix(night,fogc,fognearc.b);
+
+}

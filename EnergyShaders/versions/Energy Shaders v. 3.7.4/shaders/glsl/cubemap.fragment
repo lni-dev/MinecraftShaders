@@ -1,0 +1,151 @@
+// __multiversion__
+// This signals the loading code to prepend either #version 100 or #version 300 es as apropriate.
+
+#include "fragmentVersionCentroid.h"
+
+#if __VERSION__ >= 300
+
+#if defined(TEXEL_AA) && defined(TEXEL_AA_FEATURE)
+_centroid in highp vec2 uv;
+#else
+_centroid in vec2 uv;
+#endif
+
+#else
+
+varying vec2 uv;
+
+#endif
+
+#include "uniformShaderConstants.h"
+#include "uniformPerFrameConstants.h"
+#include "util.h"
+
+#include "settings.h"
+#include "checks.h"
+
+uniform highp float TOTAL_REAL_WORLD_TIME;
+
+LAYOUT_BINDING(0) uniform sampler2D TEXTURE_0;
+
+varying highp vec3 inPosition;
+varying vec3 inWorldPos;
+varying vec3 inScreenPos;
+
+
+
+
+//Function by Will!
+highp vec2 ra(highp vec2 p){
+		 return p + sin(acos(abs(fract(p*100.0)-0.5)*2.0))*0.004;
+}
+
+highp vec2 ran(highp vec2 p){
+		 return p;// + sin(atan(abs(fract(ra(p)*100.0)-0.5)*2.0))*0.004;
+}
+
+highp vec2 newPos(highp vec2 p, float a, float b){
+	p *= 10.0;
+	p += vec2(a, b);
+	p *= 0.4;//fract(a)*0.5;
+	p += vec2(a+ 627.83, b + 137.67);
+	p *= vec2(p.x*0.001 - a*0.001, p.y*0.001 - b*0.01);
+	p *= 0.1;
+	return p;
+}
+
+
+vec4 CloudColor(float a, vec3 fog, float dis){
+  vec3 cloudColor = vec3(1.5);
+
+  cloudColor *= fog*2.0 + getRain(FOG_CONTROL.x, FOG_CONTROL.y)*0.5;
+  cloudColor += vec3(0.1);
+
+  //cloudColor = mix(cloudColor, FOG_COLOR.rgb*1.2, 0.5);
+
+
+  cloudColor *= mix(vec3(1.0) , CLOUD_RAIN_COLOR, getRain(FOG_CONTROL.x, FOG_CONTROL.y));
+  a += 1.5*getRain(FOG_CONTROL.x, FOG_CONTROL.y);
+  cloudColor = min(vec3(1.0), cloudColor);
+
+  return vec4(cloudColor, min(0.95, a));
+}
+
+
+////////////...
+
+vec4 calcClouds(POS3 pos, sampler2D noise){
+	vec4 cloud = vec4(0.0);
+
+	highp float dis = length(pos.xz);
+
+
+
+	float disForClouds = clamp(dis*2.7, 0.0, 2.0);
+
+	disForClouds = disForClouds * max(1.0, 2.0-disForClouds);
+	disForClouds = min(1.0, disForClouds - 0.055);
+
+  #ifdef CLOUD
+  	highp float x = pos.x;// * unrealPos(pos.x, pos.z, 0.15);
+  	highp float z = pos.z;// * unrealPos(pos.x, pos.z, 0.15);
+
+
+  	cloud.a = 1.25 + max(0.0,0.7-disForClouds);
+  	z += TOTAL_REAL_WORLD_TIME * CLOUD_Z_MOVE_SCALE;
+  	x += TOTAL_REAL_WORLD_TIME * CLOUD_X_MOVE_SCALE;
+
+		float scale = 0.04;//0.2
+		vec3 n = texture2D( noise, ran(fract(vec2(x, z)*0.34*scale))).rgb;
+		vec3 nn = texture2D( noise, ran(newPos(vec2(z, x)*0.34*scale, 987.88, 289.78))).rgb;
+		vec3 n2 = texture2D( noise, fract(newPos(vec2(x, z)*scale, 829.2, 388.7))).rgb;
+		vec3 n3 = texture2D( noise, fract(newPos(vec2(x, z)*scale, 983.3423, 493.198))).rgb;
+
+		float big = (n.r * n.g + n.b * n.r+(nn.r*nn.b*.7))*2.;
+		float smol = clamp(n2.r * n2.b, 0.0, 1.0);
+		float smol2 = mix(0.5, 1.0, clamp(n3.r * n3.g + n3.b * n3.r, 0.0, 1.0));
+		cloud.a = smol * pow(big-0.1, 1.4);
+		cloud.a = clamp(cloud.a, 0.0, 0.9);
+		cloud.a *= smol2;
+		cloud.a -= 0.2;
+		cloud.a *= 1.2;
+
+
+
+  	cloud = CloudColor(cloud.a, FOG_COLOR.rgb, disForClouds);
+  #endif
+
+	return cloud;
+}
+
+vec3 calcSky(POS3 pos, vec3 fog, sampler2D noise){
+	vec3 color = SKY_COLOR(pos.y);
+	float mixFog = min(1., max(0., (pos.y+0.52)*1.5));
+	float mixClouds = 1.0-min(1., max(0., (pos.y-0.1)*3.));
+
+	#ifdef CLOUD
+		vec3 flatPos = pos/pos.y;
+		//flatPos.xz = flatPos.xz / max(1., sqrt(length(flatPos.xz)));
+		vec4 cloud = calcClouds((flatPos)*5., noise);
+		color = mix(color, cloud.rgb, max(0.0, min(1.0, cloud.a - mixClouds)));
+	#endif
+
+	//to make the night dark
+	color *= SKY_COLOR_FACT(fog);
+
+	#ifdef MIX_SKY_AND_FOG
+		color = mix(fog, color, pow(mixFog, 5.4));
+	#endif
+  return color;
+}
+
+void main()
+{
+  // reverse y (so postive is up and negative is down)
+	// and move box to center
+	highp vec3 pos = (inPosition * vec3(1., -1., 1.)) + vec3(0.0, 0.1, 0.0);
+
+	vec3 color = calcSky(normalize(pos), FOG_COLOR.rgb, TEXTURE_0).rgb;
+
+	gl_FragColor = vec4(color, 1.);
+}

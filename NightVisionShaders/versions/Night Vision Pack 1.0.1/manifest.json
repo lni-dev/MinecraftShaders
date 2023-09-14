@@ -1,0 +1,29 @@
+{
+ "format_version": 1,
+ "header": {
+  "description": "Night Vision pack updated by LinusDev",
+  "name": "Night Vision Pack",
+  "uuid": "7ebcba38-34a7-4649-9668-5be660a45852",
+  "version": [
+   1,
+   0,
+   1
+  ]
+ },
+ "modules": [
+  {
+   "description": "Night Vision pack updated by LinusDev",
+   "type": "resources",
+   "uuid": "ccc5c2d4-320b-416f-aa79-040b8f561fdb",
+   "version": [
+    1,
+    0,
+    1
+   ]
+  }
+ ],
+ "SE_info": {
+  "creator": "unknown",
+  "hash": "null"
+ }
+}
