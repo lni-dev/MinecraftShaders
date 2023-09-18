@@ -1,36 +1,34 @@
-#version 150
+#version 330 core
 
-#define ES_JAVA
+#define ES_SODIUM
 
-#moj_import <compatibility.glsl>
-#moj_import <settings.glsl>
+#import <sodium:include/compatibility.glsl>
+#import <sodium:include/settings.glsl>
 
-#moj_import <checks.glsl>
-#moj_import <tonemaps.glsl>
-#moj_import <render.glsl>
+#import <sodium:include/checks.glsl>
+#import <sodium:include/tonemaps.glsl>
+#import <sodium:include/render.glsl>
 
+in vec3 v_ColorModulator; // The interpolated vertex color
+in vec2 v_TexCoord; // The interpolated block texture coordinates
+in vec2 v_LightCoord;
 
-uniform sampler2D Sampler0;
-uniform sampler2D Sampler2;
-
-uniform vec4 ColorModulator;
-uniform float FogStart;
-uniform float FogEnd;
-uniform vec4 FogColor;
-uniform int FogShape;
-
-in vec4 vertexColor;
-
-in vec2 texCoord0;
-in vec2 texCoord2;
-
-in vec4 normal;
+in float v_MaterialMipBias;
+in float v_MaterialAlphaCutoff;
 
 in VEC3 inChunkPos;
 in VEC4 inWorldPos;
 in VEC4 inScreenPos;
 
-out vec4 fragColor;
+uniform sampler2D u_BlockTex; // The block atlas texture
+uniform sampler2D u_LightTex; // The light map texture
+
+uniform vec4 u_FogColor; // The color of the shader fog
+uniform float u_FogStart; // The starting position of the shader fog
+uniform float u_FogEnd; // The ending position of the shader fog
+uniform int u_FogShape;
+
+out vec4 out_FragColor; // The output fragment for the color framebuffer
 
 struct WorldInfo {
     VEC4 colorRaw; // texture(TEXTURE_0, texCoord0) * vertexColor * ColorModulator
@@ -39,7 +37,7 @@ struct WorldInfo {
     VEC3 playerCenteredPos; //position, centered at the players position
 
     VEC4 fogColor; // color of the background in mc (not the sky)
-    float fogStart; 
+    float fogStart;
     float fogEnd; // render distance (not really but usefull)
     int fogShape; // 0 = sphere, 1 = cylinder
 
@@ -52,7 +50,6 @@ struct WorldInfo {
 };
 
 void main() {
-
     WorldInfo worldInfo;
     worldInfo.colorRaw = ES_COLOR_RAW;
     worldInfo.normal = ES_NORMAL.xyz;
@@ -71,12 +68,10 @@ void main() {
     worldInfo.time = calcTime(ES_LIGHT_TEXTURE);
     worldInfo.cave = calcCave(ES_UV_LIGHT_TEXTURE);
 
-    
     VEC4 color = worldInfo.colorRaw;
 
-    //end here if we are rendering transparency (for example in between rails)
     #ifdef DO_ALPHA_CUTOFF
-        if (color.a < ALPHA_CUTOFF) {
+        if (color.a < v_MaterialAlphaCutoff) {
             discard;
         }
     #endif
@@ -93,33 +88,33 @@ void main() {
         ESRenderFogOverworld(color, worldInfo);
     }
 
-    
-    
+
+
 
     //Debug Stuff
     #ifdef SHOW_ES_LIGHT_TEXTURE
-        if(inChunkPos.x > 0.0 && inChunkPos.x < 1.0 && inChunkPos.z > 0.0 && inChunkPos.z < 1.0) {
-            color.rgb = texture2D(ES_LIGHT_TEXTURE, CONVERT_LIGHT_UV(inChunkPos.xz)).rgb;
-        }
+    if(inChunkPos.x > 0.0 && inChunkPos.x < 1.0 && inChunkPos.z > 0.0 && inChunkPos.z < 1.0) {
+        color.rgb = texture2D(ES_LIGHT_TEXTURE, CONVERT_LIGHT_UV(inChunkPos.xz)).rgb;
+    }
 
-        if(inChunkPos.x > 1.0 && inChunkPos.x < 1.1 && inChunkPos.z > 0.0 && inChunkPos.z < 1.0) {
-            color.rgb = VEC3(0.0, 0.0, inChunkPos.z);
-        }
+    if(inChunkPos.x > 1.0 && inChunkPos.x < 1.1 && inChunkPos.z > 0.0 && inChunkPos.z < 1.0) {
+        color.rgb = VEC3(0.0, 0.0, inChunkPos.z);
+    }
 
-        if(inChunkPos.z > 1.0 && inChunkPos.z < 1.1 && inChunkPos.x > 0.0 && inChunkPos.x < 1.0) {
-            color.rgb = VEC3(inChunkPos.x, 0.0, 0.0);
-        }
+    if(inChunkPos.z > 1.0 && inChunkPos.z < 1.1 && inChunkPos.x > 0.0 && inChunkPos.x < 1.0) {
+        color.rgb = VEC3(inChunkPos.x, 0.0, 0.0);
+    }
     #endif
 
     #ifdef SHOW_TIME
-        float value = worldInfo.time; //clamp(worldInfo.fogEnd, 0.0, 1.0); //
-        if(inChunkPos.x < 16.0 && inChunkPos.x > 15.9 && inChunkPos.z > 0.0 && inChunkPos.z < 1.0) {
-            color.rgb = VEC3(inChunkPos.z);
+    float value = worldInfo.time; //clamp(worldInfo.fogEnd, 0.0, 1.0); //
+    if(inChunkPos.x < 16.0 && inChunkPos.x > 15.9 && inChunkPos.z > 0.0 && inChunkPos.z < 1.0) {
+        color.rgb = VEC3(inChunkPos.z);
 
-            if(inChunkPos.z-0.025 < value && inChunkPos.z+0.025 > value) {
-                color.rgb = VEC3(0., 1., 0.);
-            }
+        if(inChunkPos.z-0.025 < value && inChunkPos.z+0.025 > value) {
+            color.rgb = VEC3(0., 1., 0.);
         }
+    }
     #endif
 
     ES_COLOR_OUT = color;
