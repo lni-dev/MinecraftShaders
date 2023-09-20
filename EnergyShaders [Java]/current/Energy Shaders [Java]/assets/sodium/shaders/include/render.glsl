@@ -8,24 +8,51 @@
 #define AMBIENT_H
 
 struct WorldInfo {
-    VEC4 colorRaw; // texture(TEXTURE_0, texCoord0) * vertexColor * ColorModulator
-    VEC3 normal; // normal vector
-    VEC3 screenPos; // pixel position
-    VEC3 playerCenteredPos; //position, centered at the players position
+  VEC4 colorRaw; // texture(TEXTURE_0, texCoord0) * vertexColor * ColorModulator
+  VEC3 normal; // normal vector
+  VEC3 screenPos; // pixel position
+  VEC3 playerCenteredPos; //position, centered at the players position
+  mat3 viewRotationMatrix; //player rotation
 
-    VEC4 fogColor; // color of the background in mc (not the sky)
-    float fogStart; 
-    float fogEnd; // render distance
-    int fogShape; // 0 = sphere, 1 = cylinder
+  VEC4 fogColor; // color of the background in mc (not the sky)
+  float fogStart;
+  float fogEnd; // render distance (not really but usefull)
+  int fogShape; // 0 = sphere, 1 = cylinder
 
-    float shadow; // (0.0: no shadow - 1.0: max shadow)
-    float light; // (0.0: no light - 1.0: max light)
-    float time; // (0.0: day - 1.0: night)
-    float cave; // (0.0: not in a cave - 1.0: deep in a cave)
-    bool nether;
-    bool end;
+  float shadow; // (0.0: no shadow - 1.0: max shadow)
+  float light; // (0.0: no light - 1.0: max light)
+  float time; // (0.0: day - 1.0: night)
+  float cave; // (0.0: not in a cave - 1.0: deep in a cave)
+  bool nether;
+  bool end;
+  bool gui;
 };
 
+void ESRenderGui(inout VEC4 color, in WorldInfo info) {
+  //The gui items need some shading:
+  VEC3 l1 = info.viewRotationMatrix * normalize(VEC3(-1., 2.0, 1.0));
+  color.rgb *= min(max(0.0, dot(info.normal.xyz, l1)) + 0.4, 1.0);
+
+}
+
+void ESRenderFogOverworld(inout VEC4 color, in WorldInfo info) {
+  #ifdef ES_ENABLE_FOG
+    float start = mix(ES_FOG_START, ES_CAVE_FOG_START, info.cave);
+    float startMix = mix(ES_FOG_START_MIX_WITH_MOJANG_FOG, ES_CAVE_FOG_START_MIX_WITH_MOJANG_FOG, info.cave);
+    float end = mix(ES_FOG_END, ES_CAVE_FOG_END, info.cave);
+
+    float uniformDistance = min(length(info.playerCenteredPos.xyz) / info.fogEnd, end);
+
+    float fogIntensity = smoothstep(start, startMix, uniformDistance);
+    float mixESFogAndMCFog = smoothstep(startMix, end, uniformDistance);
+
+    VEC3 esFogColor = mix(ES_FOG_COLOR_DAY, ES_FOG_COLOR_NIGHT, info.time);
+    esFogColor = mix(esFogColor, ES_CAVE_FOG_COLOR, info.cave);
+    esFogColor = mix(esFogColor, info.fogColor.rgb, mixESFogAndMCFog);
+
+    color.rgb = mix(color.rgb, esFogColor, fogIntensity);
+  #endif
+}
 
 void ESRenderOverworld(inout VEC4 color, in WorldInfo info) {
 
@@ -71,6 +98,8 @@ void ESRenderOverworld(inout VEC4 color, in WorldInfo info) {
     color.rgb = burgess(color.rgb);
   #endif
 
+  ESRenderFogOverworld(color, info);
+
   #ifdef VIGNETTE
     VEC3 vignetteColor = mix(VIGNETTE_COLOR_DAY, VIGNETTE_COLOR_NIGHT, info.time);
     vignetteColor = mix(vignetteColor, VIGNETTE_COLOR_CAVE, info.cave);
@@ -80,21 +109,25 @@ void ESRenderOverworld(inout VEC4 color, in WorldInfo info) {
   #endif
 }
 
-void ESRenderFogOverworld(inout VEC4 color, in WorldInfo info) {
-  float start = mix(ES_FOG_START, ES_CAVE_FOG_START, info.cave);
-  float startMix = mix(ES_FOG_START_MIX_WITH_MOJANG_FOG, ES_CAVE_FOG_START_MIX_WITH_MOJANG_FOG, info.cave);
-  float end = mix(ES_FOG_END, ES_CAVE_FOG_END, info.cave);
+
+
+
+void ESRenderFogNether(inout VEC4 color, in WorldInfo info) {
+  #ifdef ES_NETHER_ENABLE_FOG
+  float start = ES_NETHER_FOG_START;
+  float startMix = ES_NETHER_FOG_START_MIX_WITH_MOJANG_FOG;
+  float end = ES_NETHER_FOG_END;
 
   float uniformDistance = min(length(info.playerCenteredPos.xyz) / info.fogEnd, end);
 
   float fogIntensity = smoothstep(start, startMix, uniformDistance);
   float mixESFogAndMCFog = smoothstep(startMix, end, uniformDistance);
 
-  VEC3 esFogColor = mix(ES_FOG_COLOR_DAY, ES_FOG_COLOR_NIGHT, info.time);
-  esFogColor = mix(esFogColor, ES_CAVE_FOG_COLOR, info.cave);
+  VEC3 esFogColor = ES_NETHER_FOG_COLOR(info.fogColor.rgb);
   esFogColor = mix(esFogColor, info.fogColor.rgb, mixESFogAndMCFog);
 
   color.rgb = mix(color.rgb, esFogColor, fogIntensity);
+  #endif
 }
 
 void ESRenderNether(inout VEC4 color, in WorldInfo info) {
@@ -126,6 +159,13 @@ void ESRenderNether(inout VEC4 color, in WorldInfo info) {
     color.rgb = burgess(color.rgb);
   #endif
 
+  if(info.gui) {
+    //Don't draw fog or vignette in gui
+    return;
+  }
+
+  ESRenderFogNether(color, info);
+
   #ifdef VIGNETTE
     VEC3 vignetteColor = VIGNETTE_COLOR_NETHER;
     float range = length(info.screenPos.xy / (info.screenPos.z + 0.1)) * 0.85;
@@ -134,23 +174,26 @@ void ESRenderNether(inout VEC4 color, in WorldInfo info) {
   #endif
 }
 
-void ESRenderFogNether(inout VEC4 color, in WorldInfo info) {
-  float start = ES_NETHER_FOG_START;
-  float startMix = ES_NETHER_FOG_START_MIX_WITH_MOJANG_FOG;
-  float end = ES_NETHER_FOG_END;
+
+
+
+void ESRenderFogEnd(inout VEC4 color, in WorldInfo info) {
+  #ifdef ES_END_ENABLE_FOG
+  float start = ES_END_FOG_START;
+  float startMix = ES_END_FOG_START_MIX_WITH_MOJANG_FOG;
+  float end = ES_END_FOG_END;
 
   float uniformDistance = min(length(info.playerCenteredPos.xyz) / info.fogEnd, end);
 
   float fogIntensity = smoothstep(start, startMix, uniformDistance);
   float mixESFogAndMCFog = smoothstep(startMix, end, uniformDistance);
 
-  VEC3 esFogColor = ES_NETHER_FOG_COLOR(info.fogColor.rgb);
+  VEC3 esFogColor = ES_END_FOG_COLOR;
   esFogColor = mix(esFogColor, info.fogColor.rgb, mixESFogAndMCFog);
 
   color.rgb = mix(color.rgb, esFogColor, fogIntensity);
+  #endif
 }
-
-
 
 void ESRenderEnd(inout VEC4 color, in WorldInfo info) {
 
@@ -181,6 +224,13 @@ void ESRenderEnd(inout VEC4 color, in WorldInfo info) {
     color.rgb = burgess(color.rgb);
   #endif
 
+  if(info.gui) {
+    //Don't draw fog or vignette in gui
+    return;
+  }
+
+  ESRenderFogEnd(color, info);
+
   #ifdef VIGNETTE
     VEC3 vignetteColor = VIGNETTE_COLOR_END;
     float range = length(info.screenPos.xy / (info.screenPos.z + 0.1)) * 0.85;
@@ -189,20 +239,6 @@ void ESRenderEnd(inout VEC4 color, in WorldInfo info) {
   #endif
 }
 
-void ESRenderFogEnd(inout VEC4 color, in WorldInfo info) {
-  float start = ES_END_FOG_START;
-  float startMix = ES_END_FOG_START_MIX_WITH_MOJANG_FOG;
-  float end = ES_END_FOG_END;
 
-  float uniformDistance = min(length(info.playerCenteredPos.xyz) / info.fogEnd, end);
-
-  float fogIntensity = smoothstep(start, startMix, uniformDistance);
-  float mixESFogAndMCFog = smoothstep(startMix, end, uniformDistance);
-
-  VEC3 esFogColor = ES_END_FOG_COLOR;
-  esFogColor = mix(esFogColor, info.fogColor.rgb, mixESFogAndMCFog);
-
-  color.rgb = mix(color.rgb, esFogColor, fogIntensity);
-}
 
 #endif

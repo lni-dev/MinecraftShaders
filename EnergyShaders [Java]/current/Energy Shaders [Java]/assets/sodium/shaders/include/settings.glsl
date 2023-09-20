@@ -11,6 +11,10 @@
   #undef SHOW_ES_LIGHT_TEXTURE
   #undef SHOW_TIME
 
+  //# ES_RenderInfo
+  #define ES_RI_DO_ALPHA_CUTOFF ((ES_RenderInfo & 1) > 0)
+  #define ES_RI_GET_ALPHA_CUTOFF ((ES_RenderInfo & 2) > 0 ? 0.9 : 0.1)
+
   //# Shadow
 
   #define SHADOW
@@ -79,7 +83,7 @@
 
 
   //# Fog
-
+  #define ES_ENABLE_FOG
   #define ES_FOG_END 1.05
   #define ES_FOG_START 0.5
   #define ES_FOG_START_MIX_WITH_MOJANG_FOG 0.90
@@ -91,11 +95,13 @@
   #define ES_CAVE_FOG_START_MIX_WITH_MOJANG_FOG ES_FOG_START_MIX_WITH_MOJANG_FOG
   #define ES_CAVE_FOG_COLOR VEC3(0.01, 0.05, 0.1)
 
+  #define ES_NETHER_ENABLE_FOG
   #define ES_NETHER_FOG_END 1.6
   #define ES_NETHER_FOG_START 0.3
   #define ES_NETHER_FOG_START_MIX_WITH_MOJANG_FOG 1.2
   #define ES_NETHER_FOG_COLOR(MC_FOG) (VEC3(1.2, 0.6, 0.6) * MC_FOG)
 
+  #define ES_END_ENABLE_FOG
   #define ES_END_FOG_END ES_FOG_END
   #define ES_END_FOG_START 0.1
   #define ES_END_FOG_START_MIX_WITH_MOJANG_FOG ES_FOG_START_MIX_WITH_MOJANG_FOG

@@ -30,8 +30,6 @@
     #define ES_VERTEX_COLOR vertexColor
     #define ES_COLOR_MODULATOR ColorModulator
     #define ES_COLOR_RAW (texture(ES_TEXTURE_ATLAS, ES_UV_TEXTURE_ATLAS) * ES_VERTEX_COLOR * ES_COLOR_MODULATOR)
-    #define ALPHA_CUTOFF 0.1
-    #define DO_ALPHA_CUTOFF
     #define ES_COLOR_OUT fragColor
 
     #define ES_NORMAL normal

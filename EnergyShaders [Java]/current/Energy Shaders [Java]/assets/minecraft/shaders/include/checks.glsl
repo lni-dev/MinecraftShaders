@@ -24,6 +24,7 @@ float calcShadow(in VEC2 uv1, in VEC3 normal, in bool nether, in bool end) {
 
   #ifdef SHADOW_BLOCK_SIDE
     if(!nether && !end) {
+
       shadow = clamp(shadow + abs(normal.z) - min(normal.y, 0.0), 0.0, 1.0);
     }
   #endif
