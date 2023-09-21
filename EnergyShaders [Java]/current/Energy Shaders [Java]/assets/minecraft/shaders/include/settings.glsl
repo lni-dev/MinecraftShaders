@@ -8,12 +8,16 @@
   #define SETTINGS_H
 
   //# Debug
-  #undef SHOW_ES_LIGHT_TEXTURE
-  #undef SHOW_TIME
+  #undef DEBUG_SHOW_ES_LIGHT_TEXTURE
+  #undef DEBUG_SHOW_TIME
+  #undef DEBUG_SHOW_NORMAL
 
   //# ES_RenderInfo
   #define ES_RI_DO_ALPHA_CUTOFF ((ES_RenderInfo & 1) > 0)
   #define ES_RI_GET_ALPHA_CUTOFF ((ES_RenderInfo & 2) > 0 ? 0.9 : 0.1)
+  // 3: reserved
+  #define ES_RI_DO_MIX_OVERLAY_COLOR ((ES_RenderInfo & 4) == 0)
+  #define ES_RI_HAS_NORMAL ((ES_RenderInfo & 8) == 0)
 
   //# Shadow
 

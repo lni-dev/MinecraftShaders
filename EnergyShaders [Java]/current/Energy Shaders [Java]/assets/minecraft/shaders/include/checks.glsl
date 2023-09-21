@@ -8,7 +8,7 @@
  * @param uv1 coordinates in the minecraft lighting texture
  * @param normal normal vector
  */
-float calcShadow(in VEC2 uv1, in VEC3 normal, in bool nether, in bool end) {
+float calcShadow(in VEC2 uv1, in bool hasNormal, in VEC3 normal, in bool nether, in bool end) {
   float shadow = 0.0;
   #ifdef SHADOW
     if(uv1.y <= SHADOW_WIDTH){	//if rendering in shadow
@@ -23,8 +23,7 @@ float calcShadow(in VEC2 uv1, in VEC3 normal, in bool nether, in bool end) {
   #endif
 
   #ifdef SHADOW_BLOCK_SIDE
-    if(!nether && !end) {
-
+    if(!nether && !end && hasNormal) {
       shadow = clamp(shadow + abs(normal.z) - min(normal.y, 0.0), 0.0, 1.0);
     }
   #endif

@@ -26,6 +26,7 @@ struct WorldInfo {
   bool nether;
   bool end;
   bool gui;
+  bool hasNormal;
 };
 
 void ESRenderGui(inout VEC4 color, in WorldInfo info) {

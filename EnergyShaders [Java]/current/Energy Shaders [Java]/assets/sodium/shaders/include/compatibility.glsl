@@ -69,6 +69,9 @@
     #define ES_IN_FOG_END u_FogEnd
     #define ES_IN_FOG_SHAPE u_FogShape
     #define ES_IN_FOG_COLOR u_FogColor
+
+    //custom uniforms dont exist on Sodium, so set it to a fixed value
+    #define ES_RenderInfo (4)
   #endif
 
   //Minecraft Bedrock GLSL

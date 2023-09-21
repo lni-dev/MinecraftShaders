@@ -49,14 +49,19 @@ struct WorldInfo {
     bool nether;
     bool end;
     bool gui;
+    bool hasNormal;
 };
 
 void main() {
     WorldInfo worldInfo;
     worldInfo.colorRaw = ES_COLOR_RAW;
     worldInfo.normal = ES_NORMAL.xyz;
+    worldInfo.hasNormal = ES_RI_HAS_NORMAL;
     worldInfo.screenPos = inScreenPos.xyz;
     worldInfo.playerCenteredPos = inWorldPos.xyz;
+    #ifdef ES_JAVA
+        worldInfo.viewRotationMatrix = IViewRotMat;
+    #endif
 
     worldInfo.fogColor = ES_IN_FOG_COLOR;
     worldInfo.fogStart = ES_IN_FOG_START;
@@ -66,7 +71,7 @@ void main() {
     calcDimension(ES_LIGHT_TEXTURE, worldInfo.nether, worldInfo.end);
     worldInfo.gui = worldInfo.fogStart > worldInfo.fogEnd;
 
-    worldInfo.shadow = calcShadow(ES_UV_LIGHT_TEXTURE, worldInfo.normal, worldInfo.nether, worldInfo.end);
+    worldInfo.shadow = calcShadow(ES_UV_LIGHT_TEXTURE, worldInfo.hasNormal, worldInfo.normal, worldInfo.nether, worldInfo.end);
     worldInfo.light = calcLight(ES_UV_LIGHT_TEXTURE, worldInfo.normal);
     worldInfo.time = calcTime(ES_LIGHT_TEXTURE);
     worldInfo.cave = calcCave(ES_UV_LIGHT_TEXTURE);
@@ -74,16 +79,22 @@ void main() {
     VEC4 color = worldInfo.colorRaw;
 
     #ifdef ES_JAVA
-        if (ES_RI_DO_ALPHA_CUTOFF && color.a < ES_RI_GET_ALPHA_CUTOFF) {
-            discard;
-        }
+    if (ES_RI_DO_ALPHA_CUTOFF && color.a < ES_RI_GET_ALPHA_CUTOFF) {
+        discard;
+    }
     #endif
     #ifdef ES_SODIUM
-        #ifdef DO_ALPHA_CUTOFF
-            if (color.a < v_MaterialAlphaCutoff) {
-                discard;
-            }
-        #endif
+    #ifdef DO_ALPHA_CUTOFF
+    if (color.a < v_MaterialAlphaCutoff) {
+        discard;
+    }
+    #endif
+    #endif
+
+    #ifdef ES_JAVA
+    if(ES_RI_DO_MIX_OVERLAY_COLOR) {
+        color.rgb = mix(overlayColor.rgb, color.rgb, overlayColor.a);
+    }
     #endif
 
     if(worldInfo.gui) {
@@ -96,11 +107,8 @@ void main() {
         ESRenderOverworld(color, worldInfo);
     }
 
-
-
-
     //Debug Stuff
-    #ifdef SHOW_ES_LIGHT_TEXTURE
+    #ifdef DEBUG_SHOW_ES_LIGHT_TEXTURE
     if(inChunkPos.x > 0.0 && inChunkPos.x < 1.0 && inChunkPos.z > 0.0 && inChunkPos.z < 1.0) {
         color.rgb = texture2D(ES_LIGHT_TEXTURE, CONVERT_LIGHT_UV(inChunkPos.xz)).rgb;
     }
@@ -114,7 +122,7 @@ void main() {
     }
     #endif
 
-    #ifdef SHOW_TIME
+    #ifdef DEBUG_SHOW_TIME
     float value = worldInfo.time; //clamp(worldInfo.fogEnd, 0.0, 1.0); //
     if(inChunkPos.x < 16.0 && inChunkPos.x > 15.9 && inChunkPos.z > 0.0 && inChunkPos.z < 1.0) {
         color.rgb = VEC3(inChunkPos.z);
@@ -123,6 +131,11 @@ void main() {
             color.rgb = VEC3(0., 1., 0.);
         }
     }
+    #endif
+
+    #ifdef DEBUG_SHOW_NORMAL
+    if(worldInfo.hasNormal) color.rgba = VEC4(abs(normal.rgb), 1.0);
+    else color.rgba = VEC4(VEC3(0.0), 1.0);
     #endif
 
     ES_COLOR_OUT = color;

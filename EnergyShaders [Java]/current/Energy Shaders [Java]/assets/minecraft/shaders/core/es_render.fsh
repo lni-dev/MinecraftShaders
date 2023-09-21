@@ -24,7 +24,6 @@ uniform int ES_RenderInfo;
 in vec4 vertexColor;
 in vec4 overlayColor;
 in vec2 texCoord0;
-in vec2 texCoord1;
 in vec2 texCoord2;
 in vec4 normal;
 
@@ -53,6 +52,7 @@ struct WorldInfo {
     bool nether;
     bool end;
     bool gui;
+    bool hasNormal;
 };
 
 void main() {
@@ -60,9 +60,12 @@ void main() {
     WorldInfo worldInfo;
     worldInfo.colorRaw = ES_COLOR_RAW;
     worldInfo.normal = ES_NORMAL.xyz;
+    worldInfo.hasNormal = ES_RI_HAS_NORMAL;
     worldInfo.screenPos = inScreenPos.xyz;
     worldInfo.playerCenteredPos = inWorldPos.xyz;
-    worldInfo.viewRotationMatrix = IViewRotMat;
+    #ifdef ES_JAVA
+        worldInfo.viewRotationMatrix = IViewRotMat;
+    #endif
 
     worldInfo.fogColor = ES_IN_FOG_COLOR;
     worldInfo.fogStart = ES_IN_FOG_START;
@@ -72,7 +75,7 @@ void main() {
     calcDimension(ES_LIGHT_TEXTURE, worldInfo.nether, worldInfo.end);
     worldInfo.gui = worldInfo.fogStart > worldInfo.fogEnd;
 
-    worldInfo.shadow = calcShadow(ES_UV_LIGHT_TEXTURE, worldInfo.normal, worldInfo.nether, worldInfo.end);
+    worldInfo.shadow = calcShadow(ES_UV_LIGHT_TEXTURE, worldInfo.hasNormal, worldInfo.normal, worldInfo.nether, worldInfo.end);
     worldInfo.light = calcLight(ES_UV_LIGHT_TEXTURE, worldInfo.normal);
     worldInfo.time = calcTime(ES_LIGHT_TEXTURE);
     worldInfo.cave = calcCave(ES_UV_LIGHT_TEXTURE);
@@ -92,7 +95,11 @@ void main() {
         #endif
     #endif
 
-    color.rgb = mix(overlayColor.rgb, color.rgb, overlayColor.a);
+    #ifdef ES_JAVA
+        if(ES_RI_DO_MIX_OVERLAY_COLOR) {
+            color.rgb = mix(overlayColor.rgb, color.rgb, overlayColor.a);
+        }
+    #endif
 
     if(worldInfo.gui) {
         ESRenderGui(color, worldInfo);
@@ -104,6 +111,36 @@ void main() {
         ESRenderOverworld(color, worldInfo);
     }
 
-    fragColor = color;
+    //Debug Stuff
+    #ifdef DEBUG_SHOW_ES_LIGHT_TEXTURE
+        if(inChunkPos.x > 0.0 && inChunkPos.x < 1.0 && inChunkPos.z > 0.0 && inChunkPos.z < 1.0) {
+            color.rgb = texture2D(ES_LIGHT_TEXTURE, CONVERT_LIGHT_UV(inChunkPos.xz)).rgb;
+        }
 
+        if(inChunkPos.x > 1.0 && inChunkPos.x < 1.1 && inChunkPos.z > 0.0 && inChunkPos.z < 1.0) {
+            color.rgb = VEC3(0.0, 0.0, inChunkPos.z);
+        }
+
+        if(inChunkPos.z > 1.0 && inChunkPos.z < 1.1 && inChunkPos.x > 0.0 && inChunkPos.x < 1.0) {
+            color.rgb = VEC3(inChunkPos.x, 0.0, 0.0);
+        }
+    #endif
+
+    #ifdef DEBUG_SHOW_TIME
+        float value = worldInfo.time; //clamp(worldInfo.fogEnd, 0.0, 1.0); //
+        if(inChunkPos.x < 16.0 && inChunkPos.x > 15.9 && inChunkPos.z > 0.0 && inChunkPos.z < 1.0) {
+            color.rgb = VEC3(inChunkPos.z);
+
+            if(inChunkPos.z-0.025 < value && inChunkPos.z+0.025 > value) {
+                color.rgb = VEC3(0., 1., 0.);
+            }
+        }
+    #endif
+
+    #ifdef DEBUG_SHOW_NORMAL
+        if(worldInfo.hasNormal) color.rgba = VEC4(abs(normal.rgb), 1.0);
+        else color.rgba = VEC4(VEC3(0.0), 1.0);
+    #endif
+
+    ES_COLOR_OUT = color;
 }
