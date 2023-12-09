@@ -2,12 +2,12 @@
 
 #define ES_SODIUM
 
-#import <minecraft:include/compatibility.glsl>
-#import <minecraft:include/settings.glsl>
+#import <sodium:include/compatibility.glsl>
+#import <sodium:include/settings.glsl>
 
-#import <minecraft:include/checks.glsl>
-#import <minecraft:include/tonemaps.glsl>
-#import <minecraft:include/render.glsl>
+#import <sodium:include/checks.glsl>
+#import <sodium:include/tonemaps.glsl>
+#import <sodium:include/render.glsl>
 
 in vec3 v_ColorModulator; // The interpolated vertex color
 in vec2 v_TexCoord; // The interpolated block texture coordinates

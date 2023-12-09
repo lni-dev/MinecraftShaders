@@ -1,34 +1,37 @@
-#version 330 core
+#version 150
 
-#define ES_SODIUM
+#define ES_JAVA
 
-#import <minecraft:include/compatibility.glsl>
-#import <minecraft:include/settings.glsl>
+#moj_import <compatibility.glsl>
+#moj_import <settings.glsl>
 
-#import <minecraft:include/checks.glsl>
-#import <minecraft:include/tonemaps.glsl>
-#import <minecraft:include/render.glsl>
+#moj_import <checks.glsl>
+#moj_import <tonemaps.glsl>
+#moj_import <render.glsl>
 
-in vec3 v_ColorModulator; // The interpolated vertex color
-in vec2 v_TexCoord; // The interpolated block texture coordinates
-in vec2 v_LightCoord;
+uniform sampler2D Sampler0;
+uniform sampler2D Sampler1;
+uniform sampler2D Sampler2;
 
-in float v_MaterialMipBias;
-in float v_MaterialAlphaCutoff;
+uniform vec4 ColorModulator;
+uniform float FogStart;
+uniform float FogEnd;
+uniform vec4 FogColor;
+uniform int FogShape;
+uniform mat3 IViewRotMat;
+uniform int ES_RenderInfo;
+
+in vec4 vertexColor;
+in vec4 overlayColor;
+in vec2 texCoord0;
+in vec2 texCoord2;
+in vec4 normal;
 
 in VEC3 inChunkPos;
 in VEC4 inWorldPos;
 in VEC4 inScreenPos;
 
-uniform sampler2D u_BlockTex; // The block atlas texture
-uniform sampler2D u_LightTex; // The light map texture
-
-uniform vec4 u_FogColor; // The color of the shader fog
-uniform float u_FogStart; // The starting position of the shader fog
-uniform float u_FogEnd; // The ending position of the shader fog
-uniform int u_FogShape;
-
-out vec4 out_FragColor; // The output fragment for the color framebuffer
+out VEC4 fragColor;
 
 struct WorldInfo {
     VEC4 colorRaw; // texture(TEXTURE_0, texCoord0) * vertexColor * ColorModulator
@@ -53,6 +56,7 @@ struct WorldInfo {
 };
 
 void main() {
+
     WorldInfo worldInfo;
     worldInfo.colorRaw = ES_COLOR_RAW;
     worldInfo.normal = ES_NORMAL.xyz;
@@ -79,22 +83,22 @@ void main() {
     VEC4 color = worldInfo.colorRaw;
 
     #ifdef ES_JAVA
-    if (ES_RI_DO_ALPHA_CUTOFF && color.a < ES_RI_GET_ALPHA_CUTOFF) {
-        discard;
-    }
+        if (ES_RI_DO_ALPHA_CUTOFF && color.a < ES_RI_GET_ALPHA_CUTOFF) {
+            discard;
+        }
     #endif
     #ifdef ES_SODIUM
-    #ifdef DO_ALPHA_CUTOFF
-    if (color.a < v_MaterialAlphaCutoff) {
-        discard;
-    }
-    #endif
+        #ifdef DO_ALPHA_CUTOFF
+            if (color.a < v_MaterialAlphaCutoff) {
+                discard;
+            }
+        #endif
     #endif
 
     #ifdef ES_JAVA
-    if(ES_RI_DO_MIX_OVERLAY_COLOR) {
-        color.rgb = mix(overlayColor.rgb, color.rgb, overlayColor.a);
-    }
+        if(ES_RI_DO_MIX_OVERLAY_COLOR) {
+            color.rgb = mix(overlayColor.rgb, color.rgb, overlayColor.a);
+        }
     #endif
 
     if(worldInfo.gui) {
@@ -109,33 +113,33 @@ void main() {
 
     //Debug Stuff
     #ifdef DEBUG_SHOW_ES_LIGHT_TEXTURE
-    if(inChunkPos.x > 0.0 && inChunkPos.x < 1.0 && inChunkPos.z > 0.0 && inChunkPos.z < 1.0) {
-        color.rgb = texture2D(ES_LIGHT_TEXTURE, CONVERT_LIGHT_UV(inChunkPos.xz)).rgb;
-    }
+        if(inChunkPos.x > 0.0 && inChunkPos.x < 1.0 && inChunkPos.z > 0.0 && inChunkPos.z < 1.0) {
+            color.rgb = texture2D(ES_LIGHT_TEXTURE, CONVERT_LIGHT_UV(inChunkPos.xz)).rgb;
+        }
 
-    if(inChunkPos.x > 1.0 && inChunkPos.x < 1.1 && inChunkPos.z > 0.0 && inChunkPos.z < 1.0) {
-        color.rgb = VEC3(0.0, 0.0, inChunkPos.z);
-    }
+        if(inChunkPos.x > 1.0 && inChunkPos.x < 1.1 && inChunkPos.z > 0.0 && inChunkPos.z < 1.0) {
+            color.rgb = VEC3(0.0, 0.0, inChunkPos.z);
+        }
 
-    if(inChunkPos.z > 1.0 && inChunkPos.z < 1.1 && inChunkPos.x > 0.0 && inChunkPos.x < 1.0) {
-        color.rgb = VEC3(inChunkPos.x, 0.0, 0.0);
-    }
+        if(inChunkPos.z > 1.0 && inChunkPos.z < 1.1 && inChunkPos.x > 0.0 && inChunkPos.x < 1.0) {
+            color.rgb = VEC3(inChunkPos.x, 0.0, 0.0);
+        }
     #endif
 
     #ifdef DEBUG_SHOW_TIME
-    float value = worldInfo.time; //clamp(worldInfo.fogEnd, 0.0, 1.0); //
-    if(inChunkPos.x < 16.0 && inChunkPos.x > 15.9 && inChunkPos.z > 0.0 && inChunkPos.z < 1.0) {
-        color.rgb = VEC3(inChunkPos.z);
+        float value = worldInfo.time; //clamp(worldInfo.fogEnd, 0.0, 1.0); //
+        if(inChunkPos.x < 16.0 && inChunkPos.x > 15.9 && inChunkPos.z > 0.0 && inChunkPos.z < 1.0) {
+            color.rgb = VEC3(inChunkPos.z);
 
-        if(inChunkPos.z-0.025 < value && inChunkPos.z+0.025 > value) {
-            color.rgb = VEC3(0., 1., 0.);
+            if(inChunkPos.z-0.025 < value && inChunkPos.z+0.025 > value) {
+                color.rgb = VEC3(0., 1., 0.);
+            }
         }
-    }
     #endif
 
     #ifdef DEBUG_SHOW_NORMAL
-    if(worldInfo.hasNormal) color.rgba = VEC4(abs(normal.rgb), 1.0);
-    else color.rgba = VEC4(VEC3(0.0), 1.0);
+        if(worldInfo.hasNormal) color.rgba = VEC4(abs(normal.rgb), 1.0);
+        else color.rgba = VEC4(VEC3(0.0), 1.0);
     #endif
 
     ES_COLOR_OUT = color;

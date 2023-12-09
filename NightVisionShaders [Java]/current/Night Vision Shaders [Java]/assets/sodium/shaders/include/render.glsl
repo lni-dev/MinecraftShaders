@@ -39,17 +39,25 @@ void ESRenderGui(inout VEC4 color, in WorldInfo info) {
 void ESRenderFogOverworld(inout VEC4 color, in WorldInfo info) {
   #ifdef ES_ENABLE_FOG
     float start = mix(ES_FOG_START, ES_CAVE_FOG_START, info.cave);
-    float startMix = mix(ES_FOG_START_MIX_WITH_MOJANG_FOG, ES_CAVE_FOG_START_MIX_WITH_MOJANG_FOG, info.cave);
+    #ifdef MIX_ES_FOG_AND_MC_FOG
+      float startMix = mix(ES_FOG_START_MIX_WITH_MOJANG_FOG, ES_CAVE_FOG_START_MIX_WITH_MOJANG_FOG, info.cave);
+    #endif
     float end = mix(ES_FOG_END, ES_CAVE_FOG_END, info.cave);
 
-    float uniformDistance = min(length(info.playerCenteredPos.xyz) / info.fogEnd, end);
+    float uniformDistance = min(length(info.playerCenteredPos.xyz) / max(info.fogEnd, ES_FOG_MIN_DISTANCE), end);
 
-    float fogIntensity = smoothstep(start, startMix, uniformDistance);
-    float mixESFogAndMCFog = smoothstep(startMix, end, uniformDistance);
+    #ifdef MIX_ES_FOG_AND_MC_FOG
+      float fogIntensity = smoothstep(start, startMix, uniformDistance);
+      float mixESFogAndMCFog = smoothstep(startMix, end, uniformDistance);
+    #else
+      float fogIntensity = smoothstep(start, end, uniformDistance);
+    #endif
 
-    VEC3 esFogColor = mix(ES_FOG_COLOR_DAY, ES_FOG_COLOR_NIGHT, info.time);
-    esFogColor = mix(esFogColor, ES_CAVE_FOG_COLOR, info.cave);
-    esFogColor = mix(esFogColor, info.fogColor.rgb, mixESFogAndMCFog);
+    VEC3 esFogColor = mix(ES_FOG_COLOR_DAY(info.fogColor.rgb, color.rgb), ES_FOG_COLOR_NIGHT(info.fogColor.rgb, color.rgb), info.time);
+    esFogColor = mix(esFogColor, ES_CAVE_FOG_COLOR(info.fogColor.rgb, color.rgb), info.cave);
+    #ifdef MIX_ES_FOG_AND_MC_FOG
+      esFogColor = mix(esFogColor, info.fogColor.rgb, mixESFogAndMCFog);
+    #endif
 
     color.rgb = mix(color.rgb, esFogColor, fogIntensity);
   #endif
@@ -115,19 +123,27 @@ void ESRenderOverworld(inout VEC4 color, in WorldInfo info) {
 
 void ESRenderFogNether(inout VEC4 color, in WorldInfo info) {
   #ifdef ES_NETHER_ENABLE_FOG
-  float start = ES_NETHER_FOG_START;
-  float startMix = ES_NETHER_FOG_START_MIX_WITH_MOJANG_FOG;
-  float end = ES_NETHER_FOG_END;
+    float start = ES_NETHER_FOG_START;
+    #ifdef MIX_ES_FOG_AND_MC_FOG
+      float startMix = ES_NETHER_FOG_START_MIX_WITH_MOJANG_FOG;
+    #endif
+    float end = ES_NETHER_FOG_END;
 
-  float uniformDistance = min(length(info.playerCenteredPos.xyz) / info.fogEnd, end);
+    float uniformDistance = min(length(info.playerCenteredPos.xyz) / max(info.fogEnd, ES_FOG_MIN_DISTANCE), end);
 
-  float fogIntensity = smoothstep(start, startMix, uniformDistance);
-  float mixESFogAndMCFog = smoothstep(startMix, end, uniformDistance);
+    #ifdef MIX_ES_FOG_AND_MC_FOG
+      float fogIntensity = smoothstep(start, startMix, uniformDistance);
+      float mixESFogAndMCFog = smoothstep(startMix, end, uniformDistance);
+    #else
+      float fogIntensity = smoothstep(start, end, uniformDistance);
+    #endif
 
-  VEC3 esFogColor = ES_NETHER_FOG_COLOR(info.fogColor.rgb);
-  esFogColor = mix(esFogColor, info.fogColor.rgb, mixESFogAndMCFog);
+    VEC3 esFogColor = ES_NETHER_FOG_COLOR(info.fogColor.rgb, color.rgb);
+    #ifdef MIX_ES_FOG_AND_MC_FOG
+      esFogColor = mix(esFogColor, info.fogColor.rgb, mixESFogAndMCFog);
+    #endif
 
-  color.rgb = mix(color.rgb, esFogColor, fogIntensity);
+    color.rgb = mix(color.rgb, esFogColor, fogIntensity);
   #endif
 }
 
@@ -180,19 +196,27 @@ void ESRenderNether(inout VEC4 color, in WorldInfo info) {
 
 void ESRenderFogEnd(inout VEC4 color, in WorldInfo info) {
   #ifdef ES_END_ENABLE_FOG
-  float start = ES_END_FOG_START;
-  float startMix = ES_END_FOG_START_MIX_WITH_MOJANG_FOG;
-  float end = ES_END_FOG_END;
+    float start = ES_END_FOG_START;
+    #ifdef MIX_ES_FOG_AND_MC_FOG
+      float startMix = ES_END_FOG_START_MIX_WITH_MOJANG_FOG;
+    #endif
+    float end = ES_END_FOG_END;
 
-  float uniformDistance = min(length(info.playerCenteredPos.xyz) / info.fogEnd, end);
+    float uniformDistance = min(length(info.playerCenteredPos.xyz) / max(info.fogEnd, ES_FOG_MIN_DISTANCE), end);
 
-  float fogIntensity = smoothstep(start, startMix, uniformDistance);
-  float mixESFogAndMCFog = smoothstep(startMix, end, uniformDistance);
+    #ifdef MIX_ES_FOG_AND_MC_FOG
+      float fogIntensity = smoothstep(start, startMix, uniformDistance);
+      float mixESFogAndMCFog = smoothstep(startMix, end, uniformDistance);
+    #else
+      float fogIntensity = smoothstep(start, end, uniformDistance);
+    #endif
 
-  VEC3 esFogColor = ES_END_FOG_COLOR;
-  esFogColor = mix(esFogColor, info.fogColor.rgb, mixESFogAndMCFog);
+    VEC3 esFogColor = ES_END_FOG_COLOR(info.fogColor.rgb, color.grb);
+    #ifdef MIX_ES_FOG_AND_MC_FOG
+      esFogColor = mix(esFogColor, info.fogColor.rgb, mixESFogAndMCFog);
+    #endif
 
-  color.rgb = mix(color.rgb, esFogColor, fogIntensity);
+    color.rgb = mix(color.rgb, esFogColor, fogIntensity);
   #endif
 }
 

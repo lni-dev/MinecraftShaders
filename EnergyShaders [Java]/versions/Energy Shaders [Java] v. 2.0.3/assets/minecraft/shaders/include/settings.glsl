@@ -89,6 +89,8 @@
   #define ES_ENABLE_FOG
   #define MIX_ES_FOG_AND_MC_FOG
 
+  #define ES_FOG_MIN_DISTANCE 0.0
+
   #define ES_FOG_END 1.05
   #define ES_FOG_START 0.5
   #define ES_FOG_START_MIX_WITH_MOJANG_FOG 0.90

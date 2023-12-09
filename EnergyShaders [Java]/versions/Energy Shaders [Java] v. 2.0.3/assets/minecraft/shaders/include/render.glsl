@@ -44,7 +44,7 @@ void ESRenderFogOverworld(inout VEC4 color, in WorldInfo info) {
     #endif
     float end = mix(ES_FOG_END, ES_CAVE_FOG_END, info.cave);
 
-    float uniformDistance = min(length(info.playerCenteredPos.xyz) / info.fogEnd, end);
+    float uniformDistance = min(length(info.playerCenteredPos.xyz) / max(info.fogEnd, ES_FOG_MIN_DISTANCE), end);
 
     #ifdef MIX_ES_FOG_AND_MC_FOG
       float fogIntensity = smoothstep(start, startMix, uniformDistance);
@@ -129,7 +129,7 @@ void ESRenderFogNether(inout VEC4 color, in WorldInfo info) {
     #endif
     float end = ES_NETHER_FOG_END;
 
-    float uniformDistance = min(length(info.playerCenteredPos.xyz) / info.fogEnd, end);
+    float uniformDistance = min(length(info.playerCenteredPos.xyz) / max(info.fogEnd, ES_FOG_MIN_DISTANCE), end);
 
     #ifdef MIX_ES_FOG_AND_MC_FOG
       float fogIntensity = smoothstep(start, startMix, uniformDistance);
@@ -202,7 +202,7 @@ void ESRenderFogEnd(inout VEC4 color, in WorldInfo info) {
     #endif
     float end = ES_END_FOG_END;
 
-    float uniformDistance = min(length(info.playerCenteredPos.xyz) / info.fogEnd, end);
+    float uniformDistance = min(length(info.playerCenteredPos.xyz) / max(info.fogEnd, ES_FOG_MIN_DISTANCE), end);
 
     #ifdef MIX_ES_FOG_AND_MC_FOG
       float fogIntensity = smoothstep(start, startMix, uniformDistance);
