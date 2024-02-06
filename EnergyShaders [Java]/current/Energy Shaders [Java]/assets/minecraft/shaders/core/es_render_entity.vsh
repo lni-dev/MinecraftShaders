@@ -13,7 +13,6 @@ uniform sampler2D Sampler1;
 
 uniform mat4 ModelViewMat;
 uniform mat4 ProjMat;
-uniform mat3 IViewRotMat;
 
 out vec4 vertexColor;
 out vec4 overlayColor;
@@ -28,7 +27,7 @@ out vec4 inScreenPos;
 
 void main() {
     inChunkPos = Position;
-    inWorldPos = vec4(IViewRotMat * Position, 1.0);
+    inWorldPos = vec4(Position, 1.0);
     inScreenPos = ProjMat * ModelViewMat * vec4(Position, 1.0);
 
     gl_Position = inScreenPos;
@@ -38,5 +37,5 @@ void main() {
     texCoord0 = UV0;
     texCoord2 = UV2;
 
-    normal = vec4(IViewRotMat * Normal, 0.0);
+    normal = vec4(Normal, 0.0);
 }

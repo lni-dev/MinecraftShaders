@@ -12,10 +12,14 @@
   #undef SHOW_TIME
 
   //# ES_RenderInfo
+  // | Bit | value |          0           |          1            |
+  // |  1  |   1   | no alpha cut off     | alpha cut off         |
   #define ES_RI_DO_ALPHA_CUTOFF ((ES_RenderInfo & 1) > 0)
+  // |  2  |   2   | cut off at 0.1       | cut off at 0.5        |
   #define ES_RI_GET_ALPHA_CUTOFF ((ES_RenderInfo & 2) > 0 ? 0.5 : 0.1)
-  // 3: reserved
+  // |  3  |   4   | mix overlay color on | mix overlay color off |
   #define ES_RI_DO_MIX_OVERLAY_COLOR ((ES_RenderInfo & 4) == 0)
+  // |  4  |   8   | NORMAL availabe      | NORMAL not available  |
   #define ES_RI_HAS_NORMAL ((ES_RenderInfo & 8) == 0)
 
   //# Shadow

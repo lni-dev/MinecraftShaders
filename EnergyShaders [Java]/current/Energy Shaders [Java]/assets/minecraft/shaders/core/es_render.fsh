@@ -18,7 +18,6 @@ uniform float FogStart;
 uniform float FogEnd;
 uniform vec4 FogColor;
 uniform int FogShape;
-uniform mat3 IViewRotMat;
 uniform int ES_RenderInfo;
 
 in vec4 vertexColor;
@@ -38,7 +37,6 @@ struct WorldInfo {
     VEC3 normal; // normal vector
     VEC3 screenPos; // pixel position
     VEC3 playerCenteredPos; //position, centered at the players position
-    mat3 viewRotationMatrix; //player rotation
 
     VEC4 fogColor; // color of the background in mc (not the sky)
     float fogStart;
@@ -56,16 +54,12 @@ struct WorldInfo {
 };
 
 void main() {
-
     WorldInfo worldInfo;
     worldInfo.colorRaw = ES_COLOR_RAW;
     worldInfo.normal = ES_NORMAL.xyz;
     worldInfo.hasNormal = ES_RI_HAS_NORMAL;
     worldInfo.screenPos = inScreenPos.xyz;
     worldInfo.playerCenteredPos = inWorldPos.xyz;
-    #ifdef ES_JAVA
-        worldInfo.viewRotationMatrix = IViewRotMat;
-    #endif
 
     worldInfo.fogColor = ES_IN_FOG_COLOR;
     worldInfo.fogStart = ES_IN_FOG_START;
@@ -89,7 +83,7 @@ void main() {
     #endif
     #ifdef ES_SODIUM
         #ifdef DO_ALPHA_CUTOFF
-            if (color.a < v_MaterialAlphaCutoff) {
+            if (color.a < ALPHA_CUTOFF) {
                 discard;
             }
         #endif
