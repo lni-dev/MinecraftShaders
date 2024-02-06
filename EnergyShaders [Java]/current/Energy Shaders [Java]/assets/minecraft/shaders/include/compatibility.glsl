@@ -52,13 +52,13 @@
     #define ES_UV_TEXTURE_ATLAS v_TexCoord
 
     #define ES_LIGHT_TEXTURE u_LightTex
-    #define ES_UV_LIGHT_TEXTURE (v_LightCoord/16.0)
+    #define ES_UV_LIGHT_TEXTURE (v_LightCoord/256.0)
 
     #define CONVERT_LIGHT_UV(UV) (clamp(UV, vec2(0.5 / 16.0), vec2(15.5 / 16.0)))
 
     #define ES_VERTEX_COLOR VEC4(1.0)
     #define ES_COLOR_MODULATOR v_ColorModulator
-    #define ES_COLOR_RAW (texture(ES_TEXTURE_ATLAS, ES_UV_TEXTURE_ATLAS, v_MaterialMipBias) * vec4(ES_COLOR_MODULATOR, 1.0))
+    #define ES_COLOR_RAW (texture(ES_TEXTURE_ATLAS, ES_UV_TEXTURE_ATLAS, v_MaterialMipBias) * VEC4(ES_COLOR_MODULATOR.rgb, 1.0) * ES_COLOR_MODULATOR.a)
     #define ES_ALPHA_CUTOFF_VALUE v_MaterialAlphaCutoff
     #ifdef USE_FRAGMENT_DISCARD
       #define ES_DO_ALPHA_CUTOFF true

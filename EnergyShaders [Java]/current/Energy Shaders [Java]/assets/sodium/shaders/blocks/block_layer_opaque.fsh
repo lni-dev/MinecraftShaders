@@ -9,7 +9,7 @@
 #import <minecraft:include/tonemaps.glsl>
 #import <minecraft:include/render.glsl>
 
-in vec3 v_ColorModulator; // The interpolated vertex color
+in vec4 v_ColorModulator; // The interpolated vertex color
 in vec2 v_TexCoord; // The interpolated block texture coordinates
 in vec2 v_LightCoord;
 
