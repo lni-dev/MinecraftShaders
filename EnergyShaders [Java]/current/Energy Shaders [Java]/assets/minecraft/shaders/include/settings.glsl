@@ -8,8 +8,8 @@
   #define SETTINGS_H
 
   //# Debug
-  #undef SHOW_ES_LIGHT_TEXTURE
-  #undef SHOW_TIME
+  #undef DEBUG_SHOW_ES_LIGHT_TEXTURE
+  #undef DEBUG_SHOW_TIME
 
   //# ES_RenderInfo
   // | Bit | value |          0           |          1            |
@@ -77,6 +77,7 @@
   #define AMBIENT_LIGHT_END VEC3(0.65, 0.85, 1.0)
 
   #define NIGHT_GREY_SCALE
+  #define NIGHT_GREY_SCALE_PERCENTAGE 0.62
 
   //# Vignette
   #define VIGNETTE

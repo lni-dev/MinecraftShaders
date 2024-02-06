@@ -74,18 +74,9 @@ void main() {
 
     VEC4 color = worldInfo.colorRaw;
 
-    #ifdef ES_JAVA
-    if (ES_RI_DO_ALPHA_CUTOFF && color.a < ES_RI_GET_ALPHA_CUTOFF) {
+    if (ES_DO_ALPHA_CUTOFF && color.a < ES_ALPHA_CUTOFF_VALUE) {
         discard;
     }
-    #endif
-    #ifdef ES_SODIUM
-    #ifdef DO_ALPHA_CUTOFF
-    if (color.a < ALPHA_CUTOFF) {
-        discard;
-    }
-    #endif
-    #endif
 
     #ifdef ES_JAVA
     if(ES_RI_DO_MIX_OVERLAY_COLOR) {

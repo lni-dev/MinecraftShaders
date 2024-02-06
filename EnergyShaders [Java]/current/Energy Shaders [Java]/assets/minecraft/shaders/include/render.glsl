@@ -93,7 +93,7 @@ void ESRenderOverworld(inout VEC4 color, in WorldInfo info) {
       g = mix(g, c, 0.99);
       b = mix(b, c, 0.99);
 
-      color.rgb = mix(color.rgb, vec3(r, g, b), max(info.time - min(info.cave + info.light, 1.0), 0.0));
+      color.rgb = mix(color.rgb, vec3(r, g, b), max(info.time - min(info.cave + info.light, 1.0) - (1.0 - NIGHT_GREY_SCALE_PERCENTAGE), 0.0));
     #endif  
   #endif
 

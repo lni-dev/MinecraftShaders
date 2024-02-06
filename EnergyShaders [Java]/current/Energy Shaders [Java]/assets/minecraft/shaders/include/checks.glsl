@@ -45,10 +45,17 @@ float calcLight(in VEC2 lightTextureUv, in VEC3 normal) {
 
 /**
  * @param lightTexture minecraft lighting texture
+ * @return between 0.0 and 1.0. 0.0 means day. 1.0 means night. values inbetween mean sunrise or sunset.
  */
 float calcTime(in sampler2D lightTexture) {
   VEC4 c_0_1 = texture2D(lightTexture, CONVERT_LIGHT_UV(VEC2(0., 1.)));
-  return max(pow(clamp((c_0_1.b - c_0_1.r) * 4.2,  0.0, 1.0), 2.0) - 0.1, 0.0) * 1.1111111111111;
+  #ifdef ES_SODIUM
+    float ret = max(pow(clamp((c_0_1.b - c_0_1.r) * 4.2,  0.0, 1.0), 2.0) - 0.1, 0.0) * 1.1111111111111;
+  #else //ES_JAVA
+    float ret = max(pow(clamp((c_0_1.b - c_0_1.r) * 5.6,  0.0, 2.5), 1.0) - 0.1, 0.0) * 1.2;
+  #endif
+
+  return clamp(ret, 0.0, 1.0);
 }
 
 /**
