@@ -62,6 +62,8 @@ if(project.hasProperty("curseForgeToken") && pack.curseforgeProjectId != null) {
             releaseType = pack.releaseType.name
             changelog = pack.changelog
             changelogType = "markdown"
+
+            addGameVersion("Vanilla")
             pack.supportedMcVersionsShort.forEach {
                 addGameVersion(it)
             }
