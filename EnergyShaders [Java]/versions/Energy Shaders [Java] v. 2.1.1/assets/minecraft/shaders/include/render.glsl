@@ -12,7 +12,6 @@ struct WorldInfo {
   VEC3 normal; // normal vector
   VEC3 screenPos; // pixel position
   VEC3 playerCenteredPos; //position, centered at the players position
-  mat3 viewRotationMatrix; //player rotation
 
   VEC4 fogColor; // color of the background in mc (not the sky)
   float fogStart;
@@ -31,9 +30,8 @@ struct WorldInfo {
 
 void ESRenderGui(inout VEC4 color, in WorldInfo info) {
   //The gui items need some shading:
-  VEC3 l1 = info.viewRotationMatrix * normalize(VEC3(-1., 2.0, 1.0));
+  VEC3 l1 = normalize(VEC3(-1., -2., 1.));
   color.rgb *= min(max(0.0, dot(info.normal.xyz, l1)) + 0.4, 1.0);
-
 }
 
 void ESRenderFogOverworld(inout VEC4 color, in WorldInfo info) {
@@ -95,7 +93,7 @@ void ESRenderOverworld(inout VEC4 color, in WorldInfo info) {
       g = mix(g, c, 0.99);
       b = mix(b, c, 0.99);
 
-      color.rgb = mix(color.rgb, vec3(r, g, b), max(info.time - min(info.cave + info.light, 1.0), 0.0));
+      color.rgb = mix(color.rgb, vec3(r, g, b), max(info.time - min(info.cave + info.light, 1.0) - (1.0 - NIGHT_GREY_SCALE_PERCENTAGE), 0.0));
     #endif  
   #endif
 

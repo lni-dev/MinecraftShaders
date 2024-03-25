@@ -1,1 +1,5 @@
 /.ignore
+/.gradle
+
+/buildSrc/build
+/buildSrc/.gradle
