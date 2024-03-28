@@ -1,4 +1,2 @@
-- fixed aplha-cut-off on armor
-- fixed inventory light on items (changed in 24w05b)
 - updated pack version
-- updated to Sodium 0.5.8
+- fixed crash on amd gpus

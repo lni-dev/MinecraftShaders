@@ -1,1 +1,2 @@
 - updated pack version
+- fixed crash on amd gpus
