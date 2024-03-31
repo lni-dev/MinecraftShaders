@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/MinecraftShaders.iml" filepath="$PROJECT_DIR$/.idea/modules/MinecraftShaders.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/MinecraftShaders.iml" filepath="$PROJECT_DIR$/.idea/MinecraftShaders.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/buildSrc/MinecraftShaders.buildSrc.main.iml" filepath="$PROJECT_DIR$/.idea/modules/buildSrc/MinecraftShaders.buildSrc.main.iml" />
     </modules>
   </component>
 </project>

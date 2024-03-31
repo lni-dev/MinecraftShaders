@@ -1,6 +1,8 @@
 package de.linusdev;
 
 import de.linusdev.data.so.SOData;
+import net.lingala.zip4j.ZipFile;
+import net.lingala.zip4j.exception.ZipException;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.file.RegularFileProperty;
@@ -10,7 +12,10 @@ import org.gradle.api.tasks.OutputDirectory;
 import org.gradle.api.tasks.OutputFile;
 import org.gradle.api.tasks.TaskAction;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.zip.ZipEntry;
@@ -121,27 +126,23 @@ public class CreatePackReleaseTask extends DefaultTask {
         );
 
         // Zip
-        final ZipOutputStream out = new ZipOutputStream( Files.newOutputStream(packReleaseZipFile.getAsFile().get().toPath()));
-        Files.walkFileTree(packDevVersionFolder.get(),
-                new SimpleFileVisitor<>() {
-                    final Path source = packDevVersionFolder.get();
+        final ZipFile zip = new ZipFile(packReleaseZipFile.getAsFile().get());
+        zip.setCharset(StandardCharsets.UTF_8);
 
-                    @Override
-                    public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-                        Path relativePath = source.relativize(file);
-                        ZipEntry entry = new ZipEntry(relativePath.toString());
+        Files.list(packDevVersionFolder.get()).forEach(path -> {
+            try {
+                if(Files.isDirectory(path ))
+                        zip.addFolder(path.toFile());
+                else
+                    zip.addFile(path.toFile());
 
-                        out.putNextEntry(entry);
-                        Files.copy(file, out);
-                        out.closeEntry();
+            } catch (ZipException e) {
+                throw new RuntimeException(e);
+            }
+        });
 
-                        return FileVisitResult.CONTINUE;
-                    }
-                }
-        );
 
-        out.close();
-
+        zip.close();
     }
 
     public RegularFileProperty getPackDevVersionInfoFileInput() {
