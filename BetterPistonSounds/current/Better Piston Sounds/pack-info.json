@@ -1,7 +1,7 @@
 {
   "pack" : {
-    "name" : "Night Vision Shaders [Java]",
-    "version" : "1.0.3",
+    "name" : "Better Piston Sounds",
+    "version" : "wither 1.0.0",
     "release-type" : "release",
 
     "authors" : [
@@ -13,26 +13,18 @@
     ],
 
     "supported-mc-versions" : [
-      "1.20.5",
-      "24w05b",
-      "24w06a",
-      "24w07a",
-      "24w10a",
-      "24w11a",
-      "24w12a",
-      "24w13a"
+      "1.20.6"
     ],
     "supported-mc-versions-short" : [
-      "1.20.5",
-      "1.20.5-Snapshot"
+      "1.20.6"
     ],
 
     "modrinth" : {
-      "project-id" : "XuGx9Ezb"
+      "project-id" : "-"
     },
 
     "curseforge" : {
-      "project-id" : "992520"
+      "project-id" : "-"
     }
   }
 }
