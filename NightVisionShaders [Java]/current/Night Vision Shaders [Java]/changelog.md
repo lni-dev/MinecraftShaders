@@ -1,1 +1,1 @@
-- updated pack version
+- added versions.json for the sodium core shader support mod
