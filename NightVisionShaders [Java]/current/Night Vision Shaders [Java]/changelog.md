@@ -1,1 +1,1 @@
-- added versions.json for the sodium core shader support mod
+- updated to sodium 0.6.0-beta.2+mc1.21.1

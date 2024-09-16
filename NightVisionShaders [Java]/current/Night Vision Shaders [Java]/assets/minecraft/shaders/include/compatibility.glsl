@@ -52,7 +52,7 @@
     #define ES_UV_TEXTURE_ATLAS v_TexCoord
 
     #define ES_LIGHT_TEXTURE u_LightTex
-    #define ES_UV_LIGHT_TEXTURE (v_LightCoord/256.0)
+    #define ES_UV_LIGHT_TEXTURE (v_LightCoord)
 
     #define CONVERT_LIGHT_UV(UV) (clamp(UV, vec2(0.5 / 16.0), vec2(15.5 / 16.0)))
 
