@@ -4,8 +4,8 @@
         "srcrgb": "srcalpha",
         "dstrgb": "1-srcalpha"
     },
-    "vertex": "es_render_entity",
-    "fragment": "es_render",
+    "vertex": "minecraft:core/es_render_entity",
+    "fragment": "minecraft:core/es_render",
     "attributes": [
         "Position",
         "UV0",

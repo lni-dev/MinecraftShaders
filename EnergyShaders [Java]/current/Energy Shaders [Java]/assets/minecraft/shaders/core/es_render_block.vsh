@@ -11,7 +11,7 @@ uniform sampler2D Sampler1;
 
 uniform mat4 ModelViewMat;
 uniform mat4 ProjMat;
-uniform vec3 ChunkOffset;
+uniform vec3 ModelOffset;
 
 out vec4 vertexColor;
 out vec4 overlayColor;
@@ -26,7 +26,7 @@ out vec4 inScreenPos;
 
 void main() {
     inChunkPos = Position;
-    inWorldPos = vec4(Position + ChunkOffset, 1.0);
+    inWorldPos = vec4(Position + ModelOffset, 1.0);
     inScreenPos = ProjMat * ModelViewMat * inWorldPos;
 
     gl_Position = inScreenPos;

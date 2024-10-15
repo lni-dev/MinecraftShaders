@@ -4,8 +4,8 @@
     "srcrgb": "srcalpha",
     "dstrgb": "1-srcalpha"
   },
-  "vertex": "es_render_clouds",
-  "fragment": "es_render_clouds",
+  "vertex": "minecraft:core/es_render_clouds",
+  "fragment": "minecraft:core/es_render_clouds",
   "samplers": [
     { "name": "Sampler0" }
   ],

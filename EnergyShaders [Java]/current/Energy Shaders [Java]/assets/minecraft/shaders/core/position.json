@@ -4,8 +4,8 @@
         "srcrgb": "srcalpha",
         "dstrgb": "1-srcalpha"
     },
-    "vertex": "es_render_sky",
-    "fragment": "es_render_sky",
+    "vertex": "minecraft:core/es_render_sky",
+    "fragment": "minecraft:core/es_render_sky",
     "samplers": [
     ],
     "uniforms": [
