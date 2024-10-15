@@ -4,8 +4,18 @@
         "srcrgb": "srcalpha",
         "dstrgb": "1-srcalpha"
     },
-    "vertex": "es_render_entity",
-    "fragment": "es_render",
+    "vertex": "minecraft:core/es_render_entity",
+    "fragment": "minecraft:core/es_render",
+    "defines": {
+        "values": {
+            "ES_ALPHA_CUTOFF_VALUE": "0.1",
+            "ES_HAS_NORMAL": "true"
+        },
+        "flags": [
+            "ES_DO_ALPHA_CUTOFF",
+            "ES_MIX_OVERLAY_COLOR"
+        ]
+    },
     "attributes": [
         "Position",
         "Color",

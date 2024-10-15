@@ -37,7 +37,10 @@ float calcShadow(in VEC2 uv1, in bool hasNormal, in VEC3 normal, in bool nether,
  */
 float calcLight(in VEC2 lightTextureUv, in VEC3 normal) {
   #ifdef TORCH_LIGHT
-    return clamp(lightTextureUv.x * lightTextureUv.x * (1.0+abs(normal.x)) * (1.0+abs(normal.z)), 0.0, 1.0);
+    float light = 1.0 + lightTextureUv.x;
+    light = (light * light - 1.0) * 0.3333;
+    light += (light * (1.0+abs(normal.x)*2.) * (1.0+abs(normal.z)*2.)) * max(0.0, 0.7 - light);
+    return light;
   #else 
     return 0.0;
   #endif
@@ -49,7 +52,9 @@ float calcLight(in VEC2 lightTextureUv, in VEC3 normal) {
  */
 float calcTime(in sampler2D lightTexture) {
   VEC4 c_0_1 = texture2D(lightTexture, CONVERT_LIGHT_UV(VEC2(0., 1.)));
+
   float ret = max(pow(clamp((c_0_1.b - c_0_1.r) * 5.6,  0.0, 2.5), 1.0) - 0.1, 0.0) * 1.2;
+
   return clamp(ret, 0.0, 1.0);
 }
 

@@ -63,7 +63,7 @@ void main() {
     WorldInfo worldInfo;
     worldInfo.colorRaw = ES_COLOR_RAW;
     worldInfo.normal = ES_NORMAL.xyz;
-    worldInfo.hasNormal = ES_RI_HAS_NORMAL;
+    worldInfo.hasNormal = ES_HAS_NORMAL;
     worldInfo.screenPos = inScreenPos.xyz;
     worldInfo.playerCenteredPos = inWorldPos.xyz;
 
@@ -82,14 +82,16 @@ void main() {
 
     VEC4 color = worldInfo.colorRaw;
 
-    if (ES_DO_ALPHA_CUTOFF && color.a < ES_ALPHA_CUTOFF_VALUE) {
-        discard;
-    }
-
-    #ifdef ES_JAVA
-        if(ES_RI_DO_MIX_OVERLAY_COLOR) {
-            color.rgb = mix(overlayColor.rgb, color.rgb, overlayColor.a);
+    #ifdef ES_DO_ALPHA_CUTOFF
+        if (color.a < ES_ALPHA_CUTOFF_VALUE) {
+            discard;
         }
+    #endif
+
+
+    #ifdef ES_MIX_OVERLAY_COLOR
+        // Only defined in ES_JAVA (comes from core shaders json)
+        color.rgb = mix(overlayColor.rgb, color.rgb, overlayColor.a);
     #endif
 
     if(worldInfo.gui) {
@@ -129,8 +131,16 @@ void main() {
     #endif
 
     #ifdef DEBUG_SHOW_NORMAL
-        if(worldInfo.hasNormal) color.rgba = VEC4(abs(normal.rgb), 1.0);
+        if(worldInfo.hasNormal) color.rgba = VEC4(abs(worldInfo.normal.rgb), 1.0);
         else color.rgba = VEC4(VEC3(0.0), 1.0);
+    #endif
+
+    #ifdef DEBUG_LIGHT
+        color.rgba = VEC4(VEC3(worldInfo.light), 1.0);
+
+        if(inChunkPos.x < 16.0 && inChunkPos.x > 15.9 && inChunkPos.z > 0.0 && inChunkPos.z < 1.0) {
+            color.rgb = VEC3(inChunkPos.z);
+        }
     #endif
 
     ES_COLOR_OUT = color;

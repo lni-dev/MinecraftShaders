@@ -6,6 +6,12 @@
     },
     "vertex": "minecraft:core/es_render_block",
     "fragment": "minecraft:core/es_render",
+    "defines": {
+        "values": {
+            "ES_HAS_NORMAL": "true"
+        },
+        "flags": []
+    },
     "attributes": [
         "Position",
         "Color",

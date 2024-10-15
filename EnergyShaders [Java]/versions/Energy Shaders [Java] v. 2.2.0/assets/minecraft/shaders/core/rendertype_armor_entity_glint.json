@@ -4,8 +4,8 @@
         "srcrgb": "srcalpha",
         "dstrgb": "1-srcalpha"
     },
-    "vertex": "rendertype_armor_glint",
-    "fragment": "rendertype_armor_glint",
+    "vertex": "minecraft:core/glint",
+    "fragment": "minecraft:core/glint",
     "samplers": [
         { "name": "Sampler0" }
     ],
@@ -19,5 +19,5 @@
         { "name": "FogShape", "type": "int", "count": 1, "values": [ 0 ] },
         { "name": "TextureMat", "type": "matrix4x4", "count": 16, "values": [ 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0 ] }
     ],
-    "comment": "unknown"
+    "_comment": "enchanted armor glint overlay on armorstand and player (prop mobs)"
 }

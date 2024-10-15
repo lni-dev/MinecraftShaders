@@ -30,8 +30,8 @@
     #define ES_VERTEX_COLOR vertexColor
     #define ES_COLOR_MODULATOR ColorModulator
     #define ES_COLOR_RAW (texture(ES_TEXTURE_ATLAS, ES_UV_TEXTURE_ATLAS) * ES_VERTEX_COLOR * ES_COLOR_MODULATOR)
-    #define ES_ALPHA_CUTOFF_VALUE ES_RI_GET_ALPHA_CUTOFF
-    #define ES_DO_ALPHA_CUTOFF ES_RI_DO_ALPHA_CUTOFF
+    // ES_ALPHA_CUTOFF_VALUE and ES_DO_ALPHA_CUTOFF is defined in the core shaders jsons.
+
     #define ES_COLOR_OUT fragColor
 
     #define ES_NORMAL normal
@@ -61,9 +61,7 @@
     #define ES_COLOR_RAW (texture(ES_TEXTURE_ATLAS, ES_UV_TEXTURE_ATLAS, v_MaterialMipBias) * VEC4(ES_COLOR_MODULATOR.rgb, 1.0) * ES_COLOR_MODULATOR.a)
     #define ES_ALPHA_CUTOFF_VALUE v_MaterialAlphaCutoff
     #ifdef USE_FRAGMENT_DISCARD
-      #define ES_DO_ALPHA_CUTOFF true
-    #else
-      #define ES_DO_ALPHA_CUTOFF false
+      #define ES_DO_ALPHA_CUTOFF
     #endif
     #define ES_COLOR_OUT out_FragColor
 
@@ -74,8 +72,6 @@
     #define ES_IN_FOG_SHAPE u_FogShape
     #define ES_IN_FOG_COLOR u_FogColor
 
-    //custom uniforms dont exist on Sodium, so set it to a fixed value
-    #define ES_RenderInfo (4)
   #endif
 
   //Minecraft Bedrock GLSL
