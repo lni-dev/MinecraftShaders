@@ -1,3 +1,1 @@
-- updated to mc 1.21.2-pre3
-- technical: replaced custom uniform with custom defines
-- currently untested on sodium!
+- now also works on sodium (with sodium core shader support mod)

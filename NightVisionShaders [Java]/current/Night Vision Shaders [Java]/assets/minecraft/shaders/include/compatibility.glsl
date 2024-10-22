@@ -34,6 +34,7 @@
 
     #define ES_COLOR_OUT fragColor
 
+    // ES_HAS_NORMAL is defined in shaders json
     #define ES_NORMAL normal
 
     #define ES_IN_FOG_START FogStart
@@ -65,6 +66,7 @@
     #endif
     #define ES_COLOR_OUT out_FragColor
 
+    #define ES_HAS_NORMAL true
     #define ES_NORMAL VEC4(normalize(cross(dFdx(inChunkPos.xyz), dFdy(inChunkPos.xyz))), 0.0)
 
     #define ES_IN_FOG_START u_FogStart
