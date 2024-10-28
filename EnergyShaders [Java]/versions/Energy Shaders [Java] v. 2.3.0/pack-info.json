@@ -1,0 +1,32 @@
+{
+  "pack" : {
+    "name" : "Energy Shaders [Java]",
+    "version" : "2.3.0",
+    "release-type" : "release",
+
+    "authors" : [
+      {
+        "name" : "LinusDev",
+        "website" : "https://www.linusdev.de",
+        "contact" : "linus@linusdev.de"
+      }
+    ],
+
+    "supported-mc-versions" : [
+      "1.21.2",
+      "1.21.3"
+    ],
+    "supported-mc-versions-short" : [
+      "1.21.2",
+      "1.21.3"
+    ],
+
+    "modrinth" : {
+      "project-id" : "Kqx96bgP"
+    },
+
+    "curseforge" : {
+      "project-id" : "914435"
+    }
+  }
+}

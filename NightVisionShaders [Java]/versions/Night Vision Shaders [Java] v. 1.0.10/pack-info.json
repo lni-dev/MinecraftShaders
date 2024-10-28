@@ -1,0 +1,32 @@
+{
+  "pack" : {
+    "name" : "Night Vision Shaders [Java]",
+    "version" : "1.0.10",
+    "release-type" : "release",
+
+    "authors" : [
+      {
+        "name" : "LinusDev",
+        "website" : "https://www.linusdev.de",
+        "contact" : "linus@linusdev.de"
+      }
+    ],
+
+    "supported-mc-versions" : [
+      "1.21.2",
+      "1.21.3"
+    ],
+    "supported-mc-versions-short" : [
+      "1.21.2",
+      "1.21.3"
+    ],
+
+    "modrinth" : {
+      "project-id" : "XuGx9Ezb"
+    },
+
+    "curseforge" : {
+      "project-id" : "992520"
+    }
+  }
+}
