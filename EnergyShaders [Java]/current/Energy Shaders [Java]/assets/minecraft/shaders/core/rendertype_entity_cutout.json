@@ -1,9 +1,4 @@
 {
-    "blend": {
-        "func": "add",
-        "srcrgb": "srcalpha",
-        "dstrgb": "1-srcalpha"
-    },
     "vertex": "minecraft:core/es_render_entity",
     "fragment": "minecraft:core/es_render",
     "defines": {
@@ -16,14 +11,6 @@
             "ES_MIX_OVERLAY_COLOR"
         ]
     },
-    "attributes": [
-        "Position",
-        "Color",
-        "UV0",
-        "UV1",
-        "UV2",
-        "Normal"
-    ],
     "samplers": [
         { "name": "Sampler0" },
         { "name": "Sampler1" },
@@ -41,5 +28,5 @@
         { "name": "FogShape", "type": "int", "count": 1, "values": [ 0 ] },
         { "name" : "ES_RenderInfo", "type": "int", "count":  1, "values" : [1]}
     ],
-    "_comment" : "item renders in hotbar/inventory, dropped items, rendered items in item frames, items in hand"
+    "_comment" : "Chest/Ender chest and block(1) items in hotbar/inventory, dropped, in item frames, in hand. Some exceptions for example: armor, totem, ...."
 }

@@ -41,5 +41,5 @@
         { "name": "FogShape", "type": "int", "count": 1, "values": [ 0 ] },
         { "name" : "ES_RenderInfo", "type": "int", "count":  1, "values" : [1]}
     ],
-    "_comment" : "mobs (at least villagers) (not the eyes!?), armor stand"
+    "_comment" : "mobs (at least villagers) (not the eyes!?), armor stand, shulker boxes"
 }

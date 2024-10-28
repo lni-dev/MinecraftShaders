@@ -23,6 +23,7 @@ out vec4 normal;
 out vec3 inChunkPos;
 out vec4 inWorldPos;
 out vec4 inScreenPos;
+out float projMat3x;
 
 void main() {
     inChunkPos = Position;
@@ -36,4 +37,5 @@ void main() {
     texCoord0 = UV0;
     texCoord2 = UV2;
     normal = vec4(Normal, 0.0);
+    projMat3x = ProjMat[3].x;
 }

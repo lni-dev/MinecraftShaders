@@ -32,5 +32,5 @@ out VEC4 fragColor;
 
 void main() {
 
-    ES_COLOR_OUT = VEC4(1.0);
+    ES_COLOR_OUT = VEC4(1.0, 0.0, 0.0, 1.0);
 }

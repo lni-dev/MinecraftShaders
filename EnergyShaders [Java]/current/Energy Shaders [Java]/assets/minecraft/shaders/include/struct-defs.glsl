@@ -19,6 +19,7 @@
         bool nether;
         bool end;
         bool gui;
+        bool noFogOrVignette;
         bool hasNormal;
     };
 

@@ -52,6 +52,7 @@ out vec4 out_FragColor; // The output fragment for the color framebuffer
         bool nether;
         bool end;
         bool gui;
+        bool noFogOrVignette;
         bool hasNormal;
     };
 
@@ -71,11 +72,12 @@ void main() {
     worldInfo.fogShape = ES_IN_FOG_SHAPE;
 
     calcDimension(ES_LIGHT_TEXTURE, worldInfo.nether, worldInfo.end);
-    worldInfo.gui = worldInfo.fogStart > worldInfo.fogEnd;
+    worldInfo.gui = ES_IS_GUI;
+    worldInfo.noFogOrVignette = worldInfo.gui || worldInfo.fogStart > worldInfo.fogEnd;
 
-    worldInfo.shadow = calcShadow(ES_UV_LIGHT_TEXTURE, worldInfo.hasNormal, worldInfo.normal, worldInfo.nether, worldInfo.end);
-    worldInfo.light = calcLight(ES_UV_LIGHT_TEXTURE, worldInfo.normal);
-    worldInfo.time = calcTime(ES_LIGHT_TEXTURE);
+    worldInfo.shadow = calcShadow(ES_UV_LIGHT_TEXTURE, worldInfo.hasNormal, worldInfo.normal, worldInfo.nether, worldInfo.end, worldInfo.gui);
+    worldInfo.light = calcLight(ES_UV_LIGHT_TEXTURE, worldInfo.normal, worldInfo.gui);
+    worldInfo.time = calcTime(ES_LIGHT_TEXTURE, worldInfo.gui);
     worldInfo.cave = calcCave(ES_UV_LIGHT_TEXTURE);
 
     VEC4 color = worldInfo.colorRaw;
@@ -93,7 +95,7 @@ void main() {
     #endif
 
     if(worldInfo.gui) {
-        ESRenderGui(color, worldInfo);
+        ESRenderOverworld(color, worldInfo);
     } else if(worldInfo.nether) {
         ESRenderNether(color, worldInfo);
     } else if(worldInfo.end) {
@@ -101,6 +103,18 @@ void main() {
     } else {
         ESRenderOverworld(color, worldInfo);
     }
+
+    #ifdef DEBUG_DIMENSION
+    if(worldInfo.gui) {
+        color.rgb = VEC3(1., 0.0, 1.);
+    } else if(worldInfo.nether) {
+        color.rgb = VEC3(1., 0.0, 0.);
+    } else if(worldInfo.end) {
+        color.rgb = VEC3(0., 0.0, 1.);
+    } else {
+        color.rgb = VEC3(0., 1., 0.);
+    }
+    #endif
 
     //Debug Stuff
     #ifdef DEBUG_SHOW_ES_LIGHT_TEXTURE
@@ -135,6 +149,30 @@ void main() {
 
     #ifdef DEBUG_LIGHT
     color.rgba = VEC4(VEC3(worldInfo.light), 1.0);
+
+    if(inChunkPos.x < 16.0 && inChunkPos.x > 15.9 && inChunkPos.z > 0.0 && inChunkPos.z < 1.0) {
+        color.rgb = VEC3(inChunkPos.z);
+    }
+    #endif
+
+    #ifdef DEBUG_CAVE
+    color.rgba = VEC4(VEC3(worldInfo.cave), 1.0);
+
+    if(inChunkPos.x < 16.0 && inChunkPos.x > 15.9 && inChunkPos.z > 0.0 && inChunkPos.z < 1.0) {
+        color.rgb = VEC3(inChunkPos.z);
+    }
+    #endif
+
+    #ifdef DEBUG_TIME
+    color.rgba = VEC4(VEC3(worldInfo.time), 1.0);
+
+    if(inChunkPos.x < 16.0 && inChunkPos.x > 15.9 && inChunkPos.z > 0.0 && inChunkPos.z < 1.0) {
+        color.rgb = VEC3(inChunkPos.z);
+    }
+    #endif
+
+    #ifdef DEBUG_SHADOW
+    color.rgba = VEC4(VEC3(worldInfo.shadow), 1.0);
 
     if(inChunkPos.x < 16.0 && inChunkPos.x > 15.9 && inChunkPos.z > 0.0 && inChunkPos.z < 1.0) {
         color.rgb = VEC3(inChunkPos.z);

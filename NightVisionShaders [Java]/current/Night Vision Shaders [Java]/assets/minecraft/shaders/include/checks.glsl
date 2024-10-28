@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2022-2023 LinusDev
+ * Copyright (c) 2022-2024 LinusDev
  * Author: Linusdev
  * Contact: linus@linusdev.de
  */
@@ -8,7 +8,12 @@
  * @param uv1 coordinates in the minecraft lighting texture
  * @param normal normal vector
  */
-float calcShadow(in VEC2 uv1, in bool hasNormal, in VEC3 normal, in bool nether, in bool end) {
+float calcShadow(in VEC2 uv1, in bool hasNormal, in VEC3 normal, in bool nether, in bool end, in bool gui) {
+  if(gui) {
+    //The gui items need some shading:
+    VEC3 l1 = normalize(VEC3(-1., -2., 1.));
+    return 1.0-min(max(0.0, dot(normal.xyz, l1)) + 0.2, 1.0);
+  }
   float shadow = 0.0;
   #ifdef SHADOW
     if(uv1.y <= SHADOW_WIDTH){	//if rendering in shadow
@@ -35,8 +40,9 @@ float calcShadow(in VEC2 uv1, in bool hasNormal, in VEC3 normal, in bool nether,
  * @param lightTextureUv coordinates in the minecraft lighting texture
  * @param normal normal vector
  */
-float calcLight(in VEC2 lightTextureUv, in VEC3 normal) {
+float calcLight(in VEC2 lightTextureUv, in VEC3 normal, bool gui) {
   #ifdef TORCH_LIGHT
+    if(gui) return 0.0;
     float light = 1.0 + lightTextureUv.x;
     light = (light * light - 1.0) * 0.3333;
     light += (light * (1.0+abs(normal.x)*2.) * (1.0+abs(normal.z)*2.)) * max(0.0, 0.7 - light);
@@ -50,7 +56,8 @@ float calcLight(in VEC2 lightTextureUv, in VEC3 normal) {
  * @param lightTexture minecraft lighting texture
  * @return between 0.0 and 1.0. 0.0 means day. 1.0 means night. values inbetween mean sunrise or sunset.
  */
-float calcTime(in sampler2D lightTexture) {
+float calcTime(in sampler2D lightTexture, in bool gui) {
+  if(gui) return 0.0; // day
   VEC4 c_0_1 = texture2D(lightTexture, CONVERT_LIGHT_UV(VEC2(0., 1.)));
 
   float ret = max(pow(clamp((c_0_1.b - c_0_1.r) * 5.6,  0.0, 2.5), 1.0) - 0.1, 0.0) * 1.2;

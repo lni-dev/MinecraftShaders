@@ -41,6 +41,8 @@
     #define ES_IN_FOG_END FogEnd
     #define ES_IN_FOG_SHAPE FogShape
     #define ES_IN_FOG_COLOR FogColor
+
+    #define ES_IS_GUI projMat3x == -1
   #endif
 
   //Minecraft Java with Sodium
@@ -74,6 +76,7 @@
     #define ES_IN_FOG_SHAPE u_FogShape
     #define ES_IN_FOG_COLOR u_FogColor
 
+    #define ES_IS_GUI false
   #endif
 
   //Minecraft Bedrock GLSL

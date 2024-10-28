@@ -1,1 +1,4 @@
-- now also works on sodium (with sodium core shader support mod)
+- fixed hand/item light
+- adjusted to minecraft's shadow changes
+- increased enchantment glint a bit 
+- updated to sodium 0.6.0-beta.4

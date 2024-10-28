@@ -24,6 +24,7 @@ out vec4 normal;
 out vec3 inChunkPos;
 out vec4 inWorldPos;
 out vec4 inScreenPos;
+out float projMat3x;
 
 void main() {
     inChunkPos = Position;
@@ -36,6 +37,8 @@ void main() {
     overlayColor = texelFetch(Sampler1, UV1, 0);
     texCoord0 = UV0;
     texCoord2 = UV2;
+
+    projMat3x = ProjMat[3].x;
 
     normal = vec4(Normal, 0.0);
 }

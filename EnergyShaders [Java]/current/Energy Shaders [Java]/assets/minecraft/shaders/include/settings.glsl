@@ -11,14 +11,34 @@
   #undef DEBUG_SHOW_ES_LIGHT_TEXTURE
   #undef DEBUG_SHOW_TIME
   #undef DEBUG_LIGHT
+  #undef DEBUG_SHOW_NORMAL
+  #undef DEBUG_CAVE
+  /**
+   * Night: White
+   * Day: Black
+   */
+  #undef DEBUG_TIME
+  /**
+   * GUI: purple
+   * Overworld: green
+   * Nether: red
+   * End: blue
+   */
+  #undef DEBUG_DIMENSION
+
+  /**
+   * Shadow: White
+   * No Shadow: Black
+   */
+  #undef DEBUG_SHADOW
 
   //# Shadow
 
   #define SHADOW
-  #define SHADOW_WIDTH (14./16.)
+  #define SHADOW_WIDTH (14.67/16.)
 
   #define SHADOW_FADE_IN
-  #define FADE_IN_SHADOW_WIDTH (.5/16.)
+  #define FADE_IN_SHADOW_WIDTH (.17/16.)
 
   #define SHADOW_BLOCK_SIDE
 
@@ -30,8 +50,8 @@
    */
   #define SHADOW_COLOR_NETHER VEC3(0.5)
    /**
-   * Note that the End is always in shadow
-   */
+    * Note that the End is always in shadow
+    */
   #define SHADOW_COLOR_END VEC3(1.0)
 
   //# Tone Mapping

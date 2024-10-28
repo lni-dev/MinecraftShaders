@@ -28,6 +28,7 @@
         bool nether;
         bool end;
         bool gui;
+        bool noFogOrVignette;
         bool hasNormal;
     };
 
@@ -79,7 +80,7 @@ void ESRenderOverworld(inout VEC4 color, in WorldInfo info) {
     VEC3 lightColor = mix(TORCH_COLOR_DAY, TORCH_COLOR_NIGHT, info.time);
     lightColor = mix(lightColor, TORCH_COLOR_CAVE, info.cave);
 
-    color.rgb *= (lightColor * info.light + VEC3(1.0));
+    color.rgb *= (lightColor * VEC3(info.light) + VEC3(1.0));
   #endif
 
   #ifdef AMBIENT_LIGHT
@@ -109,6 +110,11 @@ void ESRenderOverworld(inout VEC4 color, in WorldInfo info) {
   #ifdef TONE_MAPPING
     color.rgb = burgess(color.rgb);
   #endif
+
+  if(info.noFogOrVignette) {
+    //Don't draw fog or vignette in gui
+    return;
+  }
 
   ESRenderFogOverworld(color, info);
 
@@ -162,7 +168,7 @@ void ESRenderNether(inout VEC4 color, in WorldInfo info) {
   #ifdef TORCH_LIGHT
     VEC3 lightColor = TORCH_COLOR_NETHER;
 
-    color.rgb *= (lightColor * info.light + VEC3(1.0));
+    color.rgb *= (lightColor * VEC3(info.light) + VEC3(1.0));
   #endif
 
   #ifdef AMBIENT_LIGHT
@@ -179,7 +185,7 @@ void ESRenderNether(inout VEC4 color, in WorldInfo info) {
     color.rgb = burgess(color.rgb);
   #endif
 
-  if(info.gui) {
+  if(info.noFogOrVignette) {
     //Don't draw fog or vignette in gui
     return;
   }
@@ -235,7 +241,7 @@ void ESRenderEnd(inout VEC4 color, in WorldInfo info) {
   #ifdef TORCH_LIGHT
     VEC3 lightColor = TORCH_COLOR_END;
 
-    color.rgb *= (lightColor * info.light + VEC3(1.0));
+    color.rgb *= (lightColor * VEC3(info.light) + VEC3(1.0));
   #endif
 
   #ifdef AMBIENT_LIGHT
@@ -252,7 +258,7 @@ void ESRenderEnd(inout VEC4 color, in WorldInfo info) {
     color.rgb = burgess(color.rgb);
   #endif
 
-  if(info.gui) {
+  if(info.noFogOrVignette) {
     //Don't draw fog or vignette in gui
     return;
   }
