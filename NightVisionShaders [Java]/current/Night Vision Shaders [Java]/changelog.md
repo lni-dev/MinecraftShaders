@@ -1,3 +1,1 @@
-- fixed hand/item light
-- adjusted to minecraft's shadow changes
-- updated to sodium 0.6.0-beta.4
+- updated to sodium 0.6.0-beta.5
