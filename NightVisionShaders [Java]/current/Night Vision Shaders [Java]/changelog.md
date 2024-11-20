@@ -1,1 +1,1 @@
-- updated to sodium 0.6.0-beta.5
+- updated to sodium 0.6.0
