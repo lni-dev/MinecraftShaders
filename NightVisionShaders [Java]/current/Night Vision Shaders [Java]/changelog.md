@@ -1,1 +1,1 @@
-- updated to sodium 0.6.0
+- updated to sodium 0.6.1
