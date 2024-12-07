@@ -1,1 +1,1 @@
-- updated pack version
+- updated to sodium 0.6.3

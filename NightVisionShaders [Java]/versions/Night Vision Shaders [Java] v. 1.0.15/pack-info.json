@@ -1,7 +1,7 @@
 {
   "pack" : {
     "name" : "Night Vision Shaders [Java]",
-    "version" : "1.0.16",
+    "version" : "1.0.15",
     "release-type" : "release",
 
     "authors" : [

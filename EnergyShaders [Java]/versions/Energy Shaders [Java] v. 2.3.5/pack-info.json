@@ -1,7 +1,7 @@
 {
   "pack" : {
-    "name" : "Night Vision Shaders [Java]",
-    "version" : "1.0.16",
+    "name" : "Energy Shaders [Java]",
+    "version" : "2.3.5",
     "release-type" : "release",
 
     "authors" : [
@@ -24,11 +24,11 @@
     ],
 
     "modrinth" : {
-      "project-id" : "XuGx9Ezb"
+      "project-id" : "Kqx96bgP"
     },
 
     "curseforge" : {
-      "project-id" : "992520"
+      "project-id" : "914435"
     }
   }
 }
