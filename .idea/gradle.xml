@@ -20,12 +20,17 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/BetterClearerGlass" />
             <option value="$PROJECT_DIR$/BetterPistonSounds" />
             <option value="$PROJECT_DIR$/EnergyShaders [Java]" />
             <option value="$PROJECT_DIR$/NightVisionShaders [Java]" />
             <option value="$PROJECT_DIR$/buildSrc" />
           </set>
         </option>
+      </GradleProjectSettings>
+      <GradleProjectSettings>
+        <option name="externalProjectPath" value="$PROJECT_DIR$/BetterClearerGlass" />
+        <option name="gradleJvm" value="#JAVA_HOME" />
       </GradleProjectSettings>
     </option>
   </component>

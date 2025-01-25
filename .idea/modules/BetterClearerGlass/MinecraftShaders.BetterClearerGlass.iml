@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module version="4">
+  <component name="AdditionalModuleElements">
+    <content url="file://$MODULE_DIR$/../../../BetterClearerGlass" dumb="true">
+      <excludeFolder url="file://$MODULE_DIR$/../../../BetterClearerGlass/generator" />
+      <excludeFolder url="file://$MODULE_DIR$/../../../BetterClearerGlass/generator/generated" />
+    </content>
+  </component>
+</module>

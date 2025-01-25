@@ -3,6 +3,8 @@ rootProject.name = "MinecraftShaders"
 
 include("NightVisionShaders [Java]")
 include("EnergyShaders [Java]")
+include("BetterPistonSounds")
+include("BetterClearerGlass")
 
 pluginManagement {
     repositories {
@@ -10,4 +12,4 @@ pluginManagement {
         gradlePluginPortal()
     }
 }
-include("BetterPistonSounds")
+
