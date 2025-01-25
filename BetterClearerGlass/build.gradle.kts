@@ -38,7 +38,7 @@ if(project.hasProperty("modrinthToken") && pack.modrinthProjectId != null) {
             .filter { it.path.endsWith(".zip") }
             .singleFile
         )
-
+        loaders.add("minecraft")
         gameVersions.addAll(pack.supportedMcVersions)
     }
 }
