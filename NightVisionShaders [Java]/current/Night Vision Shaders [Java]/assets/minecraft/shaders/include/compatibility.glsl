@@ -30,7 +30,7 @@
     #define ES_VERTEX_COLOR vertexColor
     #define ES_COLOR_MODULATOR ColorModulator
     #define ES_COLOR_RAW (texture(ES_TEXTURE_ATLAS, ES_UV_TEXTURE_ATLAS) * ES_VERTEX_COLOR * ES_COLOR_MODULATOR)
-    // ES_ALPHA_CUTOFF_VALUE and ES_DO_ALPHA_CUTOFF is defined in the core shaders jsons.
+    // ES_ALPHA_CUTOFF_VALUE and ES_DO_ALPHA_CUTOFF are defined at the top of each shader
 
     #define ES_COLOR_OUT fragColor
 
