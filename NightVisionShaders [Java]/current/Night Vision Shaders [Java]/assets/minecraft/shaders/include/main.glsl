@@ -2,11 +2,19 @@
     #define IDE
 #endif
 
-#moj_import <settings.glsl>
-#moj_import <struct-defs.glsl>
-#moj_import <checks.glsl>
-#moj_import <tonemaps.glsl>
-#moj_import <render.glsl>
+#ifdef ES_JAVA
+    #moj_import <settings.glsl>
+    #moj_import <struct-defs.glsl>
+    #moj_import <checks.glsl>
+    #moj_import <tonemaps.glsl>
+    #moj_import <render.glsl>
+#endif
+
+#ifdef ES_SODIUM
+    // Sodium imports are not supported in imported files. That is why they
+    // are located directly in block_layer_opaque.fsh
+#endif
+
 
 #ifdef IDE
     #define ES_JAVA

@@ -1,2 +1,1 @@
-- updated to mc 1.21.5-pre2
-- does currently not work on sodium
+- updated to sodium 0.6.11 and mc 1.21.5
