@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2022-2023 LinusDev
+ * Copyright (c) 2022-2025 LinusDev
  * Author: Linusdev
  * Contact: linus@linusdev.de
  */
@@ -40,7 +40,10 @@ void ESRenderGui(inout VEC4 color, in WorldInfo info) {
   color.rgb *= min(max(0.0, dot(info.normal.xyz, l1)) + 0.4, 1.0);
 }
 
-void ESRenderFogOverworld(inout VEC4 color, in WorldInfo info) {
+/**
+ * @return Between 0.0 (no/normal fog) and 1.0 (mojang fog)
+ */
+float ESRenderFogOverworld(inout VEC4 color, in WorldInfo info) {
   #ifdef ES_ENABLE_FOG
     float start = mix(ES_FOG_START, ES_CAVE_FOG_START, info.cave);
     #ifdef MIX_ES_FOG_AND_MC_FOG
@@ -64,6 +67,14 @@ void ESRenderFogOverworld(inout VEC4 color, in WorldInfo info) {
     #endif
 
     color.rgb = mix(color.rgb, esFogColor, fogIntensity);
+
+    #ifdef MIX_ES_FOG_AND_MC_FOG
+      return mixESFogAndMCFog;
+    #else
+      return 0.0;
+    #endif
+  #else
+    return 0.0;
   #endif
 }
 
@@ -116,21 +127,21 @@ void ESRenderOverworld(inout VEC4 color, in WorldInfo info) {
     return;
   }
 
-  ESRenderFogOverworld(color, info);
+  float mjFog = ESRenderFogOverworld(color, info);
 
   #ifdef VIGNETTE
     VEC3 vignetteColor = mix(VIGNETTE_COLOR_DAY, VIGNETTE_COLOR_NIGHT, info.time);
     vignetteColor = mix(vignetteColor, VIGNETTE_COLOR_CAVE, info.cave);
     float range = length(info.screenPos.xy / (info.screenPos.z + 0.1)) * 0.85;
 
-    color.rgb = mix(color.rgb, color.rgb * vignetteColor, clamp((range - 0.5) * 2.0, 0.0, 1.0));
+    color.rgb = mix(color.rgb, color.rgb * vignetteColor, clamp((range - 0.5) * 2.0, 0.0, 1.0) * (1.0-mjFog));
   #endif
 }
 
 
 
 
-void ESRenderFogNether(inout VEC4 color, in WorldInfo info) {
+float ESRenderFogNether(inout VEC4 color, in WorldInfo info) {
   #ifdef ES_NETHER_ENABLE_FOG
     float start = ES_NETHER_FOG_START;
     #ifdef MIX_ES_FOG_AND_MC_FOG
@@ -153,6 +164,15 @@ void ESRenderFogNether(inout VEC4 color, in WorldInfo info) {
     #endif
 
     color.rgb = mix(color.rgb, esFogColor, fogIntensity);
+
+    #ifdef MIX_ES_FOG_AND_MC_FOG
+      return mixESFogAndMCFog;
+    #else
+      return 0.0;
+    #endif
+
+  #else
+    return 0.0;
   #endif
 }
 
@@ -190,20 +210,20 @@ void ESRenderNether(inout VEC4 color, in WorldInfo info) {
     return;
   }
 
-  ESRenderFogNether(color, info);
+  float mjFog = ESRenderFogNether(color, info);
 
   #ifdef VIGNETTE
     VEC3 vignetteColor = VIGNETTE_COLOR_NETHER;
     float range = length(info.screenPos.xy / (info.screenPos.z + 0.1)) * 0.85;
 
-    color.rgb = mix(color.rgb, color.rgb * vignetteColor, clamp((range - 0.5) * 2.0, 0.0, 1.0));
+    color.rgb = mix(color.rgb, color.rgb * vignetteColor, clamp((range - 0.5) * 2.0, 0.0, 1.0) * (1.0-mjFog));
   #endif
 }
 
 
 
 
-void ESRenderFogEnd(inout VEC4 color, in WorldInfo info) {
+float ESRenderFogEnd(inout VEC4 color, in WorldInfo info) {
   #ifdef ES_END_ENABLE_FOG
     float start = ES_END_FOG_START;
     #ifdef MIX_ES_FOG_AND_MC_FOG
@@ -226,6 +246,14 @@ void ESRenderFogEnd(inout VEC4 color, in WorldInfo info) {
     #endif
 
     color.rgb = mix(color.rgb, esFogColor, fogIntensity);
+
+    #ifdef MIX_ES_FOG_AND_MC_FOG
+      return mixESFogAndMCFog;
+    #else
+      return 0.0;
+    #endif
+  #else
+    return 0.0;
   #endif
 }
 
@@ -263,13 +291,13 @@ void ESRenderEnd(inout VEC4 color, in WorldInfo info) {
     return;
   }
 
-  ESRenderFogEnd(color, info);
+  float mjFog = ESRenderFogEnd(color, info);
 
   #ifdef VIGNETTE
     VEC3 vignetteColor = VIGNETTE_COLOR_END;
     float range = length(info.screenPos.xy / (info.screenPos.z + 0.1)) * 0.85;
 
-    color.rgb = mix(color.rgb, color.rgb * vignetteColor, clamp((range - 0.5) * 2.0, 0.0, 1.0));
+    color.rgb = mix(color.rgb, color.rgb * vignetteColor, clamp((range - 0.5) * 2.0, 0.0, 1.0) * (1.0-mjFog));
   #endif
 }
 

@@ -3,7 +3,8 @@
 #endif
 
 #ifdef ES_JAVA
-    #moj_import <settings.glsl>
+    #moj_import <es-settings.glsl>
+    #moj_import <.es-settings.default.glsl>
     #moj_import <struct-defs.glsl>
     #moj_import <checks.glsl>
     #moj_import <tonemaps.glsl>
@@ -20,11 +21,12 @@
     #define ES_JAVA
     #define ES_SODIUM
     // Add includes to help the IDE with autocomplete
+    #include "./es-settings.glsl"
+    #include "./.es-settings.default.glsl"
     #include "./struct-defs.glsl"
     #include "./checks.glsl"
     #include "./tonemaps.glsl"
     #include "./render.glsl"
-    #include "./settings.glsl"
     #include "./compatibility.glsl"
 #endif
 

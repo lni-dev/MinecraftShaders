@@ -3,7 +3,8 @@
 #define ES_SODIUM
 
 #import <minecraft:include/compatibility.glsl>
-#import <minecraft:include/settings.glsl>
+#import <minecraft:include/es-settings.glsl>
+#import <minecraft:include/.es-settings.default.glsl>
 #import <minecraft:include/struct-defs.glsl>
 #import <minecraft:include/checks.glsl>
 #import <minecraft:include/tonemaps.glsl>

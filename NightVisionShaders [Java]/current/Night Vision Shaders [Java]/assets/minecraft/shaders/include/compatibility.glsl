@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2022-2023 LinusDev
+ * Copyright (c) 2022-2025 LinusDev
  * Author: Linusdev
  * Contact: linus@linusdev.de
  */

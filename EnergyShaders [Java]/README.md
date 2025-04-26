@@ -1,4 +1,7 @@
 # Energy Shaders [Java]
+[![Modrinth Downloads](https://img.shields.io/modrinth/dt/Kqx96bgP?logo=modrinth&label=downloads)](https://modrinth.com/shader/energy-shaders-java)
+[![CurseForge Downloads](https://img.shields.io/curseforge/dt/914435?logo=curseforge)](https://www.curseforge.com/minecraft/shaders/energy-shaders-java)
+[![Discord](https://img.shields.io/discord/317290087383826442?label=discord)](https://discord.gg/shVe3cR)
 
 Energy Shaders is a shaderpack/resourcepack that provides a more colorful vanilla expierience. Without requiring
 any mods or a frame rate drop.
