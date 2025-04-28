@@ -67,6 +67,7 @@ float ESRenderFogOverworld(inout VEC4 color, in WorldInfo info) {
     #endif
 
     color.rgb = mix(color.rgb, esFogColor, fogIntensity);
+    color.a = mix(color.a, 1.0, fogIntensity);
 
     #ifdef MIX_ES_FOG_AND_MC_FOG
       return mixESFogAndMCFog;
@@ -164,6 +165,7 @@ float ESRenderFogNether(inout VEC4 color, in WorldInfo info) {
     #endif
 
     color.rgb = mix(color.rgb, esFogColor, fogIntensity);
+    color.a = mix(color.a, 1.0, fogIntensity);
 
     #ifdef MIX_ES_FOG_AND_MC_FOG
       return mixESFogAndMCFog;
@@ -246,6 +248,7 @@ float ESRenderFogEnd(inout VEC4 color, in WorldInfo info) {
     #endif
 
     color.rgb = mix(color.rgb, esFogColor, fogIntensity);
+    color.a = mix(color.a, 1.0, fogIntensity);
 
     #ifdef MIX_ES_FOG_AND_MC_FOG
       return mixESFogAndMCFog;

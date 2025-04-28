@@ -16,7 +16,6 @@
           </compositeBuild>
         </compositeConfiguration>
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
-        <option name="gradleJvm" value="#JAVA_HOME" />
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
@@ -30,7 +29,6 @@
       </GradleProjectSettings>
       <GradleProjectSettings>
         <option name="externalProjectPath" value="$PROJECT_DIR$/BetterClearerGlass" />
-        <option name="gradleJvm" value="#JAVA_HOME" />
       </GradleProjectSettings>
     </option>
   </component>
