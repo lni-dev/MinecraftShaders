@@ -1,1 +1,1 @@
-- fixed fog transparency on water
+- fixed bug a bug that would cause a crash on some amd gpus
