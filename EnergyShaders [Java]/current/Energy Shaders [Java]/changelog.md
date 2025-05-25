@@ -1,1 +1,1 @@
-- fixed bug a bug that would cause a crash on some amd gpus
+- fixed bug a bug that would cause a crash on some amd gpus (WIP)
