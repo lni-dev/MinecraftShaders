@@ -11,7 +11,7 @@ in vec3 Normal;
 uniform sampler2D Sampler1;
 
 uniform mat4 ModelViewMat;
-uniform mat4 ProjMat ;
+uniform mat4 ProjMat;
 uniform vec3 ModelOffset = vec3(0.0);
 
 out vec4 vertexColor;
