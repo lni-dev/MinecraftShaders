@@ -42,7 +42,6 @@ void main() {
     worldInfo.fogColor = ES_IN_FOG_COLOR;
     worldInfo.fogStart = ES_IN_FOG_START;
     worldInfo.fogEnd = ES_IN_FOG_END;
-    worldInfo.fogShape = ES_IN_FOG_SHAPE;
 
     calcDimension(ES_LIGHT_TEXTURE, worldInfo.nether, worldInfo.end);
     worldInfo.gui = ES_IS_GUI;

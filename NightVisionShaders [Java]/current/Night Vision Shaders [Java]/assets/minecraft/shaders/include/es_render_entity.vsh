@@ -11,8 +11,10 @@ in vec3 Normal;
 
 uniform sampler2D Sampler1;
 
-uniform mat4 ModelViewMat;
-uniform mat4 ProjMat;
+#moj_import <minecraft:light.glsl>
+#moj_import <minecraft:fog.glsl>
+#moj_import <minecraft:dynamictransforms.glsl>
+#moj_import <minecraft:projection.glsl>
 
 out vec4 vertexColor;
 out vec4 overlayColor;

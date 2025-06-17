@@ -9,6 +9,11 @@
 #undef DEBUG_SHOW_TIME
 #undef DEBUG_LIGHT
 #undef DEBUG_SHOW_NORMAL
+
+/**
+ * No Cave: Black
+ * Cave: White
+ */
 #undef DEBUG_CAVE
 /**
  * Night: White

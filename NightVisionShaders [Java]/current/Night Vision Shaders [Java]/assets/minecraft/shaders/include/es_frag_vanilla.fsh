@@ -1,15 +1,11 @@
 
-// unifroms, varings etc
+// uniforms, varings etc
 uniform sampler2D Sampler0;
 uniform sampler2D Sampler1;
 uniform sampler2D Sampler2;
 
-uniform vec4 ColorModulator;
-uniform float FogStart;
-uniform float FogEnd;
-uniform vec4 FogColor;
-uniform int FogShape;
-uniform int ES_RenderInfo;
+#moj_import <minecraft:fog.glsl>
+#moj_import <minecraft:dynamictransforms.glsl>
 
 in vec4 vertexColor;
 in vec4 overlayColor;

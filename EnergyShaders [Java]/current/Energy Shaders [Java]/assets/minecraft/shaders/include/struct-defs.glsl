@@ -10,7 +10,6 @@
         VEC4 fogColor; // color of the background in mc (not the sky)
         float fogStart;
         float fogEnd; // render distance (not really but usefull)
-        int fogShape; // 0 = sphere, 1 = cylinder
 
         float shadow; // (0.0: no shadow - 1.0: max shadow)
         float light; // (0.0: no light - 1.0: max light)

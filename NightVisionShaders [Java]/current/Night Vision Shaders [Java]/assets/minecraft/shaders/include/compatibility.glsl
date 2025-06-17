@@ -37,9 +37,8 @@
     // ES_HAS_NORMAL is defined in shaders json
     #define ES_NORMAL normal
 
-    #define ES_IN_FOG_START FogStart
-    #define ES_IN_FOG_END FogEnd
-    #define ES_IN_FOG_SHAPE FogShape
+    #define ES_IN_FOG_START FogRenderDistanceStart
+    #define ES_IN_FOG_END FogRenderDistanceEnd
     #define ES_IN_FOG_COLOR FogColor
 
     #define ES_IS_GUI projMat3x == -1

@@ -4,11 +4,8 @@ uniform sampler2D Sampler0;
 uniform sampler2D Sampler1;
 uniform sampler2D Sampler2;
 
-uniform vec4 ColorModulator;
-uniform float FogStart = 1.0;
-uniform float FogEnd = 1.0;
-uniform vec4 FogColor = vec4(0.0);
-uniform int FogShape = 0;
+#moj_import <minecraft:fog.glsl>
+#moj_import <minecraft:dynamictransforms.glsl>
 
 in vec4 vertexColor;
 in vec4 overlayColor;
