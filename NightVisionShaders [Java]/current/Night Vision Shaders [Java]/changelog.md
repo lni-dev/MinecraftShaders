@@ -1,1 +1,1 @@
-- fixed fog transparency on water
+- Updated to Minecraft 1.21.6

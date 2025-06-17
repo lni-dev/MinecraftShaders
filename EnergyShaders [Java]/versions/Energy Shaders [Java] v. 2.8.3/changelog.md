@@ -1,0 +1,2 @@
+- Updated to Minecraft 1.21.6
+- Currently no sodium support

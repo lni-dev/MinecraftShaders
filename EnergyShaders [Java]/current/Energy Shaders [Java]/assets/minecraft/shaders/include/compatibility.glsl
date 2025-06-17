@@ -39,6 +39,8 @@
 
     #define ES_IN_FOG_START FogRenderDistanceStart
     #define ES_IN_FOG_END FogRenderDistanceEnd
+    #define ES_IN_ENV_FOG_START FogEnvironmentalStart
+    #define ES_IN_ENV_FOG_END FogEnvironmentalEnd
     #define ES_IN_FOG_COLOR FogColor
 
     #define ES_IS_GUI projMat3x == -1
@@ -59,20 +61,21 @@
     #define CONVERT_LIGHT_UV(UV) (clamp(UV, vec2(0.5 / 16.0), vec2(15.5 / 16.0)))
 
     #define ES_VERTEX_COLOR VEC4(1.0)
-    #define ES_COLOR_MODULATOR v_ColorModulator
-    #define ES_COLOR_RAW (texture(ES_TEXTURE_ATLAS, ES_UV_TEXTURE_ATLAS, v_MaterialMipBias) * VEC4(ES_COLOR_MODULATOR.rgb, 1.0) * ES_COLOR_MODULATOR.a)
+    #define ES_COLOR_MODULATOR v_Color
+    #define ES_COLOR_RAW (texture(ES_TEXTURE_ATLAS, ES_UV_TEXTURE_ATLAS, v_MaterialMipBias) * ES_COLOR_MODULATOR)
     #define ES_ALPHA_CUTOFF_VALUE v_MaterialAlphaCutoff
     #ifdef USE_FRAGMENT_DISCARD
       #define ES_DO_ALPHA_CUTOFF
     #endif
-    #define ES_COLOR_OUT out_FragColor
+    #define ES_COLOR_OUT fragColor
 
     #define ES_HAS_NORMAL true
     #define ES_NORMAL VEC4(normalize(cross(dFdx(inChunkPos.xyz), dFdy(inChunkPos.xyz))), 0.0)
 
-    #define ES_IN_FOG_START u_FogStart
-    #define ES_IN_FOG_END u_FogEnd
-    #define ES_IN_FOG_SHAPE u_FogShape
+    #define ES_IN_FOG_START u_RenderFog.x
+    #define ES_IN_FOG_END u_RenderFog.y
+    #define ES_IN_ENV_FOG_START u_EnvironmentFog.x
+    #define ES_IN_ENV_FOG_END u_EnvironmentFog.y
     #define ES_IN_FOG_COLOR u_FogColor
 
     #define ES_IS_GUI false
