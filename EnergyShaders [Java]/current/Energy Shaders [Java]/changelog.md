@@ -1,1 +1,1 @@
-- Hotfix update
+- updated pack version to minecraft 1.21.7
