@@ -33,7 +33,7 @@ The pack does not work with Optifine!
 
 ### Customization
 Energy Shaders also offers a lot of customization. Since this is a vanilla shader-pack, these settings have to be
-manually edited. They are located inside the `.zip` file in the file `assets/minecraft/shaders/include/settings.glsl`.
+manually edited. They are located inside the `.zip` file in the file `assets/minecraft/shaders/include/es-settings.glsl`.
 
 ### Feedback
 Feel free to leave any feedback on my [Discord server](https://discord.com/invite/AMvbguJFB9). Please respect,
