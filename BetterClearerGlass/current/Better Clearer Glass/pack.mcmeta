@@ -1,6 +1,7 @@
 {
-   "pack": {
-      "pack_format": 64,
-      "description": "Better Clearer Glass by LinusDev"
-   }
+  "pack": {
+    "min_format": 65,
+    "max_format": 69,
+    "description": "Better Clearer Glass by LinusDev"
+  }
 }
