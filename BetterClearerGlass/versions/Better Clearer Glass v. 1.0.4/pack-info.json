@@ -1,0 +1,48 @@
+{
+  "pack" : {
+    "name" : "Better Clearer Glass",
+    "version" : "1.0.4",
+    "release-type" : "release",
+
+    "authors" : [
+      {
+        "name" : "LinusDev",
+        "website" : "https://www.linusdev.de",
+        "contact" : "linus@linusdev.de"
+      }
+    ],
+
+    "supported-mc-versions" : [
+      "1.21",
+      "1.21.1",
+      "1.21.2",
+      "1.21.3",
+      "1.21.4",
+      "1.21.5",
+      "1.21.6",
+      "1.21.7",
+      "1.21.8",
+      "1.21.9"
+    ],
+    "supported-mc-versions-short" : [
+      "1.21",
+      "1.21.1",
+      "1.21.2",
+      "1.21.3",
+      "1.21.4",
+      "1.21.5",
+      "1.21.6",
+      "1.21.7",
+      "1.21.8",
+      "1.21.9"
+    ],
+
+    "modrinth" : {
+      "project-id" : "SEoBxKl3"
+    },
+
+    "curseforge" : {
+      "project-id" : "1186932"
+    }
+  }
+}

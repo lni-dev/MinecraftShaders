@@ -10,8 +10,7 @@
 #import <minecraft:include/tonemaps.glsl>
 #import <minecraft:include/render.glsl>
 
-
-in vec4 v_ColorModulator; // The interpolated vertex color
+in vec4 v_Color; // The interpolated vertex color
 in vec2 v_TexCoord; // The interpolated block texture coordinates
 in vec2 v_LightCoord;
 
@@ -22,14 +21,15 @@ in VEC3 inChunkPos;
 in VEC4 inWorldPos;
 in VEC4 inScreenPos;
 
-uniform sampler2D u_BlockTex; // The block atlas texture
-uniform sampler2D u_LightTex; // The light map texture
+uniform sampler2D u_BlockTex; // The block texture
+uniform sampler2D u_LightTex; // The light map texture sampler
 
 uniform vec4 u_FogColor; // The color of the shader fog
-uniform float u_FogStart; // The starting position of the shader fog
-uniform float u_FogEnd; // The ending position of the shader fog
-uniform int u_FogShape;
+uniform vec2 u_EnvironmentFog; // The start and end position for environmental fog
+uniform vec2 u_RenderFog; // The start and end position for border fog
 
-out vec4 out_FragColor; // The output fragment for the color framebuffer
+out vec4 fragColor; // The output fragment for the color framebuffer
 
 #import <minecraft:include/main.glsl>
+
+// Another line so the #line directive added by Sodium does not fuck us through all holes.
