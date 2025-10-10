@@ -1,1 +1,1 @@
-- Updated to sodium 0.7.0 and minecraft 1.21.9
+- Updated to sodium 0.7.2

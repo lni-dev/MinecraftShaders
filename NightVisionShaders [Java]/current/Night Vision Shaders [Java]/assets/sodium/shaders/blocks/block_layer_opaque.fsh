@@ -1,6 +1,13 @@
 #version 330 core
 
+
+#ifndef MAX_TEXTURE_LOD_BIAS
+#error "MAX_TEXTURE_LOD_BIAS constant not specified"
+#endif
+
 #define ES_SODIUM
+
+#import <sodium:include/chunk_material.glsl>
 
 #import <minecraft:include/compatibility.glsl>
 #import <minecraft:include/es-settings.glsl>
@@ -13,6 +20,8 @@
 in vec4 v_Color; // The interpolated vertex color
 in vec2 v_TexCoord; // The interpolated block texture coordinates
 in vec2 v_LightCoord;
+
+flat in uint v_Material;
 
 in float v_MaterialMipBias;
 in float v_MaterialAlphaCutoff;

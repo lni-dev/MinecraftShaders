@@ -1,0 +1,8 @@
+{
+  "pack": {
+    "pack_format": 65,
+    "min_format": 65,
+    "max_format": 69,
+    "description": "If used with Sodium, it Requires Sodium Core Shader Support Mod!"
+  }
+}
