@@ -31,9 +31,14 @@ The pack does not work with Optifine!
 ### Video
 <iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/q1hjg6YvVQY" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
 
-### Customization
+### Customization (WIP)
 Energy Shaders also offers a lot of customization. Since this is a vanilla shader-pack, these settings have to be
-manually edited. They are located inside the `.zip` file in the file `assets/minecraft/shaders/include/es-settings.glsl`.
+manually edited. 
+
+#### Getting started with customizing energy shaders
+First download the [settings template]()
+
+They are located inside the `.zip` file in the file `assets/minecraft/shaders/include/es-settings.glsl`.
 
 ### Feedback
 Feel free to leave any feedback on my [Discord server](https://discord.com/invite/AMvbguJFB9). Please respect,
