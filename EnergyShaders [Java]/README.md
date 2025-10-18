@@ -36,7 +36,12 @@ Energy Shaders also offers a lot of customization. Since this is a vanilla shade
 manually edited. 
 
 #### Getting started with customizing energy shaders
-First download the [settings template]()
+First download the [settings template](https://github.com/lni-dev/MinecraftShaders/raw/refs/heads/master/ES%20Java%20Settings/versions/v.%201.0.0/ES%20Java%20Settings.zip).
+Then copy the downloaded zip file to your resourcepacks directory. You can find it by pressing `Open Resourcepacks Directory` in
+Minecrafts Resourcepack selection screen. Next extract the zip file and delete it, so that only the extracted
+directory `ES Settings Java` remains. You can rename the directory to your liking.
+
+Now edit `ES Settings Java/pack.mcmeta`
 
 They are located inside the `.zip` file in the file `assets/minecraft/shaders/include/es-settings.glsl`.
 
