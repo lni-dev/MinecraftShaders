@@ -92,6 +92,10 @@ and find out. Generally, if a setting contains a `VEC3(...)`, it is a setting wi
 
 Of course, you can always ask for help in my discord server: https://discord.gg/shVe3cR
 
+##### Why are the settings in a different pack and not just contained in Energy Shaders directly
+Actually, the settings are contained in Energy Shaders too! But it is much more convenient if the settings are in an
+additional pack, because you can update Energy Shaders without losing your settings!
+
 ### Feedback
 Feel free to leave any feedback on my [Discord server](https://discord.com/invite/AMvbguJFB9). Please respect,
 that vanilla Minecraft is very limited.
