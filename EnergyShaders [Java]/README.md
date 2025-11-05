@@ -31,7 +31,7 @@ The pack does not work with Optifine!
 ### Video
 <iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/q1hjg6YvVQY" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
 
-### Customization
+### Customization (Since v. 2.8.0)
 Energy Shaders also offers a lot of customization. Since this is a vanilla shader-pack, these settings have to be
 manually edited. 
 
