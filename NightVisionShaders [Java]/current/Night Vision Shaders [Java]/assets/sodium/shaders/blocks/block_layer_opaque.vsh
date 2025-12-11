@@ -13,9 +13,17 @@ flat out uint v_Material;
 out vec3 inChunkPos;
 out vec4 inWorldPos;
 out vec4 inScreenPos;
+out float fadeFactor;
 
 uniform int u_FogShape;
 uniform vec3 u_RegionOffset;
+uniform vec2 u_TexCoordShrink;
+uniform int u_CurrentTime;
+uniform float u_FadePeriodInv;
+
+layout(std140) uniform ChunkData {
+    ivec4 u_chunkFades[64]; // Packing into ivec4 is needed to avoid wasting 3KB...
+};
 
 uniform sampler2D u_LightTex; // The light map texture sampler
 
@@ -35,12 +43,21 @@ void main() {
     inWorldPos = vec4(_vert_position + u_RegionOffset + _get_draw_translation(_draw_id), 1.0);
     inScreenPos = u_ProjectionMatrix * u_ModelViewMatrix * inWorldPos;
 
+    #ifdef USE_FOG
+    int chunkId = int(_draw_id);
+    int chunkFade = u_chunkFades[chunkId >> 2][chunkId & 3];
+    int fadeTime = u_CurrentTime - chunkFade;
+    float elapsed = float(fadeTime);
+    float fade = clamp(float(u_CurrentTime - chunkFade) * u_FadePeriodInv, 0.0, 1.0);
+    fadeFactor = (chunkFade < 0) ? 1.0 : fade;
+    #endif
+
     // Transform the vertex position into model-view-projection space
     gl_Position = inScreenPos;
 
     // Add the light color to the vertex color, and pass the texture coordinates to the fragment shader
     v_Color = _vert_color;
-    v_TexCoord = _vert_tex_diffuse_coord;
+    v_TexCoord = (_vert_tex_diffuse_coord_bias * u_TexCoordShrink) + _vert_tex_diffuse_coord;
     v_LightCoord = _vert_tex_light_coord;
 
     v_Material = _material_params;

@@ -1,1 +1,2 @@
-- Updated to sodium 0.7.2
+- Updated to mc 1.21.11
+- Updated to sodium 0.8.0

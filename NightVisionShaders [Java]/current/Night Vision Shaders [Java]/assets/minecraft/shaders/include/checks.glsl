@@ -85,6 +85,6 @@ void calcDimension(in sampler2D lightTexture, inout bool nether, inout bool end)
   VEC3 c_0_1 = texture2D(lightTexture, CONVERT_LIGHT_UV(VEC2(0., 1.))).rgb;
   VEC3 c_0_0 = texture2D(lightTexture, CONVERT_LIGHT_UV(VEC2(0., 0.))).rgb;
 
-  end = c_0_0.r == c_0_1.r && c_0_0.g == c_0_1.g;
-  nether = !end && c_0_0.r > 0.3; 
+  end = c_0_0.g > 0.5;
+  nether = !end && c_0_0.r == c_0_1.r;
 }  

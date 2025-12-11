@@ -5,6 +5,13 @@
 */
 
 //# Debug
+/**
+ * Shows the light texture on the ground.
+ * Red Bar: x
+ * Blue Bar: y
+ *
+ * Also shows dimension next to the blue bar
+ */
 #undef DEBUG_SHOW_ES_LIGHT_TEXTURE
 #undef DEBUG_SHOW_TIME
 #undef DEBUG_LIGHT

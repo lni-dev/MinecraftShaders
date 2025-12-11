@@ -101,6 +101,18 @@ void main() {
     if(inChunkPos.z > 1.0 && inChunkPos.z < 1.1 && inChunkPos.x > 0.0 && inChunkPos.x < 1.0) {
         color.rgb = VEC3(inChunkPos.x, 0.0, 0.0);
     }
+
+    if(inChunkPos.x > 1.2 && inChunkPos.x < 1.3 && inChunkPos.z > 0.0 && inChunkPos.z < 1.0) {
+        if(worldInfo.gui) {
+            color.rgb = VEC3(1., 0.0, 1.);
+        } else if(worldInfo.nether) {
+            color.rgb = VEC3(1., 0.0, 0.);
+        } else if(worldInfo.end) {
+            color.rgb = VEC3(0., 0.0, 1.);
+        } else {
+            color.rgb = VEC3(0., 1., 0.);
+        }
+    }
     #endif
 
     #ifdef DEBUG_SHOW_TIME
