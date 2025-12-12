@@ -1,2 +1,1 @@
-- Updated to mc 1.21.11
-- Updated to sodium 0.8.0
+- Fixed: Wrong Minecraft and Sodium versions listed as supported
