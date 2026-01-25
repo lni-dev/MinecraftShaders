@@ -1,1 +1,1 @@
-- Fixed: Textures not loading correctly
+- Updated to sodium 0.8.3

@@ -1,9 +1,6 @@
 #version 330 core
 
 
-#ifndef MAX_TEXTURE_LOD_BIAS
-#error "MAX_TEXTURE_LOD_BIAS constant not specified"
-#endif
 
 #define ES_SODIUM
 

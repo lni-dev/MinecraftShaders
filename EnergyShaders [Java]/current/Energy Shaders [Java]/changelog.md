@@ -1,1 +1,1 @@
-- Fixed: Wrong Minecraft and Sodium versions listed as supported
+- Updated to sodium 0.8.3
