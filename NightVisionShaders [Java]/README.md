@@ -9,7 +9,7 @@ If you like this pack consider supporting the development by [buying me a coffee
 
 ### Enabling the resourcepack
 You can simply enable it as resourcepack (Copy the `.zip` into the `resourcepack` directory).
-If you are using Sodium or Iris, the [Sodium Core Shader Support](https://modrinth.com/mod/sodium-core-shader-support) mod is required.
+If you are using Sodium before 26.2, the [Sodium Core Shader Support](https://modrinth.com/mod/sodium-core-shader-support) mod is required.
 The pack does not work with Optifine!
 
 ### Features

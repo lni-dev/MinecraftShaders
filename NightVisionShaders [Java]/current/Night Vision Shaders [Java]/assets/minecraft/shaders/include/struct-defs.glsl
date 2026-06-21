@@ -4,7 +4,7 @@
     struct WorldInfo {
         VEC4 colorRaw; // texture(TEXTURE_0, texCoord0) * vertexColor * ColorModulator
         VEC3 normal; // normal vector
-        VEC3 screenPos; // pixel position
+        VEC4 screenPos; // pixel position
         VEC3 playerCenteredPos; //position, centered at the players position
 
         VEC4 fogColor; // color of the background in mc (not the sky)
@@ -20,6 +20,7 @@
         bool gui;
         bool noFogOrVignette;
         bool hasNormal;
+        VEC2 screenSize;
     };
 
 #endif

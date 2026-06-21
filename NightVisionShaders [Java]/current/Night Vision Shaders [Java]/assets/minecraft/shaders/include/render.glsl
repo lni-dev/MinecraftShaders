@@ -13,7 +13,7 @@
     struct WorldInfo {
         VEC4 colorRaw; // texture(TEXTURE_0, texCoord0) * vertexColor * ColorModulator
         VEC3 normal; // normal vector
-        VEC3 screenPos; // pixel position
+        VEC4 screenPos; // pixel position
         VEC3 playerCenteredPos; //position, centered at the players position
 
         VEC4 fogColor; // color of the background in mc (not the sky)
@@ -29,6 +29,7 @@
         bool gui;
         bool noFogOrVignette;
         bool hasNormal;
+        VEC2 screenSize;
     };
 
 #endif
@@ -132,9 +133,9 @@ void ESRenderOverworld(inout VEC4 color, in WorldInfo info) {
   #ifdef VIGNETTE
     VEC3 vignetteColor = mix(VIGNETTE_COLOR_DAY, VIGNETTE_COLOR_NIGHT, info.time);
     vignetteColor = mix(vignetteColor, VIGNETTE_COLOR_CAVE, info.cave);
-    float range = length(info.screenPos.xy / (info.screenPos.z + 0.1)) * 0.85;
+    float range = length((info.screenPos.xy) / (info.screenPos.w + 0.25)) * 0.63;
 
-    color.rgb = mix(color.rgb, color.rgb * vignetteColor, clamp((range - 0.5) * 2.0, 0.0, 1.0) * (1.0-mjFog));
+    color.rgb = mix(color.rgb, color.rgb * vec3(0.0) * vignetteColor, clamp((range - 0.5) * 2.0, 0.0, 1.0) * (1.0-mjFog));
   #endif
 }
 
@@ -215,7 +216,7 @@ void ESRenderNether(inout VEC4 color, in WorldInfo info) {
 
   #ifdef VIGNETTE
     VEC3 vignetteColor = VIGNETTE_COLOR_NETHER;
-    float range = length(info.screenPos.xy / (info.screenPos.z + 0.1)) * 0.85;
+    float range = length((info.screenPos.xy) / (info.screenPos.w + 0.25)) * 0.63;
 
     color.rgb = mix(color.rgb, color.rgb * vignetteColor, clamp((range - 0.5) * 2.0, 0.0, 1.0) * (1.0-mjFog));
   #endif
@@ -297,7 +298,7 @@ void ESRenderEnd(inout VEC4 color, in WorldInfo info) {
 
   #ifdef VIGNETTE
     VEC3 vignetteColor = VIGNETTE_COLOR_END;
-    float range = length(info.screenPos.xy / (info.screenPos.z + 0.1)) * 0.85;
+    float range = length((info.screenPos.xy) / (info.screenPos.w + 0.25)) * 0.63;
 
     color.rgb = mix(color.rgb, color.rgb * vignetteColor, clamp((range - 0.5) * 2.0, 0.0, 1.0) * (1.0-mjFog));
   #endif

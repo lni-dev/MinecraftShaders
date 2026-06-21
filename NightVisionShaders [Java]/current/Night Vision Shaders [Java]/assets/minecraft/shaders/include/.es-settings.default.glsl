@@ -16,6 +16,7 @@
 #undef DEBUG_SHOW_TIME
 #undef DEBUG_LIGHT
 #undef DEBUG_SHOW_NORMAL
+#undef DEBUG_SCREENPOS
 
 /**
  * No Cave: Black

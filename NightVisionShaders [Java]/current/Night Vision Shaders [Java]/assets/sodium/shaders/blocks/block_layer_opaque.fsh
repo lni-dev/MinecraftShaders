@@ -1,41 +1,29 @@
 #version 330 core
 
-
-
 #define ES_SODIUM
 
-#import <sodium:include/chunk_material.glsl>
+#moj_import <sodium:chunk_material.glsl>
+#moj_import <sodium:globals.glsl>
 
-#import <minecraft:include/compatibility.glsl>
-#import <minecraft:include/es-settings.glsl>
-#import <minecraft:include/.es-settings.default.glsl>
-#import <minecraft:include/struct-defs.glsl>
-#import <minecraft:include/checks.glsl>
-#import <minecraft:include/tonemaps.glsl>
-#import <minecraft:include/render.glsl>
+#moj_import <minecraft:compatibility.glsl>
+#moj_import <minecraft:es-settings.glsl>
+#moj_import <minecraft:.es-settings.default.glsl>
+#moj_import <minecraft:struct-defs.glsl>
+#moj_import <minecraft:checks.glsl>
+#moj_import <minecraft:tonemaps.glsl>
+#moj_import <minecraft:render.glsl>
 
 in vec4 v_Color; // The interpolated vertex color
 in vec2 v_TexCoord; // The interpolated block texture coordinates
 in vec2 v_LightCoord;
 in float fadeFactor;
 
-flat in uint v_Material;
-
-in float v_MaterialMipBias;
-in float v_MaterialAlphaCutoff;
-
 in VEC3 inChunkPos;
 in VEC4 inWorldPos;
 in VEC4 inScreenPos;
 
-uniform sampler2D u_BlockTex; // The block texture
-uniform sampler2D u_LightTex; // The light map texture sampler
-
-uniform vec4 u_FogColor; // The color of the shader fog
-uniform vec2 u_EnvironmentFog; // The start and end position for environmental fog
-uniform vec2 u_RenderFog; // The start and end position for border fog
-uniform vec2 u_TexelSize;
-uniform bool u_UseRGSS;
+uniform sampler2D u_LightTex;
+uniform sampler2D u_BlockTex;
 
 out vec4 fragColor; // The output fragment for the color framebuffer
 
@@ -111,6 +99,6 @@ vec4 sampleRGSS(sampler2D source, vec2 uv, vec2 pixelSize) {
     return mix(nearestColor, rgssColor, blendFactor);
 }
 
-#import <minecraft:include/main.glsl>
+#moj_import <minecraft:main.glsl>
 
 // Another line so the #line directive added by Sodium does not fuck us through all holes.

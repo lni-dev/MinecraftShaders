@@ -36,7 +36,7 @@ void main() {
     worldInfo.colorRaw = ES_COLOR_RAW;
     worldInfo.normal = ES_NORMAL.xyz;
     worldInfo.hasNormal = ES_HAS_NORMAL;
-    worldInfo.screenPos = inScreenPos.xyz;
+    worldInfo.screenPos = inScreenPos;
     worldInfo.playerCenteredPos = inWorldPos.xyz;
 
     worldInfo.fogColor = ES_IN_FOG_COLOR;
@@ -51,6 +51,7 @@ void main() {
     worldInfo.light = calcLight(ES_UV_LIGHT_TEXTURE, worldInfo.normal, worldInfo.gui);
     worldInfo.time = calcTime(ES_LIGHT_TEXTURE, worldInfo.gui);
     worldInfo.cave = calcCave(ES_UV_LIGHT_TEXTURE);
+    worldInfo.screenSize = ES_SCREENSIZE;
 
     VEC4 color = worldInfo.colorRaw;
 
@@ -161,6 +162,12 @@ void main() {
     if(inChunkPos.x < 16.0 && inChunkPos.x > 15.9 && inChunkPos.z > 0.0 && inChunkPos.z < 1.0) {
         color.rgb = VEC3(inChunkPos.z);
     }
+    #endif
+
+    #ifdef DEBUG_SCREENPOS
+        color.r = length(worldInfo.screenPos.xy);
+        color.g = worldInfo.screenPos.z / 10.;
+        color.b = worldInfo.screenPos.w / 10.;
     #endif
 
     #ifdef TEST_AFFECTED

@@ -1,29 +1,31 @@
 #version 330 core
 
-#import <sodium:include/fog.glsl>
-#import <sodium:include/chunk_vertex.glsl>
-#import <sodium:include/chunk_matrices.glsl>
+#moj_import <sodium:globals.glsl>
+#moj_import <sodium:fog.glsl>
+#moj_import <sodium:chunk_vertex.glsl>
 
 out vec4 v_Color;
 out vec2 v_TexCoord;
 out vec2 v_LightCoord;
-
-flat out uint v_Material;
 
 out vec3 inChunkPos;
 out vec4 inWorldPos;
 out vec4 inScreenPos;
 out float fadeFactor;
 
-uniform int u_FogShape;
-uniform vec3 u_RegionOffset;
-uniform vec2 u_TexCoordShrink;
-uniform int u_CurrentTime;
-uniform float u_FadePeriodInv;
+uniform isamplerBuffer u_SectionTimeInfo;
 
-layout(std140) uniform ChunkData {
-    ivec4 u_chunkFades[64]; // Packing into ivec4 is needed to avoid wasting 3KB...
+#ifdef VULKAN
+layout(push_constant) uniform PC {
+    vec3 u_RegionOffset;
+    int u_CurrentTime;
+    uint u_RegionID;
 };
+#else
+uniform vec3 u_RegionOffset;
+uniform int u_CurrentTime;
+uniform uint u_RegionID;
+#endif
 
 uniform sampler2D u_LightTex; // The light map texture sampler
 
@@ -45,7 +47,7 @@ void main() {
 
     #ifdef USE_FOG
     int chunkId = int(_draw_id);
-    int chunkFade = u_chunkFades[chunkId >> 2][chunkId & 3];
+    int chunkFade = texelFetch(u_SectionTimeInfo, int((u_RegionID * 256u) + uint(chunkId))).r;
     int fadeTime = u_CurrentTime - chunkFade;
     float elapsed = float(fadeTime);
     float fade = clamp(float(u_CurrentTime - chunkFade) * u_FadePeriodInv, 0.0, 1.0);
@@ -59,6 +61,4 @@ void main() {
     v_Color = _vert_color;
     v_TexCoord = (_vert_tex_diffuse_coord_bias * u_TexCoordShrink) + _vert_tex_diffuse_coord;
     v_LightCoord = _vert_tex_light_coord;
-
-    v_Material = _material_params;
 }

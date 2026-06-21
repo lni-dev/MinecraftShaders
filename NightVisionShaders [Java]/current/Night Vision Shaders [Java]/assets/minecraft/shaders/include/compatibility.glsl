@@ -49,6 +49,7 @@
     #define ES_IN_FOG_COLOR FogColor
 
     #define ES_IS_GUI projMat3x == -1
+    #define ES_SCREENSIZE ScreenSize
   #endif
 
   //Minecraft Java with Sodium
@@ -68,8 +69,8 @@
     #define ES_VERTEX_COLOR VEC4(1.0)
     #define ES_COLOR_MODULATOR v_Color
     #define ES_COLOR_RAW ((u_UseRGSS ? sampleRGSS(ES_TEXTURE_ATLAS, ES_UV_TEXTURE_ATLAS, u_TexelSize) : sampleNearest(ES_TEXTURE_ATLAS, ES_UV_TEXTURE_ATLAS, u_TexelSize)) * ES_COLOR_MODULATOR);
-    #define ES_ALPHA_CUTOFF_VALUE _material_alpha_cutoff(v_Material)
-    #ifdef USE_FRAGMENT_DISCARD
+    #define ES_ALPHA_CUTOFF_VALUE ALPHA_CUTOUT
+    #ifdef ALPHA_CUTOUT
       #define ES_DO_ALPHA_CUTOFF
     #endif
     #define ES_COLOR_OUT fragColor
@@ -84,6 +85,8 @@
     #define ES_IN_FOG_COLOR u_FogColor
 
     #define ES_IS_GUI false
+
+    #define ES_SCREENSIZE VEC2(1.0)
   #endif
 
   //Minecraft Bedrock GLSL
