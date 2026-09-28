@@ -1,17 +1,18 @@
-#version 330 core
+#version 330
+#extension GL_ARB_separate_shader_objects : require
 
-#moj_import <sodium:globals.glsl>
-#moj_import <sodium:fog.glsl>
-#moj_import <sodium:chunk_vertex.glsl>
+#include <sodium:globals.glsl>
+#include <sodium:fog.glsl>
+#include <sodium:chunk_vertex.glsl>
 
-out vec4 v_Color;
-out vec2 v_TexCoord;
-out vec2 v_LightCoord;
+layout(location = 0) out vec4 v_Color;
+layout(location = 1) out vec2 v_TexCoord;
+layout(location = 2) out vec2 v_LightCoord;
 
-out vec3 inChunkPos;
-out vec4 inWorldPos;
-out vec4 inScreenPos;
-out float fadeFactor;
+layout(location = 3) out vec3 inChunkPos;
+layout(location = 4) out vec4 inWorldPos;
+layout(location = 5) out vec4 inScreenPos;
+layout(location = 6) out float fadeFactor;
 
 uniform isamplerBuffer u_SectionTimeInfo;
 
@@ -27,7 +28,9 @@ uniform int u_CurrentTime;
 uniform uint u_RegionID;
 #endif
 
+#ifndef OIT_ALPHA_ONLY
 uniform sampler2D u_LightTex; // The light map texture sampler
+#endif
 
 uvec3 _get_relative_chunk_coord(uint pos) {
     // Packing scheme is defined by LocalSectionIndex

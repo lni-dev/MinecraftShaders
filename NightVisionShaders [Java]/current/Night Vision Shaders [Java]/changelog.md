@@ -1,1 +1,3 @@
-- Updated to mc 26.2
+- Updated to mc 26.3
+- fix dropped items
+- Updated to sodium 0.9.2
