@@ -1,2 +1,2 @@
-- Updated to mc 26.2
-- Changed Vignette effect to be generally less visible and especially when being close to a wall
+- Updated to mc 26.3
+- fix dropped items

@@ -24,6 +24,10 @@
 
     #define ES_LIGHT_TEXTURE Sampler2
     #define ES_UV_LIGHT_TEXTURE (texCoord2/256.0)
+
+    #ifdef EMISSIVE
+      #define ES_NO_LIGHT_TEXTURE
+    #endif
     
     #define CONVERT_LIGHT_UV(UV) (clamp(UV, vec2(0.5 / 16.0), vec2(15.5 / 16.0)))
 
@@ -40,7 +44,11 @@
     #define ES_COLOR_OUT fragColor
 
     // ES_HAS_NORMAL is defined in shaders json
-    #define ES_NORMAL normal
+    #ifdef ES_HAS_NORMAL
+        #define ES_NORMAL normal
+    #else
+        #define ES_NORMAL VEC4(normalize(cross(dFdx(inChunkPos.xyz), dFdy(inChunkPos.xyz))), 0.0)
+    #endif
 
     #define ES_IN_FOG_START FogRenderDistanceStart
     #define ES_IN_FOG_END FogRenderDistanceEnd
@@ -75,7 +83,7 @@
     #endif
     #define ES_COLOR_OUT fragColor
 
-    #define ES_HAS_NORMAL true
+    #define ES_HAS_NORMAL
     #define ES_NORMAL VEC4(normalize(cross(dFdx(inChunkPos.xyz), dFdy(inChunkPos.xyz))), 0.0)
 
     #define ES_IN_FOG_START u_RenderFog.x

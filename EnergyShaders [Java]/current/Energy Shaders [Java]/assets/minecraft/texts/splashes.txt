@@ -48,12 +48,12 @@ Energy shaders? More like too sexy to be a thing
 Used by professional circle clickers (^-^)/
 lol
 minecraft.exe.apk.ipa
-All these texts were submitted by users like you!\nIf you want to submit one, just write me on Twitter:\n§3@Energy_Shaders
+All these texts were submitted by users like you! If you want to submit one, just write me on Twitter: §3@Energy_Shaders
 Bitch lasagna
 Minecraft, but Energized
 Bought by Microsoft
 ima keep it real wit u cheif, u got the mega-man-love
-\"E\" for energy, also \"E\" for memes!
+"E" for energy, also "E" for memes!
 Watermark free
 ok
 It's maybe beta-day my dudes
@@ -80,11 +80,10 @@ Help I'm stuck inside!
 §eSpooktober
 java -jar LinusDev.jar
 §aLoading...
-§aFun Fact: Ellen Degeneres was in the song \"Girls Like You\" by Maroon 5.
+§aFun Fact: Ellen Degeneres was in the song "Girls Like You" by Maroon 5.
 Meglovania Intensifies
 PixelHunter.exe stop working
 Subscribe To Aseltic on Youtube
-§cRoses are red\n§bViolets are blue\n§eLinusDev loves you!
 §cDoesnt Contain Nuts!
 e
 hi
@@ -98,3 +97,4 @@ i love my gf
 * insert funny joke here *
 awww...
 sinep
+§cRoses are red §bViolets are blue §eLinusDev loves you!

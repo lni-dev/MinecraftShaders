@@ -1,15 +1,15 @@
 #version 330
 #extension GL_ARB_separate_shader_objects : require
 
-// Enable Vanilla core shaders compatibility
-#define ES_JAVA
-
 /* ============================================= *|
      Defines that used to be in the .json-files
 |* ============================================= */
-#define CHUNK_SECTION_INSTEAD_OF_DYNAMIC_TRANSFORMS
+#define ES_HAS_NORMAL
+#if !defined(NO_OVERLAY) && !defined(OIT_ALPHA_ONLY)
+#define ES_MIX_OVERLAY_COLOR
+#endif
 
 /* ============================================= *|
                      Main Render
 |* ============================================= */
-#include <es_render_block.vsh.glsl>
+#include <es_render_entity.vsh.glsl>

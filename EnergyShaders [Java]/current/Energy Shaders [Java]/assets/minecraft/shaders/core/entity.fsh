@@ -1,17 +1,18 @@
-#version 150
+#version 330
+#extension GL_ARB_separate_shader_objects : require
 
 // Enable Vanilla core shaders compatibility
 #define ES_JAVA
-#moj_import <compatibility.glsl>
+#include <compatibility.glsl>
 
-/* ============================================= *\
+/* ============================================= *|
      Defines that used to be in the .json-files
-\* ============================================= */
-#ifndef NO_OVERLAY
+|* ============================================= */
+#if !defined(NO_OVERLAY) && !defined(OIT_ALPHA_ONLY)
     #define ES_MIX_OVERLAY_COLOR
 #endif
 
-#define ES_HAS_NORMAL true
+#define ES_HAS_NORMAL
 
 #ifdef ALPHA_CUTOUT
     #define ES_DO_ALPHA_CUTOFF
@@ -22,7 +23,7 @@
 // If enabled all blocks affected by this shader will appear red.
 #undef TEST_AFFECTED
 
-/* ============================================= *\
+/* ============================================= *|
                      Main Render
-\* ============================================= */
-#moj_import <es_frag_vanilla.fsh>
+|* ============================================= */
+#include <es_frag_vanilla.fsh.glsl>

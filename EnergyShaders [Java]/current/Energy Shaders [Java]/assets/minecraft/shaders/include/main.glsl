@@ -3,12 +3,12 @@
 #endif
 
 #ifdef ES_JAVA
-    #moj_import <es-settings.glsl>
-    #moj_import <.es-settings.default.glsl>
-    #moj_import <struct-defs.glsl>
-    #moj_import <checks.glsl>
-    #moj_import <tonemaps.glsl>
-    #moj_import <render.glsl>
+    #include <es-settings.glsl>
+    #include <.es-settings.default.glsl>
+    #include <struct-defs.glsl>
+    #include <checks.glsl>
+    #include <tonemaps.glsl>
+    #include <render.glsl>
 #endif
 
 #ifdef ES_SODIUM
@@ -35,7 +35,7 @@ void main() {
     WorldInfo worldInfo;
     worldInfo.colorRaw = ES_COLOR_RAW;
     worldInfo.normal = ES_NORMAL.xyz;
-    worldInfo.hasNormal = ES_HAS_NORMAL;
+    worldInfo.hasNormal = true;
     worldInfo.screenPos = inScreenPos;
     worldInfo.playerCenteredPos = inWorldPos.xyz;
 
@@ -43,13 +43,21 @@ void main() {
     worldInfo.fogStart = ES_IN_FOG_START;
     worldInfo.fogEnd = ES_IN_FOG_END;
 
-    calcDimension(ES_LIGHT_TEXTURE, worldInfo.nether, worldInfo.end);
     worldInfo.gui = ES_IS_GUI;
+
+    #ifdef ES_NO_LIGHT_TEXTURE
+        worldInfo.nether = false;
+        worldInfo.end = false;
+        worldInfo.time = 0.0;
+    #else
+        calcDimension(ES_LIGHT_TEXTURE, worldInfo.nether, worldInfo.end);
+        worldInfo.time = calcTime(ES_LIGHT_TEXTURE, worldInfo.gui);
+    #endif
+
     worldInfo.noFogOrVignette = worldInfo.gui || worldInfo.fogStart > worldInfo.fogEnd;
 
     worldInfo.shadow = calcShadow(ES_UV_LIGHT_TEXTURE, worldInfo.hasNormal, worldInfo.normal, worldInfo.nether, worldInfo.end, worldInfo.gui);
     worldInfo.light = calcLight(ES_UV_LIGHT_TEXTURE, worldInfo.normal, worldInfo.gui);
-    worldInfo.time = calcTime(ES_LIGHT_TEXTURE, worldInfo.gui);
     worldInfo.cave = calcCave(ES_UV_LIGHT_TEXTURE);
     worldInfo.screenSize = ES_SCREENSIZE;
 
@@ -61,10 +69,30 @@ void main() {
     }
     #endif
 
-
     #ifdef ES_MIX_OVERLAY_COLOR
-    // Only defined in ES_JAVA (comes from core shaders json)
-    color.rgb = mix(overlayColor.rgb, color.rgb, overlayColor.a);
+        // Only defined in ES_JAVA (comes from core shaders json)
+        color.rgb = mix(overlayColor.rgb, color.rgb, overlayColor.a);
+    #endif
+
+    #ifdef DISSOLVE
+        // dissolve from vanilla entity.fsh
+        if (color.a < texture(DissolveMaskSampler, texCoord0).a) {
+            discard;
+        }
+        color.a = 1.0;
+    #endif
+
+    #ifdef GLINT
+        // glint from vanilla entity.fsh
+        color.a = max(color.a, GlintAlpha);
+
+        vec4 glintColor = GlintAlpha * texture(GlintSampler, texCoordGlint);
+        color.rgb += glintColor.rgb * glintColor.rgb * 8.0;
+    #endif
+
+    #ifdef OIT_ACCUMULATE
+        color = sampleColorForAccumulation(color);
+        worldInfo.fogColor.rgb *= color.a;
     #endif
 
     if(worldInfo.gui) {
@@ -90,7 +118,7 @@ void main() {
     #endif
 
     //Debug Stuff
-    #ifdef DEBUG_SHOW_ES_LIGHT_TEXTURE
+    #if defined(DEBUG_SHOW_ES_LIGHT_TEXTURE) && !defined(ES_NO_LIGHT_TEXTURE)
     if(inChunkPos.x > 0.0 && inChunkPos.x < 1.0 && inChunkPos.z > 0.0 && inChunkPos.z < 1.0) {
         color.rgb = texture2D(ES_LIGHT_TEXTURE, CONVERT_LIGHT_UV(inChunkPos.xz)).rgb;
     }
